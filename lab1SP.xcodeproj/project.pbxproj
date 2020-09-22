@@ -13,6 +13,14 @@
 		5FCC19BB251A40AD00589EF7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5FCC19B9251A40AD00589EF7 /* Main.storyboard */; };
 		5FCC19BD251A40B100589EF7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5FCC19BC251A40B100589EF7 /* Assets.xcassets */; };
 		5FCC19C0251A40B100589EF7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5FCC19BE251A40B100589EF7 /* LaunchScreen.storyboard */; };
+		5FCC19CB251A40D400589EF7 /* TreeRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FCC19C8251A40D400589EF7 /* TreeRepresentable.swift */; };
+		5FCC19CC251A40D400589EF7 /* TreePrinter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FCC19C9251A40D400589EF7 /* TreePrinter.swift */; };
+		5FCC19D2251A45D700589EF7 /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FCC19D1251A45D700589EF7 /* Parser.swift */; };
+		5FCC19D9251AA02600589EF7 /* Nodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FCC19D8251AA02600589EF7 /* Nodes.swift */; };
+		5FCC19DC251AA03300589EF7 /* Lexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FCC19DB251AA03300589EF7 /* Lexer.swift */; };
+		5FCC19E0251AA06400589EF7 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FCC19DF251AA06400589EF7 /* Extensions.swift */; };
+		5FCC19E3251AA0A600589EF7 /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FCC19E2251AA0A600589EF7 /* Token.swift */; };
+		5FCC19E6251AA0DC00589EF7 /* Operator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FCC19E5251AA0DC00589EF7 /* Operator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +32,14 @@
 		5FCC19BC251A40B100589EF7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5FCC19BF251A40B100589EF7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5FCC19C1251A40B100589EF7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5FCC19C8251A40D400589EF7 /* TreeRepresentable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TreeRepresentable.swift; sourceTree = "<group>"; };
+		5FCC19C9251A40D400589EF7 /* TreePrinter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TreePrinter.swift; sourceTree = "<group>"; };
+		5FCC19D1251A45D700589EF7 /* Parser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Parser.swift; sourceTree = "<group>"; };
+		5FCC19D8251AA02600589EF7 /* Nodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Nodes.swift; sourceTree = "<group>"; };
+		5FCC19DB251AA03300589EF7 /* Lexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lexer.swift; sourceTree = "<group>"; };
+		5FCC19DF251AA06400589EF7 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		5FCC19E2251AA0A600589EF7 /* Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
+		5FCC19E5251AA0DC00589EF7 /* Operator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Operator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,15 +72,47 @@
 		5FCC19B2251A40AD00589EF7 /* lab1SP */ = {
 			isa = PBXGroup;
 			children = (
-				5FCC19B3251A40AD00589EF7 /* AppDelegate.swift */,
-				5FCC19B5251A40AD00589EF7 /* SceneDelegate.swift */,
+				5FCC19CF251A45AA00589EF7 /* Main */,
 				5FCC19B7251A40AD00589EF7 /* ViewController.swift */,
-				5FCC19B9251A40AD00589EF7 /* Main.storyboard */,
-				5FCC19BC251A40B100589EF7 /* Assets.xcassets */,
-				5FCC19BE251A40B100589EF7 /* LaunchScreen.storyboard */,
+				5FCC19D6251A9FB600589EF7 /* NoMatter */,
 				5FCC19C1251A40B100589EF7 /* Info.plist */,
 			);
 			path = lab1SP;
+			sourceTree = "<group>";
+		};
+		5FCC19CF251A45AA00589EF7 /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				5FCC19DB251AA03300589EF7 /* Lexer.swift */,
+				5FCC19D1251A45D700589EF7 /* Parser.swift */,
+				5FCC19E2251AA0A600589EF7 /* Token.swift */,
+				5FCC19E5251AA0DC00589EF7 /* Operator.swift */,
+				5FCC19D8251AA02600589EF7 /* Nodes.swift */,
+				5FCC19DF251AA06400589EF7 /* Extensions.swift */,
+				5FCC19D0251A45C400589EF7 /* TreePrinter */,
+			);
+			path = Main;
+			sourceTree = "<group>";
+		};
+		5FCC19D0251A45C400589EF7 /* TreePrinter */ = {
+			isa = PBXGroup;
+			children = (
+				5FCC19C9251A40D400589EF7 /* TreePrinter.swift */,
+				5FCC19C8251A40D400589EF7 /* TreeRepresentable.swift */,
+			);
+			path = TreePrinter;
+			sourceTree = "<group>";
+		};
+		5FCC19D6251A9FB600589EF7 /* NoMatter */ = {
+			isa = PBXGroup;
+			children = (
+				5FCC19B3251A40AD00589EF7 /* AppDelegate.swift */,
+				5FCC19B5251A40AD00589EF7 /* SceneDelegate.swift */,
+				5FCC19B9251A40AD00589EF7 /* Main.storyboard */,
+				5FCC19BC251A40B100589EF7 /* Assets.xcassets */,
+				5FCC19BE251A40B100589EF7 /* LaunchScreen.storyboard */,
+			);
+			path = NoMatter;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -138,8 +186,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				5FCC19B8251A40AD00589EF7 /* ViewController.swift in Sources */,
+				5FCC19E3251AA0A600589EF7 /* Token.swift in Sources */,
+				5FCC19E0251AA06400589EF7 /* Extensions.swift in Sources */,
 				5FCC19B4251A40AD00589EF7 /* AppDelegate.swift in Sources */,
+				5FCC19CB251A40D400589EF7 /* TreeRepresentable.swift in Sources */,
+				5FCC19E6251AA0DC00589EF7 /* Operator.swift in Sources */,
+				5FCC19CC251A40D400589EF7 /* TreePrinter.swift in Sources */,
+				5FCC19D9251AA02600589EF7 /* Nodes.swift in Sources */,
 				5FCC19B6251A40AD00589EF7 /* SceneDelegate.swift in Sources */,
+				5FCC19DC251AA03300589EF7 /* Lexer.swift in Sources */,
+				5FCC19D2251A45D700589EF7 /* Parser.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
