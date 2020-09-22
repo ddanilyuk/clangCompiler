@@ -9,14 +9,10 @@ import Foundation
 
 
 public protocol Node: TreeRepresentable {
-    func interpret<T: Numeric>() throws -> T where T : Numeric
 }
 
 struct InfixOperation: Node {
-    func interpret<T: Numeric>() throws -> T {
-        return 0.0 as! T
-    }
-    
+
     let op: Operator
     let lhs: Node
     let rhs: Node
@@ -48,34 +44,14 @@ enum Definition {
 
 
 struct Block: Node {
-    func interpret<T: Numeric>() throws -> T where T : Numeric {
-        for line in nodes[0..<(nodes.endIndex - 1)] {
-            let some = try line.interpret()
-        }
-        
-        guard let last = nodes.last else {
-            throw Parser.Error.expectedExpression
-        }
-        return try last.interpret()
-    }
-    
+    let blockName: String
     let nodes: [Node]
     
-//    func interpret() throws -> Float {
-//        for line in nodes[0..<(nodes.endIndex - 1)] {
-//            try line.interpret()
-//        }
-//
-//        guard let last = nodes.last else {
-//            throw Parser.Error.expectedExpression
-//        }
-//        return try last.interpret()
-//    }
 }
 
 extension Block: TreeRepresentable {
     var name: String {
-        return "block"
+        return blockName
     }
     
     var subnodes: [Node] {
@@ -83,19 +59,34 @@ extension Block: TreeRepresentable {
     }
 }
 
-struct FunctionDefinition: Node {
-    func interpret<T>() throws -> T where T : Numeric {
-        identifiers[identifier] = .function(self)
-        return 1 as! T
+struct ReturnBlock: Node {
+    let nodes: [Node]
+}
+
+extension ReturnBlock: TreeRepresentable {
+    var name: String {
+        return "return"
     }
+    
+    var subnodes: [Node] {
+        return nodes
+    }
+}
+
+
+struct FunctionDefinition: Node {
+//    func interpret<T>() throws -> T where T : Numeric {
+//        identifiers[identifier] = .function(self)
+//        return 1 as! T
+//    }
     // ADDED
     let identifier: String
     let block: Node
     
-    func interpret() throws -> Float {
-        identifiers[identifier] = .function(self)
-        return 1
-    }
+//    func interpret() throws -> Float {
+//        identifiers[identifier] = .function(self)
+//        return 1
+//    }
 }
 
 extension FunctionDefinition: TreeRepresentable {

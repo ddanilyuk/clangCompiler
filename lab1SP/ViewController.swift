@@ -28,7 +28,22 @@ class ViewController: UIViewController {
         print("File text:\n\n\(fileText)\n")
         
         let lexer = Lexer(code: fileText)
-        print(lexer.tokens)
+        print("Tokens: \(lexer.tokens.map({ "\($0)" }))")
+        let parser = Parser(tokens: lexer.tokens)
+        
+        do {
+            let node = try parser.parse(name: "start point")
+            print("Tree:")
+            print(TreePrinter.printTree(root: node))
+
+//            print(node)
+        } catch let error {
+            if let error = error as? Parser.Error {
+                print(error)
+            }
+        }
+
+        print("parse ended")
 //        let parser = Parser(text: fileText)
 //        print(parser.parseText())
 //        print(TreePrinter.printTree(root: TreeNode.sampleTree))

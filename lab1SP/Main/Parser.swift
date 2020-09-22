@@ -71,6 +71,26 @@ class Parser {
         }
     }
     
+    
+    func parseReturn() throws -> Node {
+        guard case .return = popToken() else {
+            throw Error.expected("return")
+        }
+        
+        guard case let Token.floatNumber(float) = popToken() else {
+            throw Error.expectedNumber
+        }
+        
+        
+        
+        guard case .semicolon = popToken() else {
+            throw Error.expected("semicolon")
+        }
+        let returnBlock = ReturnBlock(nodes: [float])
+        return returnBlock
+    }
+    
+    
     func parseFunctionDefinition() throws -> Node {
         guard case .intType = popToken() else {
             throw Error.expected("function")
@@ -78,6 +98,13 @@ class Parser {
         
         guard case let .identifier(identifier) = popToken() else {
             throw Error.expectedIdentifier
+        }
+        
+        guard case .parensOpen = popToken() else {
+            throw Parser.Error.expected("(")
+        }
+        guard case .parensClose = popToken() else {
+            throw Parser.Error.expected(")")
         }
                 
         // Convert the nodes to their String values
@@ -122,13 +149,13 @@ class Parser {
         }
         
         let tokens = Array(self.tokens[startIndex..<endIndex])
-        return try Parser(tokens: tokens).parse()
+        return try Parser(tokens: tokens).parse(name: "function block")
     }
     
 
     
     // Main parse function
-    func parse() throws -> Node {
+    func parse(name: String) throws -> Node {
         var nodes: [Node] = []
         while canPop {
             let token = peek()
@@ -136,12 +163,15 @@ class Parser {
             case .intType:
                 let declaration = try parseFunctionDefinition()
                 nodes.append(declaration)
+            case .return:
+                let declaration = try parseReturn()
+                nodes.append(declaration)
             
             default:
                 break
             }
         }
-        return Block(nodes: nodes)
+        return Block(blockName: name, nodes: nodes)
     }
 }
 
