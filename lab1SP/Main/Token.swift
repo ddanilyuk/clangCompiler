@@ -8,11 +8,17 @@
 import Foundation
 
 
+enum IntegerType {
+    case decimal
+    case octal
+}
+
+
 enum Token {
     typealias Generator = (String) -> Token?
     
     // Numbers
-    case intNumber(Int)
+    case intNumber(Int, IntegerType)
     case floatNumber(Float)
     
     // Brace
@@ -35,20 +41,16 @@ enum Token {
     
     static var generators: [String: Generator] {
         return [
-            "\\*|\\/|\\+|\\-": { .op(Operator(rawValue: $0)!) },
-            "^(^[0-9]+\\.[0-9]+)|^([0-9]+)": {
-                if $0.contains(".") {
-                    return .floatNumber(Float($0)!)
-                } else {
-                    return .intNumber(Int($0)!)
-                }
-            },
             
+            /// Non didgit or word
+            "\\*|\\/|\\+|\\-": { .op(Operator(rawValue: $0)!) },
             "\\(": { _ in .parensOpen },
             "\\)": { _ in .parensClose },
             "\\{": { _ in .curlyOpen },
             "\\}": { _ in .curlyClose },
-            
+            "\\;": { _ in .semicolon },
+
+            /// For words and keywords
             "[a-zA-Z_$][a-zA-Z_$0-9]*": {
                 guard $0 != "return" else {
                     return .return
@@ -61,7 +63,27 @@ enum Token {
                 }
                 return .identifier($0)
             },
-            "\\;": { _ in .semicolon }            
+            
+            /// For number Int (octal and decimal) and float numbers
+            "^(^0[0-8]+)|^(^[0-9]+\\.[0-9]+)|^([0-9]+)": {
+                if $0.contains(".") {
+                    return .floatNumber(Float($0)!)
+                } else if $0.contains("0") || $0.contains("0") {
+                    var number = $0
+                    number.removeFirst()
+                    if let int8 = UInt8(number, radix: 8) {
+                        return .intNumber(Int(int8), .octal)
+                    } else {
+                        // TODO:- Replace for throwing error
+                        fatalError("Not Hex")
+                    }
+                } else if let intNumber = Int($0) {
+                    return .intNumber(intNumber, .decimal)
+                } else {
+                    // TODO:- Replace for throwing error
+                    fatalError("Not number")
+                }
+            }
         ]
     }
 }

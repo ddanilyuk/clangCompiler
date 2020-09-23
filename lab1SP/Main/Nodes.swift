@@ -55,6 +55,11 @@ struct Block: Node {
         case function = "function"
         case `return` = "return"
         case startPoint = "start point"
+        
+        //
+        case decimal = "int(decimal)"
+        case octal = "int(octal)"
+        case float = "float"
     }
     
     var blockType: BlockType
@@ -105,12 +110,6 @@ struct FunctionDefinition: Node {
         
         return result
     }
-    
-//    func interpret() throws -> Float {
-//        identifiers[identifier] = .function(self)
-//        return 1
-//    }
-    
     let identifier: String
     let block: Node
 }
@@ -124,3 +123,31 @@ extension FunctionDefinition: TreeRepresentable {
         return [block]
     }
 }
+
+
+struct CustomInt: Node {
+    
+    func interpret() throws -> String {
+        return name
+    }
+    
+    var name: String {
+        if self.type == .decimal {
+            return "\(number)"
+        } else {
+            if let octal = Int(String(number, radix: 8)) {
+                return "0o\(octal)"
+            } else {
+                fatalError("Not octal")
+            }
+        }
+    }
+    
+    var subnodes: [Node] {
+        return []
+    }
+    
+    var number: Int
+    var type: IntegerType
+}
+

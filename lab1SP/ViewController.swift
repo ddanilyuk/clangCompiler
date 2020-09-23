@@ -18,7 +18,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let fileText = "int main() { return ((2 + 1) + 15); }"
+        let fileText = "int main() { return ((012 + 1.1) + 15); }"
         print("File text:\n\n\(fileText)\n")
         
         let lexer = Lexer(code: fileText)
@@ -33,7 +33,7 @@ class ViewController: UIViewController {
             print(try node.interpret())
         } catch let error {
             if let error = error as? Parser.Error {
-                print(error)
+                print(error.localizedDescription)
             }
         }
 
