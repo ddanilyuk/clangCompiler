@@ -12,30 +12,39 @@ class Parser {
     
     // Possible errors
     enum Error: Swift.Error, LocalizedError {
-        case expectedNumber
-        case expectedIdentifier
-        case expectedOperator
-        case expectedExpression
+        case expectedNumber(Int)
+        case expectedIdentifier(Int)
+        case expectedOperator(Int)
+        case expectedExpression(Int)
         case expected(String, Int)
-        case notDefined(String)
-        case alreadyDefined(String)
+        case notDefined(String, Int)
+        case alreadyDefined(String, Int)
+        
+        var index: Int {
+            switch self {
+            case let .expectedNumber(index), let .expectedIdentifier(index), let .expectedOperator(index), let .expectedExpression(index):
+                return index
+            case let .expected(_, index), let .notDefined(_, index), let .alreadyDefined(_, index):
+                return index
+            }
+        }
         
         var errorDescription: String? {
             switch self {
-            case .expectedNumber:
+            case let .expectedNumber(_):
                 return "Number expected"
-            case .expectedIdentifier:
-                return "Identifier expected"
-            case .expectedOperator:
-                return "Operator expected"
-            case .expectedExpression:
-                return "Expression expected"
-            case let .expected(str, line):
-                return "Extected \"\(str)\" at \(line) position"
-            case let .notDefined(str):
-                return "\(str) not defined"
-            case let .alreadyDefined(str):
-                return "\(str) already defined"
+            case let .expectedIdentifier(index):
+                return "Identifier expected at \(index) index"
+            case let .expectedOperator(index):
+                return "Operator expected at \(index) index"
+            case let .expectedExpression(index):
+                return "Expression expected at \(index) index"
+            case let .expected(str, index):
+                return "Extected \"\(str)\""
+            case let .notDefined(str, index):
+                return "\(str) not defined at \(index) index"
+            case let .alreadyDefined(str, index):
+                return "\(str) already defined at \(index) index"
             }
         }
     }
@@ -74,14 +83,14 @@ class Parser {
     
     func parseFloat() throws -> Block {
         guard case let Token.floatNumber(float) = popToken() else {
-            throw Error.expectedNumber
+            throw Error.expectedNumber(index)
         }
         return Block(nodes: [float], blockType: .float)
     }
     
     func parseInt() throws -> Block {
         guard case let Token.intNumber(int, integerType) = popToken() else {
-            throw Error.expectedNumber
+            throw Error.expectedNumber(index)
         }
         let blockType = integerType == .decimal ? Block.BlockType.decimal : Block.BlockType.octal
         let customInt = CustomInt(number: int, type: integerType)
@@ -109,13 +118,13 @@ class Parser {
     
     func parseParens() throws -> Node {
         guard case .parensOpen = popToken() else {
-            throw Error.expected("(", 1)
+            throw Error.expected("(", index)
         }
         
         let expressionNode = try parseExpression() // ADDED - was "try parse()"
         
         guard case .parensClose = popToken() else {
-            throw Error.expected("(", 1)
+            throw Error.expected("(", index)
         }
         
         return expressionNode
@@ -123,13 +132,13 @@ class Parser {
     
     func parseReturn() throws -> Node {
         guard case .return = popToken() else {
-            throw Error.expected("return", 1)
+            throw Error.expected("return", index)
         }
         // return (2+2);
         let value = try parseValue()
         
         guard case .semicolon = popToken() else {
-            throw Parser.Error.expected("semicolon", 1)
+            throw Parser.Error.expected("semicolon", index)
         }
         let returnBlock = Block(nodes: [value], blockType: .return)
         
@@ -143,19 +152,19 @@ class Parser {
         case .floatType, .intType:
             functionReturnType = popToken()
         default:
-            throw Error.expected("Function type", 1)
+            throw Error.expected("Function type", index)
         }
         
         
         guard case let Token.identifier(identifier) = popToken() else {
-            throw Error.expectedIdentifier
+            throw Error.expectedIdentifier(index)
         }
         
         guard case .parensOpen = popToken() else {
-            throw Parser.Error.expected("(", 1)
+            throw Parser.Error.expected("(", index)
         }
         guard case .parensClose = popToken() else {
-            throw Parser.Error.expected(")", 1)
+            throw Parser.Error.expected(")", index)
         }
                 
         let codeBlock = try parseCurlyCodeBlock(blockType: .function)
@@ -167,7 +176,7 @@ class Parser {
     
     func parseCurlyCodeBlock(blockType: Block.BlockType) throws -> Node {
         guard canCheckToken, case Token.curlyOpen = popToken() else {
-            throw Parser.Error.expected("{", 1)
+            throw Parser.Error.expected("{", index)
         }
         
         var depth = 1
@@ -194,7 +203,7 @@ class Parser {
         let endIndex = index
         
         guard canCheckToken, case Token.curlyClose = popToken() else {
-            throw Error.expected("}", 1)
+            throw Error.expected("}", index)
         }
         
         let tokens = Array(self.tokens[startIndex..<endIndex])
@@ -203,7 +212,7 @@ class Parser {
     
     func parseExpression() throws -> Node { // ADDED this is the old parse method
         guard canCheckToken else {
-            throw Error.expectedExpression
+            throw Error.expectedExpression(index)
         }
         let node = try parseValue()
         return try parseInfixOperation(node: node)
@@ -215,7 +224,7 @@ class Parser {
         var priority = try getPriority()
         while priority >= nodePriority {
             guard case let Token.op(op) = popToken() else {
-                throw Error.expectedOperator
+                throw Error.expectedOperator(index)
             }
             
             var rightNode = try parseValue()

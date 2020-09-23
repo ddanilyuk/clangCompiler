@@ -14,7 +14,8 @@ enum IntegerType {
 }
 
 
-enum Token {
+enum Token: Equatable {
+
     typealias Generator = (String) -> Token?
     
     // Numbers
@@ -38,6 +39,37 @@ enum Token {
     case identifier(String)
     case `return`
     case semicolon
+    
+    
+    var lenght: Int {
+        switch self {
+        case let .intNumber(number, type):
+            let customInt = CustomInt(number: number, type: type)
+            return String(customInt.name).count
+        case let .floatNumber(float):
+            return String(float).count
+        case .parensOpen:
+            return 1
+        case .parensClose:
+            return 1
+        case .curlyOpen:
+            return 1
+        case .curlyClose:
+            return 1
+        case .semicolon:
+            return 1
+        case .intType:
+            return 3
+        case .floatType:
+            return 5
+        case .op:
+            return 1
+        case let .identifier(string):
+            return string.count
+        case .return:
+            return 6
+        }
+    }
     
     static var generators: [String: Generator] {
         return [

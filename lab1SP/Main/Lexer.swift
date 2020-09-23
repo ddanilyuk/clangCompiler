@@ -12,6 +12,23 @@ class Lexer {
     
     let tokens: [Token]
     
+    public static func getCurrentLineAndPosition(from index: Int, code: String, tokens: [Token]) -> (line: Int, position: Int, show: String) {
+        var counter = 0
+        
+        for token in tokens[0..<(index - 1)] {
+            counter += token.lenght
+        }
+        
+        let array = Array(repeating: "*", count: counter)
+        
+        var showPosition = array.reduce("") { (part1, part2) -> String in
+            return "\(part1)\(part2)"
+        }
+        showPosition += "^"
+    
+        return (line: 1, position: Int(counter), show: String(showPosition))
+    }
+    
     private static func getNextPrefix(code: String) -> (regex: String, prefix: String)? {
         
         let keyValue = Token.generators.first(where: { regex, generator in

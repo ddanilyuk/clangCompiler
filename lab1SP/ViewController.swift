@@ -33,7 +33,15 @@ class ViewController: UIViewController {
             print(try node.interpret())
         } catch let error {
             if let error = error as? Parser.Error {
+                let indexOfError = error.index
+                let lineAndPosition = Lexer.getCurrentLineAndPosition(from: indexOfError, code: fileText, tokens: lexer.tokens)
+                
+                print("\nERROR!!!")
                 print(error.localizedDescription)
+                print("line: \(lineAndPosition.line), position: \(lineAndPosition.position)\n")
+                print(fileText)
+                print(lineAndPosition.show)
+                
             }
         }
 

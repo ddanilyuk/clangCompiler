@@ -55,8 +55,6 @@ struct Block: Node {
         case function = "function"
         case `return` = "return"
         case startPoint = "start point"
-        
-        //
         case decimal = "int(decimal)"
         case octal = "int(octal)"
         case float = "float"
@@ -78,7 +76,7 @@ struct Block: Node {
         }
         
         guard let last = nodes.last else {
-            throw Parser.Error.expectedExpression
+            throw Parser.Error.expectedExpression(-1)
         }
         result += try last.interpret()
 
