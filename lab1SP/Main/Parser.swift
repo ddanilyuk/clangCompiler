@@ -107,16 +107,21 @@ class Parser {
         guard case .semicolon = popToken() else {
             throw Parser.Error.expected("semicolon")
         }
-        let returnBlock = Block(blockName: "return", nodes: [value])
+        let returnBlock = Block(blockType: .return, nodes: [value])
         
         return returnBlock
     }
     
-    
     func parseFunctionDefinition() throws -> Node {
-        guard case .intType = popToken() else {
-            throw Error.expected("function")
+        var functionReturnType: Token = .floatType
+        
+        switch (checkToken()) {
+        case .floatType, .intType:
+            functionReturnType = popToken()
+        default:
+            throw Error.expected("function type")
         }
+                        
         
         guard case let .identifier(identifier) = popToken() else {
             throw Error.expectedIdentifier
@@ -129,13 +134,14 @@ class Parser {
             throw Parser.Error.expected(")")
         }
                 
-        let codeBlock = try parseCurlyCodeBlock()
+        let codeBlock = try parseCurlyCodeBlock(blockType: .function)
         
-        return FunctionDefinition(identifier: identifier,
+        return FunctionDefinition(returnType: functionReturnType,
+                                  identifier: identifier,
                                   block: codeBlock)
     }
     
-    func parseCurlyCodeBlock() throws -> Node {
+    func parseCurlyCodeBlock(blockType: Block.BlockType) throws -> Node {
         guard canCheckToken, case Token.curlyOpen = popToken() else {
             throw Parser.Error.expected("{")
         }
@@ -168,7 +174,7 @@ class Parser {
         }
         
         let tokens = Array(self.tokens[startIndex..<endIndex])
-        return try Parser(tokens: tokens).parse(name: "function block")
+        return try Parser(tokens: tokens).parse(blockType: blockType)
     }
     
     func parseExpression() throws -> Node { // ADDED this is the old parse method
@@ -203,7 +209,7 @@ class Parser {
     }
 
     // Main parse function
-    func parse(name: String) throws -> Node {
+    func parse(blockType: Block.BlockType) throws -> Node {
         var nodes: [Node] = []
         while canCheckToken {
             let token = checkToken()
@@ -219,6 +225,6 @@ class Parser {
                 break
             }
         }
-        return Block(blockName: name, nodes: nodes)
+        return Block(blockType: blockType, nodes: nodes)
     }
 }

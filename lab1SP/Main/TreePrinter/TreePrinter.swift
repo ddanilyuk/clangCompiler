@@ -2,9 +2,9 @@
 //  TreePrinter.swift
 //  TreePrinter
 //
-//  Created by Casey Liss on 3/3/20.
-//  Copyright © 2020 Limitliss LLC. All rights reserved.
+//  Created by Денис Данилюк on 23.09.2020.
 //
+
 
 /// Allows for pretty-printing of a structure that is `TreeRepresentable`
 public class TreePrinter {
@@ -18,20 +18,6 @@ public class TreePrinter {
         public let finalConnector: String
         public let connectorSuffix: String
         
-        /// Creates a set of `TreePrinter` options.
-        ///
-        /// - Note: Every parameter has a sensible default.
-        ///
-        /// - Parameters:
-        ///   - spacesPerDepth: Indentation per depth level; defaults to `4`
-        ///   - spacer: The spacer to use for indentation; defaults to a single space
-        ///   - verticalLine: The `String` to use for a vertical line; defaults to `│`
-        ///   - intermediateConnector: The `String` to use to connect a non-terminal
-        ///                            node to its parent; defualts to `├`
-        ///   - finalConnector: The `String` to use to connect a terminal node to its parent;
-        ///                     defaults to `` ` ``
-        ///   - connectorSuffix: The `String` suffix after one of the connectors;
-        ///                      defaults to `── `
         public init(spacesPerDepth: Int = 4,
                     spacer: String = " ",
                     verticalLine: String = "│",
@@ -59,10 +45,7 @@ public class TreePrinter {
         }
     }
     
-    /// Creates a `String` representation of a tree structure.
-    /// - Parameters:
-    ///   - root: Root of the tree; must conform to `TreeReprsentable`
-    ///   - options: Optional set of options to configure how the output looks
+
     public static func printTree(root: Node,
                                  options: TreePrinterOptions = TreePrinterOptions()) -> String
     {
@@ -71,13 +54,7 @@ public class TreePrinter {
                          depthsFinished: Set(),
                          options: options)
     }
-    
-    /// Recursive function to print a node and all subnodes.
-    /// - Parameters:
-    ///   - node: Node to print
-    ///   - depth: Current depth of the tree
-    ///   - depthsFinished: `Set` of depths that are complete
-    ///   - options: Options to use to configure output
+
     private static func printNode(node: Node,
                                   depth: Int,
                                   depthsFinished: Set<Int>,

@@ -2,9 +2,10 @@
 //  TreeRepresentable.swift
 //  TreePrinter
 //
-//  Created by Casey Liss on 3/3/20.
-//  Copyright © 2020 Limitliss LLC. All rights reserved.
+//  Created by Денис Данилюк on 23.09.2020.
 //
+
+
 /// Objects that are `TreeRepresentable` can be printed using `TreePrinter`
 public protocol TreeRepresentable {
     

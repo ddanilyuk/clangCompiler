@@ -9,10 +9,18 @@ import Foundation
 
 // Empty protocol node
 // Next will be used for implement iterator
-public protocol Node: TreeRepresentable { }
+public protocol Node: TreeRepresentable {
+    func interpret() throws -> String
+}
+
 
 // Operators
 struct InfixOperation: Node {
+    
+    func interpret() throws -> String {
+        return "(\(try lhs.interpret()) \(op.rawValue) \(try rhs.interpret()))"
+    }
+    
     let op: Operator
     let lhs: Node
     let rhs: Node
@@ -42,13 +50,40 @@ enum Definition {
 
 
 struct Block: Node {
-    let blockName: String
+    
+    enum BlockType: String {
+        case function = "function"
+        case `return` = "return"
+        case startPoint = "start point"
+    }
+    
+    var blockType: BlockType
+    
+    func interpret() throws -> String {
+        var result = String()
+        
+        if blockType == .return {
+            result += "return "
+        }
+        
+        for line in nodes[0..<(nodes.endIndex - 1)] {
+            result += try line.interpret()
+        }
+        
+        guard let last = nodes.last else {
+            throw Parser.Error.expectedExpression
+        }
+        result += try last.interpret()
+
+        return result
+    }
+    
     let nodes: [Node]
 }
 
 extension Block: TreeRepresentable {
     var name: String {
-        return blockName
+        return blockType.rawValue
     }
     
     var subnodes: [Node] {
@@ -58,6 +93,24 @@ extension Block: TreeRepresentable {
 
 
 struct FunctionDefinition: Node {
+    
+    var returnType: Token
+    
+    func interpret() throws -> String {
+        var result = "func \(identifier)() -> \(returnType) {\n\t"
+        
+        result += try block.interpret()
+        
+        result += "\n}"
+        
+        return result
+    }
+    
+//    func interpret() throws -> Float {
+//        identifiers[identifier] = .function(self)
+//        return 1
+//    }
+    
     let identifier: String
     let block: Node
 }

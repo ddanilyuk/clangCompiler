@@ -28,13 +28,12 @@ public extension String {
     }
 }
 
+
+// Minize
 extension Float: Node {
-    public func interpret<T>() throws -> T where T : Numeric {
-        return self as! T
-    }
     
-    public func interpret() throws -> Float {
-        return self
+    public func interpret() throws -> String {
+        return "\(self)"
     }
     
     public var name: String {
@@ -46,9 +45,11 @@ extension Float: Node {
     }
 }
 
+
 extension Int: Node {
-    public func interpret<T>() throws -> T where T : Numeric {
-        return self as! T
+
+    public func interpret() throws -> String {
+        return "\(self)"
     }
     
     public var name: String {
