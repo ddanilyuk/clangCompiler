@@ -18,17 +18,17 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let fileText = "int main() { return ((012 + 1.1) + 15); }"
-        print("File text:\n\n\(fileText)\n")
+        let fileText = "float main() { return ((012 + 1.1) + 15); }"
+        print("File text:\n\(fileText)\n")
         
         let lexer = Lexer(code: fileText)
-        print("Tokens: \(lexer.tokens.map({ "\($0)" }))")
+        print("Tokens:\n\(lexer.tokens.map({ "\($0)" }))\n")
         let parser = Parser(tokens: lexer.tokens)
         
         do {
             let node = try parser.parse(blockType: .startPoint)
-            print("Tree:")
-            print(TreePrinter.printTree(root: node))
+            print("Tree:\n\(TreePrinter.printTree(root: node))")
+            
             print("Swift code: ")
             print(try node.interpret())
         } catch let error {
@@ -37,6 +37,6 @@ class ViewController: UIViewController {
             }
         }
 
-        print("parse ended")
+        print("\nParse ended")
     }
 }

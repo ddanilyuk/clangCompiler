@@ -62,6 +62,8 @@ struct Block: Node {
         case float = "float"
     }
     
+    let nodes: [Node]
+
     var blockType: BlockType
     
     func interpret() throws -> String {
@@ -82,8 +84,6 @@ struct Block: Node {
 
         return result
     }
-    
-    let nodes: [Node]
 }
 
 extension Block: TreeRepresentable {
@@ -98,6 +98,9 @@ extension Block: TreeRepresentable {
 
 
 struct FunctionDefinition: Node {
+    let identifier: String
+
+    let block: Node
     
     var returnType: Token
     
@@ -110,8 +113,6 @@ struct FunctionDefinition: Node {
         
         return result
     }
-    let identifier: String
-    let block: Node
 }
 
 extension FunctionDefinition: TreeRepresentable {

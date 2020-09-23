@@ -76,7 +76,7 @@ class Parser {
         guard case let Token.floatNumber(float) = popToken() else {
             throw Error.expectedNumber
         }
-        return Block(blockType: .float, nodes: [float])
+        return Block(nodes: [float], blockType: .float)
     }
     
     func parseInt() throws -> Block {
@@ -85,16 +85,19 @@ class Parser {
         }
         let blockType = integerType == .decimal ? Block.BlockType.decimal : Block.BlockType.octal
         let customInt = CustomInt(number: int, type: integerType)
-        return Block(blockType: blockType, nodes: [customInt])
+        return Block(nodes: [customInt], blockType: blockType)
     }
     
     func parseValue() throws -> Node {
         switch (checkToken()) {
         case .floatNumber:
+            // 2.0
             return try parseFloat()
         case .intNumber:
+            // 2
             return try parseInt()
         case .parensOpen:
+            // (
             return try parseParens()
         case .identifier:
             fatalError("function call is not implemented")
@@ -122,13 +125,13 @@ class Parser {
         guard case .return = popToken() else {
             throw Error.expected("return", 1)
         }
-        
+        // return (2+2);
         let value = try parseValue()
         
         guard case .semicolon = popToken() else {
             throw Parser.Error.expected("semicolon", 1)
         }
-        let returnBlock = Block(blockType: .return, nodes: [value])
+        let returnBlock = Block(nodes: [value], blockType: .return)
         
         return returnBlock
     }
@@ -144,7 +147,7 @@ class Parser {
         }
         
         
-        guard case let .identifier(identifier) = popToken() else {
+        guard case let Token.identifier(identifier) = popToken() else {
             throw Error.expectedIdentifier
         }
         
@@ -157,9 +160,9 @@ class Parser {
                 
         let codeBlock = try parseCurlyCodeBlock(blockType: .function)
         
-        return FunctionDefinition(returnType: functionReturnType,
-                                  identifier: identifier,
-                                  block: codeBlock)
+        return FunctionDefinition(identifier: identifier,
+                                  block: codeBlock,
+                                  returnType: functionReturnType)
     }
     
     func parseCurlyCodeBlock(blockType: Block.BlockType) throws -> Node {
@@ -235,9 +238,14 @@ class Parser {
         while canCheckToken {
             let token = checkToken()
             switch token {
-            case .intType:
+            case .intType, .floatType:
                 let declaration = try parseFunctionDefinition()
                 nodes.append(declaration)
+            //
+//            case .floatType
+//            let declaration = try parseFunctionDefinition(type: .float)
+//            nodes.append(declaration)
+                    // { return 2; }
             case .return:
                 let declaration = try parseReturn()
                 nodes.append(declaration)
@@ -246,6 +254,6 @@ class Parser {
                 break
             }
         }
-        return Block(blockType: blockType, nodes: nodes)
+        return Block(nodes: nodes, blockType: blockType)
     }
 }
