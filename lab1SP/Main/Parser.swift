@@ -31,20 +31,20 @@ class Parser {
         
         var errorDescription: String? {
             switch self {
-            case let .expectedNumber(_):
+            case .expectedNumber:
                 return "Number expected"
-            case let .expectedIdentifier(index):
-                return "Identifier expected at \(index) index"
-            case let .expectedOperator(index):
-                return "Operator expected at \(index) index"
-            case let .expectedExpression(index):
-                return "Expression expected at \(index) index"
-            case let .expected(str, index):
+            case .expectedIdentifier:
+                return "Identifier expected"
+            case .expectedOperator:
+                return "Operator expected"
+            case .expectedExpression:
+                return "Expression expected"
+            case let .expected(str, _):
                 return "Extected \"\(str)\""
-            case let .notDefined(str, index):
-                return "\(str) not defined at \(index) index"
-            case let .alreadyDefined(str, index):
-                return "\(str) already defined at \(index) index"
+            case let .notDefined(str, _):
+                return "\(str) not defined"
+            case let .alreadyDefined(str, _):
+                return "\(str) already defined"
             }
         }
     }

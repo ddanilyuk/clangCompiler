@@ -21,13 +21,12 @@ class ViewController: UIViewController {
         let fileText = "float main() { return ((012 + 1.1) + 15); }"
         print("File text:\n\(fileText)\n")
         
-        let lexer = Lexer(code: fileText)
-        print("Tokens:\n\(lexer.tokens.map({ "\($0)" }))\n")
+        let lexer = Lexer(code: fileText, isPrintLexicalTable: true)
+    
         let parser = Parser(tokens: lexer.tokens)
-        
         do {
             let node = try parser.parse(blockType: .startPoint)
-            print("Tree:\n\(TreePrinter.printTree(root: node))")
+            print("\nTree:\n\(TreePrinter.printTree(root: node))")
             
             print("Swift code: ")
             print(try node.interpret())

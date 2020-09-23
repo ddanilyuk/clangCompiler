@@ -42,10 +42,14 @@ class Lexer {
         return (regex, code.getPrefix(regex: regex)!)
     }
     
-    init(code: String) {
+    init(code: String, isPrintLexicalTable: Bool) {
         var code = code
         code.trimLeadingWhitespace()
         var tokens: [Token] = []
+        
+        if isPrintLexicalTable {
+            print("Tokens:")
+        }
         
         while let next = Lexer.getNextPrefix(code: code) {
             let (regex, prefix) = next
@@ -54,6 +58,11 @@ class Lexer {
             guard let generator = Token.generators[regex], let token = generator(prefix) else {
                 fatalError()
             }
+            
+            if isPrintLexicalTable {
+                print("\(prefix) - \(token)")
+            }
+            
             tokens.append(token)
         }
         
