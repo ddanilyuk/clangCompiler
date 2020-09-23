@@ -11,6 +11,9 @@ import Foundation
 enum Token {
     typealias Generator = (String) -> Token?
     
+    case op(Operator)
+
+    
     // Numbers
     case intNumber(Int)
     case floatNumber(Float)
@@ -36,8 +39,15 @@ enum Token {
     
     static var generators: [String: Generator] {
         return [
-            "\\[0-9]*": { .intNumber(Int($0)!) },
-            "\\-?([0-9]*\\.[0-9]+|[0-9]+)": { .floatNumber(Float($0)!) },
+            "\\*|\\/|\\+|\\-": { .op(Operator(rawValue: $0)!) },
+            "^(^[0-9]+\\.[0-9]+)|^([0-9]+)": {
+                if $0.contains(".") {
+                    return .floatNumber(Float($0)!)
+                } else {
+                    return .intNumber(Int($0)!)
+                }
+            },
+            
             "\\(": { _ in .parensOpen },
             "\\)": { _ in .parensClose },
             "\\{": { _ in .curlyOpen },

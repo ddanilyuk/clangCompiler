@@ -7,6 +7,7 @@
 
 import UIKit
 
+
 var identifiers: [String: Definition] = [ // CHANGED
     "PI": .variable(value: Float.pi),
 ]
@@ -35,8 +36,6 @@ class ViewController: UIViewController {
             let node = try parser.parse(name: "start point")
             print("Tree:")
             print(TreePrinter.printTree(root: node))
-
-//            print(node)
         } catch let error {
             if let error = error as? Parser.Error {
                 print(error)
@@ -44,10 +43,6 @@ class ViewController: UIViewController {
         }
 
         print("parse ended")
-//        let parser = Parser(text: fileText)
-//        print(parser.parseText())
-//        print(TreePrinter.printTree(root: TreeNode.sampleTree))
-
     }
 
 

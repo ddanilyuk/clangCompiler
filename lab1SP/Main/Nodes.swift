@@ -7,12 +7,12 @@
 
 import Foundation
 
+// Empty protocol node
+// Next will be used for implement iterator
+public protocol Node: TreeRepresentable { }
 
-public protocol Node: TreeRepresentable {
-}
-
+// Operators
 struct InfixOperation: Node {
-
     let op: Operator
     let lhs: Node
     let rhs: Node
@@ -22,10 +22,9 @@ struct InfixOperation: Node {
         case .times, .divideBy: return 20
         }
     }
-
 }
+
 extension InfixOperation: TreeRepresentable {
-    
     var name: String {
         return op.rawValue
     }
@@ -33,7 +32,6 @@ extension InfixOperation: TreeRepresentable {
     var subnodes: [Node] {
         return [lhs, rhs]
     }
-    
 }
 
 
@@ -46,7 +44,6 @@ enum Definition {
 struct Block: Node {
     let blockName: String
     let nodes: [Node]
-    
 }
 
 extension Block: TreeRepresentable {
@@ -59,34 +56,10 @@ extension Block: TreeRepresentable {
     }
 }
 
-struct ReturnBlock: Node {
-    let nodes: [Node]
-}
-
-extension ReturnBlock: TreeRepresentable {
-    var name: String {
-        return "return"
-    }
-    
-    var subnodes: [Node] {
-        return nodes
-    }
-}
-
 
 struct FunctionDefinition: Node {
-//    func interpret<T>() throws -> T where T : Numeric {
-//        identifiers[identifier] = .function(self)
-//        return 1 as! T
-//    }
-    // ADDED
     let identifier: String
     let block: Node
-    
-//    func interpret() throws -> Float {
-//        identifiers[identifier] = .function(self)
-//        return 1
-//    }
 }
 
 extension FunctionDefinition: TreeRepresentable {

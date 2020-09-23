@@ -10,6 +10,7 @@ import Foundation
 
 class Parser {
     
+    // Possible errors
     enum Error: Swift.Error {
         case expectedNumber
         case expectedIdentifier
@@ -77,16 +78,12 @@ class Parser {
             throw Error.expected("return")
         }
         
-        guard case let Token.floatNumber(float) = popToken() else {
-            throw Error.expectedNumber
-        }
-        
-        
-        
+        let value = try parseValue()
         guard case .semicolon = popToken() else {
-            throw Error.expected("semicolon")
+            throw Parser.Error.expected("semicolon")
         }
-        let returnBlock = ReturnBlock(nodes: [float])
+        let returnBlock = Block(blockName: "return", nodes: [value])
+        
         return returnBlock
     }
     
@@ -107,7 +104,6 @@ class Parser {
             throw Parser.Error.expected(")")
         }
                 
-        // Convert the nodes to their String values
         let codeBlock = try parseCurlyCodeBlock()
         
         return FunctionDefinition(identifier: identifier,
@@ -150,6 +146,34 @@ class Parser {
         
         let tokens = Array(self.tokens[startIndex..<endIndex])
         return try Parser(tokens: tokens).parse(name: "function block")
+    }
+    
+    func parseExpression() throws -> Node { // ADDED this is the old parse method
+        guard canPop else {
+            throw Error.expectedExpression
+        }
+        let node = try parseValue()
+        return try parseInfixOperation(node: node)
+    }
+    
+    func parseInfixOperation(node: Node, nodePrecedence: Int = 0) throws -> Node {
+        var leftNode = node
+        
+        while let precedence = try peekPrecedence() as? Int, precedence >= nodePrecedence {
+            guard case let .op(op) = popToken() else {
+                throw Error.expectedOperator
+            }
+            
+            var rightNode = try parseValue()
+            
+            let nextPrecedence = try peekPrecedence()
+            
+            if precedence < nextPrecedence {
+                rightNode = try parseInfixOperation(node: rightNode, nodePrecedence: precedence + 1)
+            }
+            leftNode = InfixOperation(op: op, lhs: leftNode, rhs: rightNode)
+        }
+        return leftNode
     }
     
 
