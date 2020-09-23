@@ -18,14 +18,16 @@ class Parser {
         case expectedExpression
         case expected(String)
         case notDefined(String)
-        case invalidParameters(toFunction: String)
         case alreadyDefined(String)
     }
     
+    // All tokens
     let tokens: [Token]
+    
+    // Start index
     var index = 0
     
-    var canPop: Bool {
+    var canCheckToken: Bool {
         return index < tokens.count
     }
     
@@ -33,12 +35,16 @@ class Parser {
         self.tokens = tokens
     }
     
-    func peek() -> Token {
+    func checkToken() -> Token {
         return tokens[index]
     }
     
-    func peekPrecedence() throws -> Int {
-        return -1
+    func getPriority() throws -> Int {
+        guard canCheckToken, case let Token.op(op) = checkToken() else {
+            return -1
+        }
+        
+        return op.precedence
     }
     
     func popToken() -> Token {
@@ -62,16 +68,34 @@ class Parser {
     }
     
     func parseValue() throws -> Node {
-        switch (peek()) {
+        switch (checkToken()) {
         case .floatNumber:
             return try parseFloat()
         case .intNumber:
             return try parseInt()
+        case .parensOpen:
+            return try parseParens()
+        case .identifier:
+            fatalError("function call is not implemented")
+
         default:
             throw Error.expected("<Expression>")
         }
     }
     
+    func parseParens() throws -> Node {
+        guard case .parensOpen = popToken() else {
+            throw Error.expected("(")
+        }
+        
+        let expressionNode = try parseExpression() // ADDED - was "try parse()"
+        
+        guard case .parensClose = popToken() else {
+            throw Error.expected("(")
+        }
+        
+        return expressionNode
+    }
     
     func parseReturn() throws -> Node {
         guard case .return = popToken() else {
@@ -79,6 +103,7 @@ class Parser {
         }
         
         let value = try parseValue()
+        
         guard case .semicolon = popToken() else {
             throw Parser.Error.expected("semicolon")
         }
@@ -111,16 +136,16 @@ class Parser {
     }
     
     func parseCurlyCodeBlock() throws -> Node {
-        guard canPop, case .curlyOpen = popToken() else {
+        guard canCheckToken, case Token.curlyOpen = popToken() else {
             throw Parser.Error.expected("{")
         }
         
         var depth = 1
         let startIndex = index
         
-        while canPop {
-            guard case .curlyClose = peek() else {
-                if case .curlyOpen = peek() {
+        while canCheckToken {
+            guard case Token.curlyClose = checkToken() else {
+                if case Token.curlyOpen = checkToken() {
                     depth += 1
                 }
                 
@@ -129,18 +154,16 @@ class Parser {
             }
             
             depth -= 1
-            
             guard depth == 0 else {
                 index += 1
                 continue
             }
-            
             break
         }
         
         let endIndex = index
         
-        guard canPop, case .curlyClose = popToken() else {
+        guard canCheckToken, case Token.curlyClose = popToken() else {
             throw Error.expected("}")
         }
         
@@ -149,40 +172,41 @@ class Parser {
     }
     
     func parseExpression() throws -> Node { // ADDED this is the old parse method
-        guard canPop else {
+        guard canCheckToken else {
             throw Error.expectedExpression
         }
         let node = try parseValue()
         return try parseInfixOperation(node: node)
     }
     
-    func parseInfixOperation(node: Node, nodePrecedence: Int = 0) throws -> Node {
+    func parseInfixOperation(node: Node, nodePriority: Int = 0) throws -> Node {
         var leftNode = node
         
-        while let precedence = try peekPrecedence() as? Int, precedence >= nodePrecedence {
-            guard case let .op(op) = popToken() else {
+        var priority = try getPriority()
+        while priority >= nodePriority {
+            guard case let Token.op(op) = popToken() else {
                 throw Error.expectedOperator
             }
             
             var rightNode = try parseValue()
             
-            let nextPrecedence = try peekPrecedence()
+            let nextPrecedence = try getPriority()
             
-            if precedence < nextPrecedence {
-                rightNode = try parseInfixOperation(node: rightNode, nodePrecedence: precedence + 1)
+            if priority < nextPrecedence {
+                rightNode = try parseInfixOperation(node: rightNode, nodePriority: priority + 1)
             }
             leftNode = InfixOperation(op: op, lhs: leftNode, rhs: rightNode)
+            
+            priority = try getPriority()
         }
         return leftNode
     }
-    
 
-    
     // Main parse function
     func parse(name: String) throws -> Node {
         var nodes: [Node] = []
-        while canPop {
-            let token = peek()
+        while canCheckToken {
+            let token = checkToken()
             switch token {
             case .intType:
                 let declaration = try parseFunctionDefinition()
@@ -198,17 +222,3 @@ class Parser {
         return Block(blockName: name, nodes: nodes)
     }
 }
-
-//enum Token: String, CaseIterable {
-//    case integerKeyword = "int"
-//    case functionName
-//    case openParentheses = "("
-//    case closeParentheses = ")"
-//    case openFigureBrace = "{"
-//    case closeFigureBrace = "}"
-//    case returnKeyword = "return"
-//    case semicolon = ";"
-//}
-
-
-

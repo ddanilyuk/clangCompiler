@@ -7,8 +7,8 @@
 
 import UIKit
 
-
-var identifiers: [String: Definition] = [ // CHANGED
+// Name of variables and function with its values
+var identifiers: [String: Definition] = [
     "PI": .variable(value: Float.pi),
 ]
 
@@ -25,7 +25,7 @@ class ViewController: UIViewController {
         }
         """
         
-        fileText = "int main() { return 0; }"
+        fileText = "int main() { return (2 + 4); }"
         print("File text:\n\n\(fileText)\n")
         
         let lexer = Lexer(code: fileText)

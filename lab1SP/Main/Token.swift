@@ -11,9 +11,6 @@ import Foundation
 enum Token {
     typealias Generator = (String) -> Token?
     
-    case op(Operator)
-
-    
     // Numbers
     case intNumber(Int)
     case floatNumber(Float)
@@ -25,17 +22,16 @@ enum Token {
     // Curly
     case curlyOpen
     case curlyClose
-    
-    // Other
-    
+        
     // Number Type
     case intType
     case floatType
     
+    // Other
+    case op(Operator)
     case identifier(String)
     case `return`
     case semicolon
-    
     
     static var generators: [String: Generator] {
         return [
