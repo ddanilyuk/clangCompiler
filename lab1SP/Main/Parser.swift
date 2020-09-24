@@ -42,14 +42,14 @@ class Parser {
         return token
     }
     
-    func parseFloat() throws -> Node {
+    func parseFloatNumber() throws -> Node {
         guard case let Token.floatNumber(float) = popToken() else {
             throw CompilerError.expectedFloat(tokenIndex)
         }
         return NumberNode(node: float, numberType: .float)
     }
     
-    func parseInt() throws -> Node {
+    func parseIntNumber() throws -> Node {
         guard case let Token.intNumber(int, integerType) = popToken() else {
             throw CompilerError.expectedInt(tokenIndex)
         }
@@ -62,24 +62,24 @@ class Parser {
     func parseValue() throws -> Node {
         switch (checkToken()) {
         case .floatNumber:
-            return try parseFloat()
+            return try parseFloatNumber()
         case .intNumber:
-            return try parseInt()
+            return try parseIntNumber()
         case .parensOpen:
-            return try parseParens()
+            return try parseExpressionInParens()
         case .identifier:
-            fatalError("function call is not implemented")
+            throw CompilerError.invalidFunctionIdentifier(tokenIndex)
         default:
             throw CompilerError.invalidValue(tokenIndex)
         }
     }
     
-    func parseParens() throws -> Node {
+    func parseExpressionInParens() throws -> Node {
         guard case .parensOpen = popToken() else {
             throw CompilerError.expected("(", tokenIndex)
         }
         
-        let expressionNode = try parseExpression() // ADDED - was "try parse()"
+        let expressionNode = try parseExpression()
         
         guard case .parensClose = popToken() else {
             throw CompilerError.expected("(", tokenIndex)
@@ -115,18 +115,17 @@ class Parser {
             throw CompilerError.invalidFunctionIdentifier(tokenIndex)
         }
         
-        guard case .parensOpen = popToken() else {
+        guard Token.parensOpen == popToken() else {
             throw CompilerError.expected("(", tokenIndex)
         }
-        guard case .parensClose = popToken() else {
+        guard Token.parensClose == popToken() else {
             throw CompilerError.expected(")", tokenIndex)
         }
         
-        let functionNodes = try parseCurlyCodeBlock(blockType: .function)
+        let functionNodeBlock = try parseCurlyCodeBlock(blockType: .function)
         
-//        print(codeBlock)
-        
-        if let functionBlock = functionNodes as? Block {
+        // Checking if return value is matches with actual
+        if let functionBlock = functionNodeBlock as? Block {
             if let returnNode = functionBlock.nodes.last as? ReturnNode {
                 if let numberNode = returnNode.node as? NumberNode {
                     switch numberNode.numberType {
@@ -149,39 +148,38 @@ class Parser {
         }
         
         return FunctionDefinitionNode(identifier: identifier,
-                                      block: functionNodes,
+                                      block: functionNodeBlock,
                                       returnType: functionReturnType)
     }
     
     func parseCurlyCodeBlock(blockType: Block.BlockType) throws -> Node {
-        guard canCheckToken, case Token.curlyOpen = popToken() else {
+        guard canCheckToken, Token.curlyOpen == popToken() else {
             throw CompilerError.expected("{", tokenIndex)
         }
         
-        var depth = 1
+        var blockDepth = 1
         let startIndex = tokenIndex
         
         while canCheckToken {
-            guard case Token.curlyClose = checkToken() else {
-                if case Token.curlyOpen = checkToken() {
-                    depth += 1
+            if Token.curlyClose == checkToken() {
+                blockDepth -= 1
+                if blockDepth != 0 {
+                    tokenIndex += 1
+                    continue
                 }
-                
+                break
+            } else {
+                if Token.curlyOpen == checkToken() {
+                    blockDepth += 1
+                }
                 tokenIndex += 1
                 continue
             }
-            
-            depth -= 1
-            guard depth == 0 else {
-                tokenIndex += 1
-                continue
-            }
-            break
         }
         
         let endIndex = tokenIndex
         
-        guard canCheckToken, case Token.curlyClose = popToken() else {
+        guard canCheckToken, Token.curlyClose == popToken() else {
             throw CompilerError.expected("}", tokenIndex)
         }
         

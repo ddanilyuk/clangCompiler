@@ -26,15 +26,14 @@ enum CompilerError: Swift.Error, LocalizedError {
     
     // Inavlid fuction identifier
     case invalidFunctionIdentifier(Int)
-
     
     // Return value not match with expected.
     case invalidReturnType(String, Int)
-    
-    //
-    
 
+    // Something expected
     case expected(String, Int)
+    
+    // For functions
     case notDefined(String, Int)
     case alreadyDefined(String, Int)
     

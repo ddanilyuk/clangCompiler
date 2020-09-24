@@ -10,24 +10,27 @@ import Foundation
 
 class Lexer {
     
-    let tokens: [Token]
+    // Generated tokens
+    var tokens: [Token] = []
     
     var tokensTable: String = "Tokens:\n"
     
+    var lexerCode: String
+    
     init(code: String) {
-        var gettedCode = code
+        // Saving code to class.
+        self.lexerCode = code
         
         // Deleting left-side whitespaces.
-        gettedCode.trimLeadingWhitespace()
+        lexerCode.deleteLeftWhitespaces()
         
-        // Creating array with tokens
-        var tokens: [Token] = []
-        
-        while let next = Lexer.getNextPrefix(code: gettedCode) {
-            let (regex, prefix) = next
-            gettedCode = String(gettedCode[prefix.endIndex...])
-            gettedCode.trimLeadingWhitespace()
-            guard let generator = Token.generators[regex], let token = generator(prefix) else {
+        // Iterating to find tokens.
+        while let next = Lexer.getNextPrefix(with: lexerCode) {
+            let (regular, prefix) = next
+            lexerCode = String(lexerCode[prefix.endIndex...])
+            lexerCode.deleteLeftWhitespaces()
+            
+            guard let generator = Token.generators[regular], let token = generator(prefix) else {
                 fatalError("Invalid generator!")
             }
             
@@ -37,14 +40,12 @@ class Lexer {
             // Adding tokens to array
             tokens.append(token)
         }
-        self.tokens = tokens
     }
 
-    private static func getNextPrefix(code: String) -> (regex: String, prefix: String)? {
-        
-        let keyValue = Token.generators.first(where: { regex, generator in
-                                                code.getPrefix(regex: regex) != nil })
-        guard let regex = keyValue?.key, keyValue?.value != nil else { return nil }
-        return (regex, code.getPrefix(regex: regex)!)
+    private static func getNextPrefix(with code: String) -> (regex: String, prefix: String)? {
+        let key = Token.generators.first(where: { regular, generator in
+                                                code.getStringPrefix(with: regular) != nil })
+        guard let regularExpression = key?.key, key?.value != nil else { return nil }
+        return (regularExpression, code.getStringPrefix(with: regularExpression)!)
     }
 }

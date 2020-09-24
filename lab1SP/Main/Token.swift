@@ -17,7 +17,7 @@ enum IntegerType {
 enum Token: Equatable {
 
     typealias Generator = (String) -> Token?
-    
+            
     // Numbers
     case intNumber(Int, IntegerType)
     case floatNumber(Float)

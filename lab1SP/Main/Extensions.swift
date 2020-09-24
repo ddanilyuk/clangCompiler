@@ -9,15 +9,16 @@ import Foundation
 
 
 public extension String {
-    func getPrefix(regex: String) -> String? {
-        let expression = try! NSRegularExpression(pattern: "^\(regex)", options: [])
+    func getStringPrefix(with regularExpressions: String) -> String? {
+        let expression = try! NSRegularExpression(pattern: "^\(regularExpressions)", options: [])
         let range = expression.rangeOfFirstMatch(in: self, options: [], range: NSRange(location: 0, length: self.utf16.count))
         if range.location == 0 {
             return (self as NSString).substring(with: range)
         }
         return nil
     }
-    mutating func trimLeadingWhitespace() {
+    
+    mutating func deleteLeftWhitespaces() {
         let i = startIndex
         while i < endIndex {
             guard CharacterSet.whitespacesAndNewlines.contains(self[i].unicodeScalars.first!) else {
@@ -27,6 +28,7 @@ public extension String {
         }
     }
 }
+
 
 extension StringProtocol {
     subscript(offset: Int) -> Character { self[index(startIndex, offsetBy: offset)] }
@@ -74,6 +76,4 @@ extension Int: Node {
     public var subnodes: [Node] {
         return []
     }
-    
 }
-
