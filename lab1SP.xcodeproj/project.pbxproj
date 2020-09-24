@@ -25,6 +25,7 @@
 		5FD40640251D1E0B00BE7A73 /* ReturnNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD4063F251D1E0B00BE7A73 /* ReturnNode.swift */; };
 		5FD40643251D20A200BE7A73 /* NumberNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD40642251D20A200BE7A73 /* NumberNode.swift */; };
 		5FD40647251D20EF00BE7A73 /* CustomIntNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD40646251D20EF00BE7A73 /* CustomIntNode.swift */; };
+		5FD4064A251D422900BE7A73 /* CompilerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD40649251D422900BE7A73 /* CompilerError.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -48,6 +49,7 @@
 		5FD4063F251D1E0B00BE7A73 /* ReturnNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReturnNode.swift; sourceTree = "<group>"; };
 		5FD40642251D20A200BE7A73 /* NumberNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberNode.swift; sourceTree = "<group>"; };
 		5FD40646251D20EF00BE7A73 /* CustomIntNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomIntNode.swift; sourceTree = "<group>"; };
+		5FD40649251D422900BE7A73 /* CompilerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerError.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,6 +98,7 @@
 				5FCC19D1251A45D700589EF7 /* Parser.swift */,
 				5FCC19E5251AA0DC00589EF7 /* Operator.swift */,
 				5FCC19D8251AA02600589EF7 /* Nodes.swift */,
+				5FD40649251D422900BE7A73 /* CompilerError.swift */,
 				5FCC19DF251AA06400589EF7 /* Extensions.swift */,
 				5FD4063A251D1C5400BE7A73 /* Nodes */,
 				5FCC19D0251A45C400589EF7 /* TreePrinter */,
@@ -205,6 +208,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5FD4064A251D422900BE7A73 /* CompilerError.swift in Sources */,
 				5FCC19B8251A40AD00589EF7 /* ViewController.swift in Sources */,
 				5FCC19E3251AA0A600589EF7 /* Token.swift in Sources */,
 				5FD4063C251D1C6100BE7A73 /* FunctionDefinitionNode.swift in Sources */,

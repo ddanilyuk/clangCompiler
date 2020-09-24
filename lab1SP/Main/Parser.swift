@@ -9,62 +9,23 @@ import Foundation
 
 
 class Parser {
-    
-    // Possible errors
-    enum Error: Swift.Error, LocalizedError {
-        case expectedNumber(Int)
-        case expectedIdentifier(Int)
-        case expectedOperator(Int)
-        case expectedExpression(Int)
-        case expected(String, Int)
-        case notDefined(String, Int)
-        case alreadyDefined(String, Int)
         
-        var index: Int {
-            switch self {
-            case let .expectedNumber(index), let .expectedIdentifier(index), let .expectedOperator(index), let .expectedExpression(index):
-                return index
-            case let .expected(_, index), let .notDefined(_, index), let .alreadyDefined(_, index):
-                return index
-            }
-        }
-        
-        var errorDescription: String? {
-            switch self {
-            case .expectedNumber:
-                return "Number expected"
-            case .expectedIdentifier:
-                return "Identifier expected"
-            case .expectedOperator:
-                return "Operator expected"
-            case .expectedExpression:
-                return "Expression expected"
-            case let .expected(str, _):
-                return "Extected \"\(str)\""
-            case let .notDefined(str, _):
-                return "\(str) not defined"
-            case let .alreadyDefined(str, _):
-                return "\(str) already defined"
-            }
-        }
-    }
+    // All tokensArray
+    let tokensArray: [Token]
     
-    // All tokens
-    let tokens: [Token]
-    
-    // Start index
-    var index = 0
+    // Start tokenIndex
+    var tokenIndex = 0
     
     var canCheckToken: Bool {
-        return index < tokens.count
+        return tokenIndex < tokensArray.count
     }
     
     init(tokens: [Token]) {
-        self.tokens = tokens
+        self.tokensArray = tokens
     }
     
     func checkToken() -> Token {
-        return tokens[index]
+        return tokensArray[tokenIndex]
     }
     
     func getPriority() throws -> Int {
@@ -76,21 +37,21 @@ class Parser {
     }
     
     func popToken() -> Token {
-        let token = tokens[index]
-        index += 1
+        let token = tokensArray[tokenIndex]
+        tokenIndex += 1
         return token
     }
     
     func parseFloat() throws -> Node {
         guard case let Token.floatNumber(float) = popToken() else {
-            throw Error.expectedNumber(index)
+            throw CompilerError.expectedFloat(tokenIndex)
         }
         return NumberNode(node: float, numberType: .float)
     }
     
     func parseInt() throws -> Node {
         guard case let Token.intNumber(int, integerType) = popToken() else {
-            throw Error.expectedNumber(index)
+            throw CompilerError.expectedInt(tokenIndex)
         }
         let numberType = integerType == .decimal ? NumberNode.NumberType.decimal : NumberNode.NumberType.octal
         let customInt = CustomIntNode(integer: int, type: integerType)
@@ -109,19 +70,19 @@ class Parser {
         case .identifier:
             fatalError("function call is not implemented")
         default:
-            throw Error.expected("<Expression>", 1)
+            throw CompilerError.invalidValue(tokenIndex)
         }
     }
     
     func parseParens() throws -> Node {
         guard case .parensOpen = popToken() else {
-            throw Error.expected("(", index)
+            throw CompilerError.expected("(", tokenIndex)
         }
         
         let expressionNode = try parseExpression() // ADDED - was "try parse()"
         
         guard case .parensClose = popToken() else {
-            throw Error.expected("(", index)
+            throw CompilerError.expected("(", tokenIndex)
         }
         
         return expressionNode
@@ -129,13 +90,13 @@ class Parser {
     
     func parseReturn() throws -> Node {
         guard case .return = popToken() else {
-            throw Error.expected("return", index)
+            throw CompilerError.expected("return", tokenIndex)
         }
 
         let value = try parseValue()
         
         guard case .semicolon = popToken() else {
-            throw Parser.Error.expected("semicolon", index)
+            throw CompilerError.expected("semicolon", tokenIndex)
         }
         return ReturnNode(node: value)
     }
@@ -147,35 +108,58 @@ class Parser {
         case .floatType, .intType:
             functionReturnType = popToken()
         default:
-            throw Error.expected("Function type", index)
+            throw CompilerError.expected("Function type", tokenIndex)
         }
         
-        
         guard case let Token.identifier(identifier) = popToken() else {
-            throw Error.expectedIdentifier(index)
+            throw CompilerError.invalidFunctionIdentifier(tokenIndex)
         }
         
         guard case .parensOpen = popToken() else {
-            throw Parser.Error.expected("(", index)
+            throw CompilerError.expected("(", tokenIndex)
         }
         guard case .parensClose = popToken() else {
-            throw Parser.Error.expected(")", index)
+            throw CompilerError.expected(")", tokenIndex)
         }
-                
-        let codeBlock = try parseCurlyCodeBlock(blockType: .function)
+        
+        let functionNodes = try parseCurlyCodeBlock(blockType: .function)
+        
+//        print(codeBlock)
+        
+        if let functionBlock = functionNodes as? Block {
+            if let returnNode = functionBlock.nodes.last as? ReturnNode {
+                if let numberNode = returnNode.node as? NumberNode {
+                    switch numberNode.numberType {
+                    case .decimal, .octal:
+                        if functionReturnType == .floatType {
+                            
+                            // -2 becauese current postion is after } but i need to know where number.
+                            // TODO: - change when will be possible to return eexpression
+                            throw CompilerError.invalidReturnType("Int", tokenIndex - 2)
+                        }
+                    case .float:
+                        if functionReturnType == .intType {
+                            throw CompilerError.invalidReturnType("Float", tokenIndex - 2)
+                        }
+                    }
+                } else {
+                    throw CompilerError.expected("Expected number in return", tokenIndex - 2)
+                }
+            }
+        }
         
         return FunctionDefinitionNode(identifier: identifier,
-                                      block: codeBlock,
+                                      block: functionNodes,
                                       returnType: functionReturnType)
     }
     
     func parseCurlyCodeBlock(blockType: Block.BlockType) throws -> Node {
         guard canCheckToken, case Token.curlyOpen = popToken() else {
-            throw Parser.Error.expected("{", index)
+            throw CompilerError.expected("{", tokenIndex)
         }
         
         var depth = 1
-        let startIndex = index
+        let startIndex = tokenIndex
         
         while canCheckToken {
             guard case Token.curlyClose = checkToken() else {
@@ -183,31 +167,31 @@ class Parser {
                     depth += 1
                 }
                 
-                index += 1
+                tokenIndex += 1
                 continue
             }
             
             depth -= 1
             guard depth == 0 else {
-                index += 1
+                tokenIndex += 1
                 continue
             }
             break
         }
         
-        let endIndex = index
+        let endIndex = tokenIndex
         
         guard canCheckToken, case Token.curlyClose = popToken() else {
-            throw Error.expected("}", index)
+            throw CompilerError.expected("}", tokenIndex)
         }
         
-        let tokens = Array(self.tokens[startIndex..<endIndex])
+        let tokens = Array(self.tokensArray[startIndex..<endIndex])
         return try Parser(tokens: tokens).parse(blockType: blockType)
     }
     
-    func parseExpression() throws -> Node { // ADDED this is the old parse method
+    func parseExpression() throws -> Node {
         guard canCheckToken else {
-            throw Error.expectedExpression(index)
+            throw CompilerError.expectedExpression(tokenIndex)
         }
         let node = try parseValue()
         return try parseInfixOperation(node: node)
@@ -219,7 +203,7 @@ class Parser {
         var priority = try getPriority()
         while priority >= nodePriority {
             guard case let Token.op(op) = popToken() else {
-                throw Error.expectedOperator(index)
+                throw CompilerError.expectedOperator(tokenIndex)
             }
             
             var rightNode = try parseValue()
@@ -237,6 +221,7 @@ class Parser {
     }
 
     // Main parse function
+    // This function parse blocks
     func parse(blockType: Block.BlockType) throws -> Node {
         var nodes: [Node] = []
         while canCheckToken {
@@ -248,7 +233,6 @@ class Parser {
             case .return:
                 let declaration = try parseReturn()
                 nodes.append(declaration)
-            
             default:
                 break
             }

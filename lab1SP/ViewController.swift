@@ -13,34 +13,38 @@ var identifiers: [String: Definition] = [
 ]
 
 
+
+
 class ViewController: UIViewController {
+    
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        let fileText = "int main() { return 012; }"
+        // octal = 0o12 = 10
+        // decimal = 12 = 12
+        let fileText = "int main() { return 12; }"
         print("File text:\n\(fileText)\n")
         
-        let lexer = Lexer(code: fileText, isPrintLexicalTable: true)
+        let lexer = Lexer(code: fileText)
+        
+        print(lexer.tokensTable)
     
         let parser = Parser(tokens: lexer.tokens)
         do {
             let node = try parser.parse(blockType: .startPoint)
             print("\nTree:\n\(TreePrinter.printTree(root: node))")
             
-            print("Swift code: ")
-            print(try node.interpret())
+            print("ASM code: ")
+            let interpretedCode = try node.interpret()
+            print(interpretedCode)
+            
+//            print(Lexer.getASMCodeVisualStudio(returnType: "int?", mainBlockOfCode: interpretedCode))
+            
+            
         } catch let error {
-            if let error = error as? Parser.Error {
-                let indexOfError = error.index
-                let lineAndPosition = Lexer.getCurrentLineAndPosition(from: indexOfError, code: fileText, tokens: lexer.tokens)
-                
-                print("\nERROR!!!")
-                print(error.localizedDescription)
-                print("line: \(lineAndPosition.line), position: \(lineAndPosition.position)\n")
-                print(fileText)
-                print(lineAndPosition.show)
-                
+            if let error = error as? CompilerError {
+                error.fullErrorDescription(code: fileText, tokens: lexer.tokens)
             }
         }
 

@@ -40,7 +40,6 @@ enum Token: Equatable {
     case `return`
     case semicolon
     
-    
     var lenght: Int {
         switch self {
         case let .intNumber(number, type):
