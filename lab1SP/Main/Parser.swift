@@ -81,36 +81,33 @@ class Parser {
         return token
     }
     
-    func parseFloat() throws -> Block {
+    func parseFloat() throws -> Node {
         guard case let Token.floatNumber(float) = popToken() else {
             throw Error.expectedNumber(index)
         }
-        return Block(nodes: [float], blockType: .float)
+        return NumberNode(node: float, numberType: .float)
     }
     
-    func parseInt() throws -> Block {
+    func parseInt() throws -> Node {
         guard case let Token.intNumber(int, integerType) = popToken() else {
             throw Error.expectedNumber(index)
         }
-        let blockType = integerType == .decimal ? Block.BlockType.decimal : Block.BlockType.octal
-        let customInt = CustomInt(number: int, type: integerType)
-        return Block(nodes: [customInt], blockType: blockType)
+        let numberType = integerType == .decimal ? NumberNode.NumberType.decimal : NumberNode.NumberType.octal
+        let customInt = CustomIntNode(integer: int, type: integerType)
+        
+        return NumberNode(node: customInt, numberType: numberType)
     }
     
     func parseValue() throws -> Node {
         switch (checkToken()) {
         case .floatNumber:
-            // 2.0
             return try parseFloat()
         case .intNumber:
-            // 2
             return try parseInt()
         case .parensOpen:
-            // (
             return try parseParens()
         case .identifier:
             fatalError("function call is not implemented")
-
         default:
             throw Error.expected("<Expression>", 1)
         }
@@ -134,15 +131,13 @@ class Parser {
         guard case .return = popToken() else {
             throw Error.expected("return", index)
         }
-        // return (2+2);
+
         let value = try parseValue()
         
         guard case .semicolon = popToken() else {
             throw Parser.Error.expected("semicolon", index)
         }
-        let returnBlock = Block(nodes: [value], blockType: .return)
-        
-        return returnBlock
+        return ReturnNode(node: value)
     }
     
     func parseFunctionDefinition() throws -> Node {
@@ -169,9 +164,9 @@ class Parser {
                 
         let codeBlock = try parseCurlyCodeBlock(blockType: .function)
         
-        return FunctionDefinition(identifier: identifier,
-                                  block: codeBlock,
-                                  returnType: functionReturnType)
+        return FunctionDefinitionNode(identifier: identifier,
+                                      block: codeBlock,
+                                      returnType: functionReturnType)
     }
     
     func parseCurlyCodeBlock(blockType: Block.BlockType) throws -> Node {

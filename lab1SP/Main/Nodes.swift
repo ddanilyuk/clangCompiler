@@ -7,10 +7,17 @@
 
 import Foundation
 
-// Empty protocol node
-// Next will be used for implement iterator
+// Empty protocol node.
+// Next will be used for implement iterator.
 public protocol Node: TreeRepresentable {
     func interpret() throws -> String
+}
+
+
+// Not used. Will be used for storing variables or functions.
+enum Definition {
+    case variable(value: Float)
+    case function(FunctionDefinitionNode)
 }
 
 
@@ -43,21 +50,12 @@ extension InfixOperation: TreeRepresentable {
 }
 
 
-enum Definition {
-    case variable(value: Float)
-    case function(FunctionDefinition)
-}
-
-
+// Block can have multiple nodes.
 struct Block: Node {
     
     enum BlockType: String {
         case function = "function"
-        case `return` = "return"
         case startPoint = "start point"
-        case decimal = "int(decimal)"
-        case octal = "int(octal)"
-        case float = "float"
     }
     
     let nodes: [Node]
@@ -66,22 +64,15 @@ struct Block: Node {
     
     func interpret() throws -> String {
         var result = String()
-        
-        if blockType == .return {
-            result += "mov eax "
-        }
-        
+
         for line in nodes {
             result += try line.interpret()
-        }
-        
-        if blockType == .return {
-            result += "\nmov b eax"
         }
 
         return result
     }
 }
+
 
 extension Block: TreeRepresentable {
     var name: String {
@@ -92,60 +83,3 @@ extension Block: TreeRepresentable {
         return nodes
     }
 }
-
-
-struct FunctionDefinition: Node {
-    let identifier: String
-
-    let block: Node
-    
-    var returnType: Token
-    
-    func interpret() throws -> String {
-//        var result = "func \(identifier)() -> \(returnType) {\n\t"
-//
-        let result = try block.interpret()
-//
-//        result += "\n}"
-        
-        return result
-    }
-}
-
-extension FunctionDefinition: TreeRepresentable {
-    var name: String {
-        return identifier
-    }
-    
-    var subnodes: [Node] {
-        return [block]
-    }
-}
-
-
-struct CustomInt: Node {
-    
-    func interpret() throws -> String {
-        return name
-    }
-    
-    var name: String {
-        if self.type == .decimal {
-            return "\(number)"
-        } else {
-            if let octal = Int(String(number, radix: 8)) {
-                return "0o\(octal)"
-            } else {
-                fatalError("Not octal")
-            }
-        }
-    }
-    
-    var subnodes: [Node] {
-        return []
-    }
-    
-    var number: Int
-    var type: IntegerType
-}
-

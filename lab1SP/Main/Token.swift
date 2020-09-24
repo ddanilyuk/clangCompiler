@@ -44,7 +44,7 @@ enum Token: Equatable {
     var lenght: Int {
         switch self {
         case let .intNumber(number, type):
-            let customInt = CustomInt(number: number, type: type)
+            let customInt = CustomIntNode(integer: number, type: type)
             return String(customInt.name).count
         case let .floatNumber(float):
             return String(float).count
