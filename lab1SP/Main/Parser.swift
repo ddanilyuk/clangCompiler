@@ -250,11 +250,6 @@ class Parser {
             case .intType, .floatType:
                 let declaration = try parseFunctionDefinition()
                 nodes.append(declaration)
-            //
-//            case .floatType
-//            let declaration = try parseFunctionDefinition(type: .float)
-//            nodes.append(declaration)
-                    // { return 2; }
             case .return:
                 let declaration = try parseReturn()
                 nodes.append(declaration)

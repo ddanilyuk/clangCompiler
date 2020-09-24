@@ -18,7 +18,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let fileText = "float main() { return ((012 + 1.1) + 15); }"
+        let fileText = "int main() { return 012; }"
         print("File text:\n\(fileText)\n")
         
         let lexer = Lexer(code: fileText, isPrintLexicalTable: true)

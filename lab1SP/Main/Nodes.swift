@@ -68,17 +68,16 @@ struct Block: Node {
         var result = String()
         
         if blockType == .return {
-            result += "return "
+            result += "mov eax "
         }
         
-        for line in nodes[0..<(nodes.endIndex - 1)] {
+        for line in nodes {
             result += try line.interpret()
         }
         
-        guard let last = nodes.last else {
-            throw Parser.Error.expectedExpression(-1)
+        if blockType == .return {
+            result += "\nmov b eax"
         }
-        result += try last.interpret()
 
         return result
     }
@@ -103,11 +102,11 @@ struct FunctionDefinition: Node {
     var returnType: Token
     
     func interpret() throws -> String {
-        var result = "func \(identifier)() -> \(returnType) {\n\t"
-        
-        result += try block.interpret()
-        
-        result += "\n}"
+//        var result = "func \(identifier)() -> \(returnType) {\n\t"
+//
+        let result = try block.interpret()
+//
+//        result += "\n}"
         
         return result
     }
