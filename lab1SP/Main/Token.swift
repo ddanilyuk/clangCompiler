@@ -106,13 +106,11 @@ enum Token: Equatable {
                     if let int8 = UInt8(number, radix: 8) {
                         return .intNumber(Int(int8), .octal)
                     } else {
-                        // TODO:- get current token index
                         throw CompilerError.invalidNumber(Token.currentTokenIndex)
                     }
                 } else if let intNumber = Int($0) {
                     return .intNumber(intNumber, .decimal)
                 } else {
-                    // TODO:- get current token index
                     throw CompilerError.invalidNumber(Token.currentTokenIndex)
                 }
             }

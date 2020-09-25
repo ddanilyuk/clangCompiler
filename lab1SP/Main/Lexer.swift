@@ -10,8 +10,7 @@ import Foundation
 
 class Lexer {
     
-    // Generated tokens
-//    var tokens: [Token] = []
+
     
     var tokensTable: String = "Tokens:\n"
     
@@ -31,7 +30,7 @@ class Lexer {
             lexerCode.deleteLeftWhitespaces()
             
             guard let generator = Token.generators[regular], let token = try generator(prefix) else {
-                fatalError("Invalid generator!")
+                throw CompilerError.invalidGenerator(tokens.count)
             }
             
             // Adding tokens to description table

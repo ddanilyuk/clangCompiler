@@ -142,7 +142,7 @@ class Parser {
                         if functionReturnType == .floatType {
                             
                             // -2 becauese current postion is after } but i need to know where number.
-                            // TODO: - change when will be possible to return eexpression
+                            // TODO: - change when will be possible to return expression
                             throw CompilerError.invalidReturnType("Int", tokenIndex - 2)
                         }
                     case .float:

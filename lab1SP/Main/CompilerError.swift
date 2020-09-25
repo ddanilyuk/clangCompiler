@@ -30,6 +30,8 @@ enum CompilerError: Swift.Error, LocalizedError {
     
     case invalidNumber(Int)
     
+    case invalidGenerator(Int)
+    
     
     // Return value not match with expected.
     case invalidReturnType(String, Int)
@@ -46,7 +48,7 @@ enum CompilerError: Swift.Error, LocalizedError {
     
     var index: Int {
         switch self {
-        case let .expectedFloat(index), let .expectedInt(index), let .expectedOperator(index), let .expectedExpression(index), let .invalidValue(index), let .invalidFunctionIdentifier(index), let .invalidNumber(index):
+        case let .expectedFloat(index), let .expectedInt(index), let .expectedOperator(index), let .expectedExpression(index), let .invalidValue(index), let .invalidFunctionIdentifier(index), let .invalidNumber(index), let .invalidGenerator(index):
             return index
         case let .invalidReturnType(_, index), let .expected(_, index), let .notDefined(_, index), let .alreadyDefined(_, index):
             return index
@@ -69,7 +71,8 @@ enum CompilerError: Swift.Error, LocalizedError {
             return "Given invalid funciton identifier."
         case .invalidNumber:
             return "Given number is invalid"
-        
+        case .invalidGenerator:
+            return "Something with token genator"
             
         case let .invalidReturnType(str, _):
             return "Inavlid return type. Expected: \(str)"
