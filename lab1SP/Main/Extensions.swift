@@ -53,10 +53,9 @@ extension StringProtocol {
 }
 
 
-// Minize
 extension Float: Node {
     
-    public func interpret() throws -> String {
+    public func interpret(isCPPCode: Bool) throws -> String {
         return "\(Int(self))"
     }
     
@@ -72,7 +71,7 @@ extension Float: Node {
 
 extension Int: Node {
 
-    public func interpret() throws -> String {
+    public func interpret(isCPPCode: Bool) throws -> String {
         return "\(self)"
     }
     

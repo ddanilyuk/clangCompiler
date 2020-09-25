@@ -29,7 +29,7 @@ struct CustomIntNode: Node {
         return []
     }
     
-    func interpret() throws -> String {
+    func interpret(isCPPCode: Bool) throws -> String {
         return name
     }
 }

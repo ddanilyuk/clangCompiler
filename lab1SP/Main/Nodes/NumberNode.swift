@@ -20,8 +20,8 @@ struct NumberNode: Node {
     
     var numberType: NumberType
     
-    func interpret() throws -> String {
-        return try node.interpret()
+    func interpret(isCPPCode: Bool) throws -> String {
+        return try node.interpret(isCPPCode: isCPPCode)
     }
 }
 

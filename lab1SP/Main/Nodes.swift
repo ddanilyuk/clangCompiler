@@ -10,7 +10,7 @@ import Foundation
 // Empty protocol node.
 // Next will be used for implement iterator.
 public protocol Node: TreeRepresentable {
-    func interpret() throws -> String
+    func interpret(isCPPCode: Bool) throws -> String
 }
 
 
@@ -24,7 +24,7 @@ enum Definition {
 // Operators
 struct InfixOperation: Node {
     
-    func interpret() throws -> String {
+    func interpret(isCPPCode: Bool) throws -> String {
 //        return "(\(try lhs.interpret()) \(op.rawValue) \(try rhs.interpret()))"
         return ""
     }
@@ -63,36 +63,38 @@ struct Block: Node {
 
     var blockType: BlockType
     
-    func interpret() throws -> String {
-        
+    func interpret(isCPPCode: Bool) throws -> String {
         var result = String()
-
         
         switch blockType {
         case .startPoint:
-            result += """
-            #include <iostream>
-            #include <string>
-            #include <stdint.h>
-            using namespace std;
-            int main()
-            {
-                int b;
-                __asm {
-            """
+            if isCPPCode {
+                result += """
+                #include <iostream>
+                #include <string>
+                #include <stdint.h>
+                using namespace std;
+                int main()
+                {
+                    int b;
+                    __asm {
+                """
+            }
             
             for line in nodes {
-                result += try line.interpret()
+                result += try line.interpret(isCPPCode: isCPPCode)
+            }
+            if isCPPCode {
+                result += """
+                    }
+                    cout << b << endl;
+                }
+                """
             }
             
-            result += """
-                }
-                cout << b << endl;
-            }
-            """
         case .function:
             for line in nodes {
-                result += try line.interpret()
+                result += try line.interpret(isCPPCode: isCPPCode)
             }
         }
         

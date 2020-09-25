@@ -168,9 +168,10 @@ class Parser {
             }
         }
 
-        var blockDepth = 1
         let startCurlyBlockIndex = tokenIndex
         
+        // Parsing deeper
+        var blockDepth = 1
         while canCheckToken {
             if Token.curlyClose == checkToken() {
                 blockDepth -= 1
@@ -196,7 +197,10 @@ class Parser {
             }
         }
         
-        let tokensInsideCurlyBlock = Array(self.tokensArray[startCurlyBlockIndex..<endCurlyBlockIndex])
+        // Getting new elements inside curly block
+        let tokensInsideCurlyBlock: [Token] = Array(self.tokensArray[startCurlyBlockIndex..<endCurlyBlockIndex])
+        
+        // Try to parse it
         return try Parser(tokens: tokensInsideCurlyBlock).parseBlock(blockType: blockType)
     }
     

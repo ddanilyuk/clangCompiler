@@ -12,17 +12,25 @@ struct ReturnNode: Node {
     
     var node: Node
     
-    func interpret() throws -> String {
+    func interpret(isCPPCode: Bool) throws -> String {
         var result = String()
         
-        result += "\n\t\tmov eax "
-        
-        for line in subnodes {
-            result += try line.interpret()
+        if isCPPCode {
+            result += "\n\t\tmov eax "
+        } else {
+            result += "mov eax "
         }
         
-        result += "\n\t\tmov b eax\n"
+        for line in subnodes {
+            result += try line.interpret(isCPPCode: isCPPCode)
+        }
         
+        if isCPPCode {
+            result += "\n\t\tmov b eax\n"
+        } else {
+            result += "\nmov b eax\n"
+        }
+                
         return result
     }
 }

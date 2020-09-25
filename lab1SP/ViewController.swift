@@ -24,14 +24,15 @@ class ViewController: UIViewController {
         
         let multiLineText = """
         int main() {
-            return 1.2;
+            return 2;
         }
         """
         
         let oneLineCode = multiLineText.oneLineCode
         print("File text:\n\(multiLineText)\n")
         
-
+        print("One line code:\n\(oneLineCode)\n")
+        
         do {
             let lexer = try Lexer(code: oneLineCode)
                         
@@ -43,8 +44,12 @@ class ViewController: UIViewController {
             print("\nTree:\n\(TreePrinter.printTree(root: node))")
             
             print("ASM code: ")
-            let interpretedCode = try node.interpret()
-            print(interpretedCode)
+            let asmCode = try node.interpret(isCPPCode: false)
+            print(asmCode)
+
+            print("C++ code: ")
+            let cppCode = try node.interpret(isCPPCode: true)
+            print(cppCode)
                         
         } catch let error {
             if let error = error as? CompilerError {
