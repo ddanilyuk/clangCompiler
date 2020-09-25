@@ -86,22 +86,15 @@ enum CompilerError: Swift.Error, LocalizedError {
     }
     
     public func fullErrorDescription(code: String, tokens: [Token]) {
-        var counter = 0
-        // Index of error starts from 1
-        for token in tokens[0..<(self.index - 1)] {
-            counter += token.lenght
-            while code[counter] == Character(" ") {
-                counter += 1
-            }
-        }
+        let position = Lexer.getPositionFromIndex(tokens: tokens, code: code, index: self.index)
         
-        let arrayOfAsterisks = Array(repeating: "*", count: counter)
+        let arrayOfAsterisks = Array(repeating: "*", count: position)
         var graphicalOutputErrorPosition = arrayOfAsterisks.reduce("") { "\($0)\($1)" }
         graphicalOutputErrorPosition += "^"
         
         print("\nError!")
         print(self.localizedDescription)
-        print("Line: \(1), position: \(counter)\n")
+        print("Line: \(1), position: \(position)\n")
         print(code)
         print(graphicalOutputErrorPosition)
     }

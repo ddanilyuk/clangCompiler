@@ -64,12 +64,38 @@ struct Block: Node {
     var blockType: BlockType
     
     func interpret() throws -> String {
+        
         var result = String()
 
-        for line in nodes {
-            result += try line.interpret()
+        
+        switch blockType {
+        case .startPoint:
+            result += """
+            #include <iostream>
+            #include <string>
+            #include <stdint.h>
+            using namespace std;
+            int main()
+            {
+                int b;
+                __asm {
+            """
+            
+            for line in nodes {
+                result += try line.interpret()
+            }
+            
+            result += """
+                }
+                cout << b << endl;
+            }
+            """
+        case .function:
+            for line in nodes {
+                result += try line.interpret()
+            }
         }
-
+        
         return result
     }
 }

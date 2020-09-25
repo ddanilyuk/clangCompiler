@@ -22,12 +22,18 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let fileText = "int main() { return 0x12; }"
-        print("File text:\n\(fileText)\n")
+        let multiLineText = """
+        int main() {
+            return 1.2;
+        }
+        """
+        
+        let oneLineCode = multiLineText.oneLineCode
+        print("File text:\n\(multiLineText)\n")
         
 
         do {
-            let lexer = try Lexer(code: fileText)
+            let lexer = try Lexer(code: oneLineCode)
                         
             print(lexer.tokensTable)
             
@@ -42,7 +48,7 @@ class ViewController: UIViewController {
                         
         } catch let error {
             if let error = error as? CompilerError {
-                error.fullErrorDescription(code: fileText, tokens: tokens)
+                error.fullErrorDescription(code: oneLineCode, tokens: tokens)
             }
         }
 

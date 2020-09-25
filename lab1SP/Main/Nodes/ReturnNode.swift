@@ -15,13 +15,13 @@ struct ReturnNode: Node {
     func interpret() throws -> String {
         var result = String()
         
-        result += "mov eax "
+        result += "\n\t\tmov eax "
         
         for line in subnodes {
             result += try line.interpret()
         }
         
-        result += "\nmov b eax"
+        result += "\n\t\tmov b eax\n"
         
         return result
     }

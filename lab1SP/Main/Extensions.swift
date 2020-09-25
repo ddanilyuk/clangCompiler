@@ -9,6 +9,13 @@ import Foundation
 
 
 public extension String {
+    var oneLineCode: String {
+        let miltiline = self
+        let replacing1 = miltiline.replacingOccurrences(of: "\n    ", with: " ", options: .literal, range: nil)
+        let replacing2 = replacing1.replacingOccurrences(of: "\n", with: " ", options: .literal, range: nil)
+        return replacing2.replacingOccurrences(of: "\t", with: " ", options: .literal, range: nil)
+    }
+    
     func getStringPrefix(with regularExpressions: String) -> String? {
         let expression = try! NSRegularExpression(pattern: "^\(regularExpressions)", options: [])
         let range = expression.rangeOfFirstMatch(in: self, options: [], range: NSRange(location: 0, length: self.utf16.count))
@@ -50,7 +57,7 @@ extension StringProtocol {
 extension Float: Node {
     
     public func interpret() throws -> String {
-        return "\(self)"
+        return "\(Int(self))"
     }
     
     public var name: String {
