@@ -9,6 +9,7 @@ import Foundation
 
 
 public extension String {
+    
     var oneLineCode: String {
         let miltiline = self
         let replacing1 = miltiline.replacingOccurrences(of: "\n    ", with: " ", options: .literal, range: nil)
@@ -26,12 +27,12 @@ public extension String {
     }
     
     mutating func deleteLeftWhitespaces() {
-        let i = startIndex
-        while i < endIndex {
-            guard CharacterSet.whitespacesAndNewlines.contains(self[i].unicodeScalars.first!) else {
+        let index = startIndex
+        while index < endIndex {
+            guard CharacterSet.whitespacesAndNewlines.contains(self[index].unicodeScalars.first!) else {
                 return
             }
-            self.remove(at: i)
+            self.remove(at: index)
         }
     }
 }
@@ -39,17 +40,6 @@ public extension String {
 
 extension StringProtocol {
     subscript(offset: Int) -> Character { self[index(startIndex, offsetBy: offset)] }
-    subscript(range: Range<Int>) -> SubSequence {
-        let startIndex = index(self.startIndex, offsetBy: range.lowerBound)
-        return self[startIndex..<index(startIndex, offsetBy: range.count)]
-    }
-    subscript(range: ClosedRange<Int>) -> SubSequence {
-        let startIndex = index(self.startIndex, offsetBy: range.lowerBound)
-        return self[startIndex..<index(startIndex, offsetBy: range.count)]
-    }
-    subscript(range: PartialRangeFrom<Int>) -> SubSequence { self[index(startIndex, offsetBy: range.lowerBound)...] }
-    subscript(range: PartialRangeThrough<Int>) -> SubSequence { self[...index(startIndex, offsetBy: range.upperBound)] }
-    subscript(range: PartialRangeUpTo<Int>) -> SubSequence { self[..<index(startIndex, offsetBy: range.upperBound)] }
 }
 
 

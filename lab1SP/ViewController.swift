@@ -7,14 +7,8 @@
 
 import UIKit
 
-// Name of variables and function with its values
-var identifiers: [String: Definition] = [
-    "PI": .variable(value: Float.pi),
-]
-
 
 var tokens: [Token] = []
-
 
 class ViewController: UIViewController {
     

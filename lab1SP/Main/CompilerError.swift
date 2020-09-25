@@ -27,9 +27,8 @@ enum CompilerError: Swift.Error, LocalizedError {
     // Inavlid fuction identifier
     case invalidFunctionIdentifier(Int)
     
-    
+    // Generator Errors
     case invalidNumber(Int)
-    
     case invalidGenerator(Int)
     
     
@@ -40,9 +39,7 @@ enum CompilerError: Swift.Error, LocalizedError {
     case expected(String, Int)
     
 
-    
-    
-    // For functions
+    // For functions (now not used)
     case notDefined(String, Int)
     case alreadyDefined(String, Int)
     

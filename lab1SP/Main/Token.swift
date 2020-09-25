@@ -84,13 +84,13 @@ enum Token: Equatable {
 
             /// For words and keywords
             "[a-zA-Z_$][a-zA-Z_$0-9]*": {
-                guard $0 != "return" else {
+                if $0 == "return" {
                     return .return
                 }
-                guard $0 != "int" else {
+                if $0 == "int" {
                     return .intType
                 }
-                guard $0 != "float" else {
+                if $0 == "float" {
                     return .floatType
                 }
                 return .identifier($0)
