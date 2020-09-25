@@ -39,7 +39,9 @@ public extension String {
 
 
 extension StringProtocol {
-    subscript(offset: Int) -> Character { self[index(startIndex, offsetBy: offset)] }
+    subscript(offset: Int) -> Character {
+        return self[index(startIndex, offsetBy: offset)]
+    }
 }
 
 

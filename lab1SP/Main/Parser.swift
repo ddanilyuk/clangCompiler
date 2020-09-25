@@ -249,7 +249,7 @@ class Parser {
                 let declaration = try parseReturn()
                 nodes.append(declaration)
             default:
-                break
+                throw CompilerError.expected("return", 1)
             }
         }
         return Block(nodes: nodes, blockType: blockType)

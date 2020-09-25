@@ -36,7 +36,7 @@ public class TreePrinter {
         /// Alternative defaults that uses characters that are easily
         /// typed on a standard US keyboard.
         public static var alternateDefaults: TreePrinterOptions {
-            TreePrinterOptions(spacesPerDepth: 5,
+            return TreePrinterOptions(spacesPerDepth: 5,
                                spacer: " ",
                                verticalLine: "|",
                                intermediateConnector: "+",

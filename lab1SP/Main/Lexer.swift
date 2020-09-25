@@ -20,7 +20,6 @@ class Lexer {
         
         // Deleting left-side whitespaces.
         lexerCode.deleteLeftWhitespaces()
-        
         // Iterating to find tokens.
         while let next = try Lexer.getNextPart(with: lexerCode) {
             let (regular, part) = next

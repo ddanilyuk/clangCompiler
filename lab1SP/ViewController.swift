@@ -16,11 +16,41 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let multiLineText = """
+        let multiLineText1 = """
         int main() {
             return 2;
         }
         """
+        
+        let multiLineText2 = """
+        int main() {
+            return 012;
+        }
+        """
+        
+        let multiLineText3 = """
+        float main() {
+            return 3.4;
+        }
+        """
+        let multiLineText4 = """
+        float main) {
+            return 3.4;
+        }
+        """
+        let multiLineText5 = """
+        int main() {
+            return 3.4;
+        }
+        """
+        
+        let multiLineText6 = """
+        float main() {
+            return 04;
+        }
+        """
+                
+        let multiLineText = multiLineText1
         
         let oneLineCode = multiLineText.oneLineCode
         print("File text:\n\(multiLineText)\n")
@@ -50,7 +80,5 @@ class ViewController: UIViewController {
                 error.fullErrorDescription(code: oneLineCode, tokens: tokens)
             }
         }
-
-        print("\nParse ended")
     }
 }

@@ -16,9 +16,9 @@ struct ReturnNode: Node {
         var result = String()
         
         if isCPPCode {
-            result += "\n\t\tmov eax "
+            result += "\n\t\tmov eax, "
         } else {
-            result += "mov eax "
+            result += "mov eax, "
         }
         
         for line in subnodes {
@@ -26,9 +26,9 @@ struct ReturnNode: Node {
         }
         
         if isCPPCode {
-            result += "\n\t\tmov b eax\n"
+            result += "\n\t\tmov b, eax\n"
         } else {
-            result += "\nmov b eax\n"
+            result += "\nmov b, eax\n"
         }
                 
         return result
