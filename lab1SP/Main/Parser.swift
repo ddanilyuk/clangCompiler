@@ -28,12 +28,16 @@ class Parser {
         return tokensArray[tokenIndex]
     }
     
-    func getPriority() throws -> Int {
-        guard canCheckToken, case let Token.op(op) = checkToken() else {
-            return -1
+    func getTokenPriority() throws -> Int {
+        if canCheckToken {
+            if case let Token.op(op) = checkToken() {
+                return op.precedence
+            } else {
+                return -1
+            }
+        } else {
+            return -2
         }
-        
-        return op.precedence
     }
     
     func popToken() -> Token {
@@ -75,29 +79,33 @@ class Parser {
     }
     
     func parseExpressionInParens() throws -> Node {
-        guard case .parensOpen = popToken() else {
+        // Check if next element is "("
+        if popToken() != Token.parensOpen {
             throw CompilerError.expected("(", tokenIndex)
         }
         
+        // Parsing expression inside parens
         let expressionNode = try parseExpression()
         
-        guard case .parensClose = popToken() else {
-            throw CompilerError.expected("(", tokenIndex)
+        // Check if next element is ")"
+        if popToken() != Token.parensClose {
+            throw CompilerError.expected(")", tokenIndex)
         }
-        
+
         return expressionNode
     }
     
     func parseReturn() throws -> Node {
-        guard case .return = popToken() else {
+        if popToken() != Token.return {
             throw CompilerError.expected("return", tokenIndex)
         }
-
+                
         let value = try parseValue()
         
-        guard case .semicolon = popToken() else {
+        if popToken() != Token.semicolon {
             throw CompilerError.expected("semicolon", tokenIndex)
         }
+        
         return ReturnNode(node: value)
     }
     
@@ -115,11 +123,12 @@ class Parser {
             throw CompilerError.invalidFunctionIdentifier(tokenIndex)
         }
         
-        guard Token.parensOpen == popToken() else {
+        if popToken() != Token.parensOpen {
             throw CompilerError.expected("(", tokenIndex)
         }
-        guard Token.parensClose == popToken() else {
-            throw CompilerError.expected(")", tokenIndex)
+        
+        if popToken() != Token.parensClose {
+            throw CompilerError.expected("(", tokenIndex)
         }
         
         let functionNodeBlock = try parseCurlyCodeBlock(blockType: .function)
@@ -153,12 +162,14 @@ class Parser {
     }
     
     func parseCurlyCodeBlock(blockType: Block.BlockType) throws -> Node {
-        guard canCheckToken, Token.curlyOpen == popToken() else {
-            throw CompilerError.expected("{", tokenIndex)
+        if canCheckToken {
+            if popToken() != Token.curlyOpen {
+                throw CompilerError.expected("{", tokenIndex)
+            }
         }
-        
+
         var blockDepth = 1
-        let startIndex = tokenIndex
+        let startCurlyBlockIndex = tokenIndex
         
         while canCheckToken {
             if Token.curlyClose == checkToken() {
@@ -177,14 +188,16 @@ class Parser {
             }
         }
         
-        let endIndex = tokenIndex
+        let endCurlyBlockIndex = tokenIndex
         
-        guard canCheckToken, Token.curlyClose == popToken() else {
-            throw CompilerError.expected("}", tokenIndex)
+        if canCheckToken {
+            if popToken() != Token.curlyClose {
+                throw CompilerError.expected("}", tokenIndex)
+            }
         }
         
-        let tokens = Array(self.tokensArray[startIndex..<endIndex])
-        return try Parser(tokens: tokens).parse(blockType: blockType)
+        let tokensInsideCurlyBlock = Array(self.tokensArray[startCurlyBlockIndex..<endCurlyBlockIndex])
+        return try Parser(tokens: tokensInsideCurlyBlock).parseBlock(blockType: blockType)
     }
     
     func parseExpression() throws -> Node {
@@ -198,7 +211,7 @@ class Parser {
     func parseInfixOperation(node: Node, nodePriority: Int = 0) throws -> Node {
         var leftNode = node
         
-        var priority = try getPriority()
+        var priority = try getTokenPriority()
         while priority >= nodePriority {
             guard case let Token.op(op) = popToken() else {
                 throw CompilerError.expectedOperator(tokenIndex)
@@ -206,21 +219,21 @@ class Parser {
             
             var rightNode = try parseValue()
             
-            let nextPrecedence = try getPriority()
+            let nextPrecedence = try getTokenPriority()
             
             if priority < nextPrecedence {
                 rightNode = try parseInfixOperation(node: rightNode, nodePriority: priority + 1)
             }
             leftNode = InfixOperation(op: op, lhs: leftNode, rhs: rightNode)
             
-            priority = try getPriority()
+            priority = try getTokenPriority()
         }
         return leftNode
     }
 
     // Main parse function
     // This function parse blocks
-    func parse(blockType: Block.BlockType) throws -> Node {
+    func parseBlock(blockType: Block.BlockType) throws -> Node {
         var nodes: [Node] = []
         while canCheckToken {
             let token = checkToken()

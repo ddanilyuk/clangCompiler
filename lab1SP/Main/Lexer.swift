@@ -11,13 +11,13 @@ import Foundation
 class Lexer {
     
     // Generated tokens
-    var tokens: [Token] = []
+//    var tokens: [Token] = []
     
     var tokensTable: String = "Tokens:\n"
     
     var lexerCode: String
     
-    init(code: String) {
+    init(code: String) throws {
         // Saving code to class.
         self.lexerCode = code
         
@@ -30,7 +30,7 @@ class Lexer {
             lexerCode = String(lexerCode[prefix.endIndex...])
             lexerCode.deleteLeftWhitespaces()
             
-            guard let generator = Token.generators[regular], let token = generator(prefix) else {
+            guard let generator = Token.generators[regular], let token = try generator(prefix) else {
                 fatalError("Invalid generator!")
             }
             
@@ -39,6 +39,8 @@ class Lexer {
             
             // Adding tokens to array
             tokens.append(token)
+            
+            Token.currentTokenIndex += 1
         }
     }
 

@@ -16,7 +16,7 @@ enum IntegerType {
 
 enum Token: Equatable {
 
-    typealias Generator = (String) -> Token?
+    typealias Generator = (String) throws -> Token?
             
     // Numbers
     case intNumber(Int, IntegerType)
@@ -70,10 +70,11 @@ enum Token: Equatable {
         }
     }
     
+    static var currentTokenIndex: Int = 1
+    
     static var generators: [String: Generator] {
         return [
-            
-            /// Non didgit or word
+            /// Non didgits or words
             "\\*|\\/|\\+|\\-": { .op(Operator(rawValue: $0)!) },
             "\\(": { _ in .parensOpen },
             "\\)": { _ in .parensClose },
@@ -99,20 +100,20 @@ enum Token: Equatable {
             "^(^0[0-8]+)|^(^[0-9]+\\.[0-9]+)|^([0-9]+)": {
                 if $0.contains(".") {
                     return .floatNumber(Float($0)!)
-                } else if $0.contains("0") || $0.contains("0") {
+                } else if $0.contains("0") {
                     var number = $0
                     number.removeFirst()
                     if let int8 = UInt8(number, radix: 8) {
                         return .intNumber(Int(int8), .octal)
                     } else {
-                        // TODO:- Replace for throwing error
-                        fatalError("Not Hex")
+                        // TODO:- get current token index
+                        throw CompilerError.invalidNumber(Token.currentTokenIndex)
                     }
                 } else if let intNumber = Int($0) {
                     return .intNumber(intNumber, .decimal)
                 } else {
-                    // TODO:- Replace for throwing error
-                    fatalError("Not number")
+                    // TODO:- get current token index
+                    throw CompilerError.invalidNumber(Token.currentTokenIndex)
                 }
             }
         ]

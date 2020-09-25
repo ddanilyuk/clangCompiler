@@ -13,38 +13,36 @@ var identifiers: [String: Definition] = [
 ]
 
 
+var tokens: [Token] = []
 
 
 class ViewController: UIViewController {
     
-    
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // octal = 0o12 = 10
-        // decimal = 12 = 12
-        let fileText = "int main() { return 12; }"
+        
+        let fileText = "int main() { return 0x12; }"
         print("File text:\n\(fileText)\n")
         
-        let lexer = Lexer(code: fileText)
-        
-        print(lexer.tokensTable)
-    
-        let parser = Parser(tokens: lexer.tokens)
+
         do {
-            let node = try parser.parse(blockType: .startPoint)
+            let lexer = try Lexer(code: fileText)
+                        
+            print(lexer.tokensTable)
+            
+            let parser = Parser(tokens: tokens)
+            
+            let node = try parser.parseBlock(blockType: .startPoint)
             print("\nTree:\n\(TreePrinter.printTree(root: node))")
             
             print("ASM code: ")
             let interpretedCode = try node.interpret()
             print(interpretedCode)
-            
-//            print(Lexer.getASMCodeVisualStudio(returnType: "int?", mainBlockOfCode: interpretedCode))
-            
-            
+                        
         } catch let error {
             if let error = error as? CompilerError {
-                error.fullErrorDescription(code: fileText, tokens: lexer.tokens)
+                error.fullErrorDescription(code: fileText, tokens: tokens)
             }
         }
 

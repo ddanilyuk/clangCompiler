@@ -27,11 +27,18 @@ enum CompilerError: Swift.Error, LocalizedError {
     // Inavlid fuction identifier
     case invalidFunctionIdentifier(Int)
     
+    
+    case invalidNumber(Int)
+    
+    
     // Return value not match with expected.
     case invalidReturnType(String, Int)
 
     // Something expected
     case expected(String, Int)
+    
+
+    
     
     // For functions
     case notDefined(String, Int)
@@ -39,7 +46,7 @@ enum CompilerError: Swift.Error, LocalizedError {
     
     var index: Int {
         switch self {
-        case let .expectedFloat(index), let .expectedInt(index), let .expectedOperator(index), let .expectedExpression(index), let .invalidValue(index), let .invalidFunctionIdentifier(index):
+        case let .expectedFloat(index), let .expectedInt(index), let .expectedOperator(index), let .expectedExpression(index), let .invalidValue(index), let .invalidFunctionIdentifier(index), let .invalidNumber(index):
             return index
         case let .invalidReturnType(_, index), let .expected(_, index), let .notDefined(_, index), let .alreadyDefined(_, index):
             return index
@@ -59,7 +66,10 @@ enum CompilerError: Swift.Error, LocalizedError {
         case .invalidValue:
             return "Invalid value given."
         case .invalidFunctionIdentifier:
-            return "Givaen invalid funciton identifier."
+            return "Given invalid funciton identifier."
+        case .invalidNumber:
+            return "Given number is invalid"
+        
             
         case let .invalidReturnType(str, _):
             return "Inavlid return type. Expected: \(str)"

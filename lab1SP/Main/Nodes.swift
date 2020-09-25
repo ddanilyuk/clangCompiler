@@ -25,7 +25,8 @@ enum Definition {
 struct InfixOperation: Node {
     
     func interpret() throws -> String {
-        return "(\(try lhs.interpret()) \(op.rawValue) \(try rhs.interpret()))"
+//        return "(\(try lhs.interpret()) \(op.rawValue) \(try rhs.interpret()))"
+        return ""
     }
     
     let op: Operator
