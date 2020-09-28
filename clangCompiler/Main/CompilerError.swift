@@ -1,6 +1,6 @@
 //
 //  CompilerError.swift
-//  lab1SP
+//  clangCompiler
 //
 //  Created by Денис Данилюк on 25.09.2020.
 //

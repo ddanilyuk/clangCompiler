@@ -1,6 +1,6 @@
 //
 //  TreeRepresentable.swift
-//  lab1SP
+//  clangCompiler
 //
 //  Created by Денис Данилюк on 23.09.2020.
 //

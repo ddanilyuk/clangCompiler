@@ -33,7 +33,7 @@
 /* Begin PBXFileReference section */
 		5F37B205251E38CE00B08A6B /* InfixOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfixOperation.swift; sourceTree = "<group>"; };
 		5F37B208251E38EF00B08A6B /* Block.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Block.swift; sourceTree = "<group>"; };
-		5FCC19B0251A40AD00589EF7 /* lab1SP.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = lab1SP.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5FCC19B0251A40AD00589EF7 /* clangCompiler.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = clangCompiler.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5FCC19B3251A40AD00589EF7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5FCC19B5251A40AD00589EF7 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		5FCC19B7251A40AD00589EF7 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -70,7 +70,7 @@
 		5FCC19A7251A40AD00589EF7 = {
 			isa = PBXGroup;
 			children = (
-				5FCC19B2251A40AD00589EF7 /* lab1SP */,
+				5FCC19B2251A40AD00589EF7 /* clangCompiler */,
 				5FCC19B1251A40AD00589EF7 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -78,12 +78,12 @@
 		5FCC19B1251A40AD00589EF7 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				5FCC19B0251A40AD00589EF7 /* lab1SP.app */,
+				5FCC19B0251A40AD00589EF7 /* clangCompiler.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		5FCC19B2251A40AD00589EF7 /* lab1SP */ = {
+		5FCC19B2251A40AD00589EF7 /* clangCompiler */ = {
 			isa = PBXGroup;
 			children = (
 				5FCC19CF251A45AA00589EF7 /* Main */,
@@ -91,7 +91,7 @@
 				5FCC19D6251A9FB600589EF7 /* NoMatter */,
 				5FCC19C1251A40B100589EF7 /* Info.plist */,
 			);
-			path = lab1SP;
+			path = clangCompiler;
 			sourceTree = "<group>";
 		};
 		5FCC19CF251A45AA00589EF7 /* Main */ = {
@@ -147,9 +147,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		5FCC19AF251A40AD00589EF7 /* lab1SP */ = {
+		5FCC19AF251A40AD00589EF7 /* clangCompiler */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 5FCC19C4251A40B100589EF7 /* Build configuration list for PBXNativeTarget "lab1SP" */;
+			buildConfigurationList = 5FCC19C4251A40B100589EF7 /* Build configuration list for PBXNativeTarget "clangCompiler" */;
 			buildPhases = (
 				5FCC19AC251A40AD00589EF7 /* Sources */,
 				5FCC19AD251A40AD00589EF7 /* Frameworks */,
@@ -159,9 +159,9 @@
 			);
 			dependencies = (
 			);
-			name = lab1SP;
+			name = clangCompiler;
 			productName = lab1SP;
-			productReference = 5FCC19B0251A40AD00589EF7 /* lab1SP.app */;
+			productReference = 5FCC19B0251A40AD00589EF7 /* clangCompiler.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -191,7 +191,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				5FCC19AF251A40AD00589EF7 /* lab1SP */,
+				5FCC19AF251A40AD00589EF7 /* clangCompiler */,
 			);
 		};
 /* End PBXProject section */
@@ -380,12 +380,12 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = M92VXVU7J9;
-				INFOPLIST_FILE = lab1SP/Info.plist;
+				INFOPLIST_FILE = clangCompiler/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.ddanilyuk.lab1SP;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ddanilyuk.clangCompiler;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -399,12 +399,12 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = M92VXVU7J9;
-				INFOPLIST_FILE = lab1SP/Info.plist;
+				INFOPLIST_FILE = clangCompiler/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.ddanilyuk.lab1SP;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ddanilyuk.clangCompiler;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -423,7 +423,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		5FCC19C4251A40B100589EF7 /* Build configuration list for PBXNativeTarget "lab1SP" */ = {
+		5FCC19C4251A40B100589EF7 /* Build configuration list for PBXNativeTarget "clangCompiler" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5FCC19C5251A40B100589EF7 /* Debug */,

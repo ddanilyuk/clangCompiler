@@ -1,6 +1,6 @@
 //
 //  AppDelegate.swift
-//  lab1SP
+//  clangCompiler
 //
 //  Created by Денис Данилюк on 22.09.2020.
 //
