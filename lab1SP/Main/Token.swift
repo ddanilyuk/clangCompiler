@@ -100,7 +100,7 @@ enum Token: Equatable {
             "^(^0[0-8]+)|^(^[0-9]+\\.[0-9]+)|^([0-9]+)": {
                 if $0.contains(".") {
                     return .floatNumber(Float($0)!)
-                } else if $0.contains("0") {
+                } else if $0.first == "0" {
                     var number = $0
                     number.removeFirst()
                     if let int8 = UInt8(number, radix: 8) {

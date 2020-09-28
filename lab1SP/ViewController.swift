@@ -8,13 +8,15 @@
 import UIKit
 
 
-var tokens: [Token] = []
 
 class ViewController: UIViewController {
     
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        var tokens: [Token] = []
+        
         
         let multiLineText1 = """
         int main() {
@@ -50,7 +52,7 @@ class ViewController: UIViewController {
         }
         """
                 
-        let multiLineText = multiLineText1
+        let multiLineText = multiLineText2
         
         let oneLineCode = multiLineText.oneLineCode
         print("File text:\n\(multiLineText)\n")
@@ -58,7 +60,7 @@ class ViewController: UIViewController {
         print("One line code:\n\(oneLineCode)\n")
         
         do {
-            let lexer = try Lexer(code: oneLineCode)
+            let lexer = try Lexer(code: oneLineCode, tokens: &tokens)
                         
             print(lexer.tokensTable)
             
@@ -78,6 +80,8 @@ class ViewController: UIViewController {
         } catch let error {
             if let error = error as? CompilerError {
                 error.fullErrorDescription(code: oneLineCode, tokens: tokens)
+            } else {
+                print(error.localizedDescription)
             }
         }
     }

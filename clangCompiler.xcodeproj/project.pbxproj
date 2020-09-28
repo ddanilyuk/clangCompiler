@@ -178,7 +178,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 5FCC19AB251A40AD00589EF7 /* Build configuration list for PBXProject "lab1SP" */;
+			buildConfigurationList = 5FCC19AB251A40AD00589EF7 /* Build configuration list for PBXProject "clangCompiler" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -414,7 +414,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		5FCC19AB251A40AD00589EF7 /* Build configuration list for PBXProject "lab1SP" */ = {
+		5FCC19AB251A40AD00589EF7 /* Build configuration list for PBXProject "clangCompiler" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5FCC19C2251A40B100589EF7 /* Debug */,

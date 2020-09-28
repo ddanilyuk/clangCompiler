@@ -14,14 +14,16 @@ class Lexer {
     
     var lexerCode: String
     
-    init(code: String) throws {
+    var lexerTokens: [Token] = []
+    
+    init(code: String, tokens: inout [Token]) throws {
         // Saving code to class.
         self.lexerCode = code
         
         // Deleting left-side whitespaces.
         lexerCode.deleteLeftWhitespaces()
         // Iterating to find tokens.
-        while let next = try Lexer.getNextPart(with: lexerCode) {
+        while let next = try Lexer.getNextPart(with: lexerCode, tokens: tokens) {
             let (regular, part) = next
             lexerCode = String(lexerCode[part.endIndex...])
             lexerCode.deleteLeftWhitespaces()
@@ -53,7 +55,7 @@ class Lexer {
         return counter
     }
 
-    private static func getNextPart(with code: String) throws -> (regex: String, prefix: String)? {
+    private static func getNextPart(with code: String, tokens: [Token]) throws -> (regex: String, prefix: String)? {
         let key = Token.generators.first(where: { regular, generator in
                                                 code.getStringPrefix(with: regular) != nil })
         guard let regularExpression = key?.key, key?.value != nil else {
