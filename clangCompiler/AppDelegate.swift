@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  AppDelegate.swift
 //  clangCompiler
 //
 //  Created by Денис Данилюк on 22.09.2020.
@@ -7,16 +7,20 @@
 
 import UIKit
 
+/**
+What to do before compiling to exe.
+ 
+import SwiftWin32
+import let WinSDK.CW_USEDEFAULT
+ */
 
+@main
+final class AppDelegate: UIResponder, UIApplicationDelegate {
 
-class ViewController: UIViewController {
     
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         var tokens: [Token] = []
-        
         
         let multiLineText1 = """
         int main() {
@@ -51,7 +55,7 @@ class ViewController: UIViewController {
             return 04;
         }
         """
-                
+        
         let multiLineText = multiLineText2
         
         let oneLineCode = multiLineText.oneLineCode
@@ -61,7 +65,7 @@ class ViewController: UIViewController {
         
         do {
             let lexer = try Lexer(code: oneLineCode, tokens: &tokens)
-                        
+            
             print(lexer.tokensTable)
             
             let parser = Parser(tokens: tokens)
@@ -72,11 +76,11 @@ class ViewController: UIViewController {
             print("ASM code: ")
             let asmCode = try node.interpret(isCPPCode: false)
             print(asmCode)
-
+            
             print("C++ code: ")
             let cppCode = try node.interpret(isCPPCode: true)
             print(cppCode)
-                        
+            
         } catch let error {
             if let error = error as? CompilerError {
                 error.fullErrorDescription(code: oneLineCode, tokens: tokens)
@@ -84,5 +88,8 @@ class ViewController: UIViewController {
                 print(error.localizedDescription)
             }
         }
+        
+        return true
     }
+
 }

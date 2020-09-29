@@ -87,7 +87,7 @@
 			isa = PBXGroup;
 			children = (
 				5FCC19CF251A45AA00589EF7 /* Main */,
-				5FCC19B7251A40AD00589EF7 /* ViewController.swift */,
+				5FCC19B3251A40AD00589EF7 /* AppDelegate.swift */,
 				5FCC19D6251A9FB600589EF7 /* NoMatter */,
 				5FCC19C1251A40B100589EF7 /* Info.plist */,
 			);
@@ -123,7 +123,7 @@
 		5FCC19D6251A9FB600589EF7 /* NoMatter */ = {
 			isa = PBXGroup;
 			children = (
-				5FCC19B3251A40AD00589EF7 /* AppDelegate.swift */,
+				5FCC19B7251A40AD00589EF7 /* ViewController.swift */,
 				5FCC19B5251A40AD00589EF7 /* SceneDelegate.swift */,
 				5FCC19B9251A40AD00589EF7 /* Main.storyboard */,
 				5FCC19BC251A40B100589EF7 /* Assets.xcassets */,
