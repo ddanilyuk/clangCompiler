@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		5F37B206251E38CE00B08A6B /* InfixOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F37B205251E38CE00B08A6B /* InfixOperation.swift */; };
 		5F37B209251E38EF00B08A6B /* Block.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F37B208251E38EF00B08A6B /* Block.swift */; };
+		5F73069A2523C74A00DFC8A4 /* UnaryNegativeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7306992523C74A00DFC8A4 /* UnaryNegativeNode.swift */; };
 		5FCC19B4251A40AD00589EF7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FCC19B3251A40AD00589EF7 /* AppDelegate.swift */; };
 		5FCC19B6251A40AD00589EF7 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FCC19B5251A40AD00589EF7 /* SceneDelegate.swift */; };
 		5FCC19B8251A40AD00589EF7 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FCC19B7251A40AD00589EF7 /* ViewController.swift */; };
@@ -33,6 +34,7 @@
 /* Begin PBXFileReference section */
 		5F37B205251E38CE00B08A6B /* InfixOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfixOperation.swift; sourceTree = "<group>"; };
 		5F37B208251E38EF00B08A6B /* Block.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Block.swift; sourceTree = "<group>"; };
+		5F7306992523C74A00DFC8A4 /* UnaryNegativeNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnaryNegativeNode.swift; sourceTree = "<group>"; };
 		5FCC19B0251A40AD00589EF7 /* clangCompiler.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = clangCompiler.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5FCC19B3251A40AD00589EF7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5FCC19B5251A40AD00589EF7 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -137,6 +139,7 @@
 			children = (
 				5FD4063B251D1C6100BE7A73 /* FunctionDefinitionNode.swift */,
 				5FD4063F251D1E0B00BE7A73 /* ReturnNode.swift */,
+				5F7306992523C74A00DFC8A4 /* UnaryNegativeNode.swift */,
 				5FD40642251D20A200BE7A73 /* NumberNode.swift */,
 				5FD40646251D20EF00BE7A73 /* CustomIntNode.swift */,
 				5F37B205251E38CE00B08A6B /* InfixOperation.swift */,
@@ -222,6 +225,7 @@
 				5FD40647251D20EF00BE7A73 /* CustomIntNode.swift in Sources */,
 				5F37B206251E38CE00B08A6B /* InfixOperation.swift in Sources */,
 				5FD40643251D20A200BE7A73 /* NumberNode.swift in Sources */,
+				5F73069A2523C74A00DFC8A4 /* UnaryNegativeNode.swift in Sources */,
 				5FCC19B4251A40AD00589EF7 /* AppDelegate.swift in Sources */,
 				5FCC19CB251A40D400589EF7 /* TreeRepresentable.swift in Sources */,
 				5FCC19E6251AA0DC00589EF7 /* Operator.swift in Sources */,

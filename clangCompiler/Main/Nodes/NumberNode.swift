@@ -9,12 +9,14 @@ import Foundation
 
 
 struct NumberNode: Node {
-    
+        
     enum NumberType: String {
         case decimal = "int(decimal)"
         case octal = "int(octal)"
         case float = "float"
     }
+    
+    var isNegative: Bool
     
     var node: Node
     
@@ -23,12 +25,17 @@ struct NumberNode: Node {
     func interpret(isCPPCode: Bool) throws -> String {
         return try node.interpret(isCPPCode: isCPPCode)
     }
+
+//    func getValue() -> Float {
+//        return node.getValue()
+//    }
 }
 
 
 extension NumberNode: TreeRepresentable {
     var name: String {
-        return numberType.rawValue
+        let string = isNegative ? " negative" : " positive"
+        return numberType.rawValue + string
     }
     
     var subnodes: [Node] {

@@ -24,7 +24,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let multiLineText1 = """
         int main() {
-            return 2;
+            return -(3 + 2 * 8);
         }
         """
         
@@ -56,7 +56,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         """
         
-        let multiLineText = multiLineText2
+        let multiLineText = multiLineText1
         
         let oneLineCode = multiLineText.oneLineCode
         print("File text:\n\(multiLineText)\n")
@@ -66,20 +66,20 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         do {
             let lexer = try Lexer(code: oneLineCode, tokens: &tokens)
             
-            print(lexer.tokensTable)
+//            print(lexer.tokensTable)
             
             let parser = Parser(tokens: tokens)
             
             let node = try parser.parseBlock(blockType: .startPoint)
             print("\nTree:\n\(TreePrinter.printTree(root: node))")
             
-            print("ASM code: ")
-            let asmCode = try node.interpret(isCPPCode: false)
-            print(asmCode)
-            
-            print("C++ code: ")
-            let cppCode = try node.interpret(isCPPCode: true)
-            print(cppCode)
+//            print("ASM code: ")
+//            let asmCode = try node.interpret(isCPPCode: false)
+//            print(asmCode)
+//
+//            print("C++ code: ")
+//            let cppCode = try node.interpret(isCPPCode: true)
+//            print(cppCode)
             
         } catch let error {
             if let error = error as? CompilerError {

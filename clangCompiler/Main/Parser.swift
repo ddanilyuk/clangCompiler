@@ -50,7 +50,7 @@ class Parser {
         guard case let Token.floatNumber(float) = popToken() else {
             throw CompilerError.expectedFloat(tokenIndex)
         }
-        return NumberNode(node: float, numberType: .float)
+        return NumberNode(isNegative: false, node: float, numberType: .float)
     }
     
     func parseIntNumber() throws -> Node {
@@ -60,7 +60,7 @@ class Parser {
         let numberType = integerType == .decimal ? NumberNode.NumberType.decimal : NumberNode.NumberType.octal
         let customInt = CustomIntNode(integer: int, type: integerType)
         
-        return NumberNode(node: customInt, numberType: numberType)
+        return NumberNode(isNegative: false, node: customInt, numberType: numberType)
     }
     
     func parseValue() throws -> Node {
@@ -71,11 +71,30 @@ class Parser {
             return try parseIntNumber()
         case .parensOpen:
             return try parseExpressionInParens()
+        case .op(.minus):
+            return try parseUnaryMinus()
         case .identifier:
             throw CompilerError.invalidFunctionIdentifier(tokenIndex)
+        
         default:
             throw CompilerError.invalidValue(tokenIndex)
         }
+    }
+    
+    func parseUnaryMinus() throws -> Node {
+        if popToken() != Token.op(.minus) {
+            throw CompilerError.expected("-", tokenIndex)
+        }
+        
+        let value = try parseValue()
+        let unaryNegative = UnaryNegativeNode(node: value)
+        
+//        if var numberNode = value as? NumberNode {
+//            numberNode.isNegative = true
+//            return numberNode
+//        }
+        
+        return unaryNegative
     }
     
     func parseExpressionInParens() throws -> Node {
@@ -151,7 +170,7 @@ class Parser {
                         }
                     }
                 } else {
-                    throw CompilerError.expected("Expected number in return", tokenIndex - 2)
+//                    throw CompilerError.expected("Expected number in return", tokenIndex - 2)
                 }
             }
         }

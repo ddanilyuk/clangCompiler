@@ -46,6 +46,9 @@ extension StringProtocol {
 
 
 extension Float: Node {
+    public func getValue() -> Float {
+        return self
+    }
     
     public func interpret(isCPPCode: Bool) throws -> String {
         return "\(Int(self))"
@@ -63,6 +66,10 @@ extension Float: Node {
 
 extension Int: Node {
 
+    public func getValue() -> Float {
+        return Float(self)
+    }
+    
     public func interpret(isCPPCode: Bool) throws -> String {
         return "\(self)"
     }

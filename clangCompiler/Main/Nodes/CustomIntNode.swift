@@ -32,4 +32,16 @@ struct CustomIntNode: Node {
     func interpret(isCPPCode: Bool) throws -> String {
         return name
     }
+    
+    func getValue() -> Float {
+        if self.type == .decimal {
+            return Float(integer)
+        } else {
+            if let octal = Int(String(integer, radix: 8)) {
+                return Float(octal)
+            } else {
+                return 0.0
+            }
+        }
+    }
 }
