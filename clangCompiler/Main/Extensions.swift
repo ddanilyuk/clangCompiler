@@ -10,13 +10,6 @@ import Foundation
 
 public extension String {
     
-    var oneLineCode: String {
-        let miltiline = self
-        let replacing1 = miltiline.replacingOccurrences(of: "\n    ", with: " ", options: .literal, range: nil)
-        let replacing2 = replacing1.replacingOccurrences(of: "\n", with: " ", options: .literal, range: nil)
-        return replacing2.replacingOccurrences(of: "\t", with: " ", options: .literal, range: nil)
-    }
-    
     func getStringPrefix(with regularExpressions: String) -> String? {
         let expression = try! NSRegularExpression(pattern: "^\(regularExpressions)", options: [])
         let range = expression.rangeOfFirstMatch(in: self, options: [], range: NSRange(location: 0, length: self.utf16.count))
@@ -27,9 +20,7 @@ public extension String {
     }
     
     func cppModifiedString(numberOfTabs: Int) -> String {
-        var selfString = self
-        
-        let subStrings = selfString.split(separator: "\n")
+        let subStrings = self.split(separator: "\n")
         
         var result = String()
         

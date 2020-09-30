@@ -18,7 +18,7 @@ struct NumberNode: Node {
         
     var node: Node
     
-    var register: String = "xxx"
+    var register: String = "eax"
     
     var numberType: NumberType
     

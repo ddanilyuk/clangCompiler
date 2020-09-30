@@ -9,6 +9,9 @@ import Foundation
 
 
 class Parser {
+    
+    public static var globalTokenIndex = -1
+    public static var globalTokensArray: [Token] = []
         
     // All tokensArray
     let tokensArray: [Token]
@@ -40,22 +43,28 @@ class Parser {
         }
     }
     
-    func popToken() -> Token {
+    @discardableResult func popToken() -> Token {
         let token = tokensArray[tokenIndex]
         tokenIndex += 1
+        
+//        if tokensArray.count == Parser.globalTokensArray.count {
+//            Parser.globalTokenIndex += 1
+//        }
+        Parser.globalTokenIndex += 1
+
         return token
     }
     
     func parseFloatNumber() throws -> Node {
         guard case let Token.floatNumber(float) = popToken() else {
-            throw CompilerError.expectedFloat(tokenIndex)
+            throw CompilerError.expectedFloat(Parser.globalTokenIndex)
         }
         return NumberNode(node: float, numberType: .float)
     }
     
     func parseIntNumber() throws -> Node {
         guard case let Token.intNumber(int, integerType) = popToken() else {
-            throw CompilerError.expectedInt(tokenIndex)
+            throw CompilerError.expectedInt(Parser.globalTokenIndex)
         }
         let numberType = integerType == .decimal ? NumberNode.NumberType.decimal : NumberNode.NumberType.octal
         let customInt = CustomIntNode(integer: int, type: integerType)
@@ -74,9 +83,9 @@ class Parser {
         case .op(.minus):
             return try parseUnaryMinus()
         case .identifier:
-            throw CompilerError.invalidFunctionIdentifier(tokenIndex)
+            throw CompilerError.invalidFunctionIdentifier(Parser.globalTokenIndex)
         default:
-            throw CompilerError.invalidValue(tokenIndex)
+            throw CompilerError.invalidValue(Parser.globalTokenIndex)
         }
     }
     
@@ -108,7 +117,7 @@ class Parser {
         
         // Check if next element is ")"
         if popToken() != Token.parensClose {
-            throw CompilerError.expected(")", tokenIndex)
+            throw CompilerError.expected(")", Parser.globalTokenIndex)
         }
 
         return expressionNode
@@ -116,13 +125,13 @@ class Parser {
     
     func parseReturn() throws -> Node {
         if popToken() != Token.return {
-            throw CompilerError.expected("return", tokenIndex)
+            throw CompilerError.expected("return", Parser.globalTokenIndex)
         }
                 
         let value = try parseValue()
         
-        if popToken() != Token.semicolon {
-            throw CompilerError.expected("semicolon", tokenIndex)
+        if !canCheckToken || popToken() != Token.semicolon {
+            throw CompilerError.expected("semicolon", Parser.globalTokenIndex)
         }
         
         return ReturnNode(node: value)
@@ -135,19 +144,20 @@ class Parser {
         case .floatType, .intType:
             functionReturnType = popToken()
         default:
-            throw CompilerError.expected("Function type", tokenIndex)
+            throw CompilerError.expected("Function type", Parser.globalTokenIndex)
         }
         
         guard case let Token.identifier(identifier) = popToken() else {
-            throw CompilerError.invalidFunctionIdentifier(tokenIndex)
+            throw CompilerError.invalidFunctionIdentifier(Parser.globalTokenIndex)
         }
         
+        
         if popToken() != Token.parensOpen {
-            throw CompilerError.expected("(", tokenIndex)
+            throw CompilerError.expected("(", Parser.globalTokenIndex)
         }
         
         if popToken() != Token.parensClose {
-            throw CompilerError.expected(")", tokenIndex)
+            throw CompilerError.expected(")", Parser.globalTokenIndex)
         }
         
         let functionNodeBlock = try parseCurlyCodeBlock(blockType: .function)
@@ -183,7 +193,7 @@ class Parser {
     func parseCurlyCodeBlock(blockType: Block.BlockType) throws -> Node {
         if canCheckToken {
             if popToken() != Token.curlyOpen {
-                throw CompilerError.expected("{", tokenIndex)
+                throw CompilerError.expected("{", Parser.globalTokenIndex)
             }
         }
 
@@ -210,10 +220,8 @@ class Parser {
         
         let endCurlyBlockIndex = tokenIndex
         
-        if canCheckToken {
-            if popToken() != Token.curlyClose {
-                throw CompilerError.expected("}", tokenIndex)
-            }
+        if !canCheckToken || popToken() != Token.curlyClose {
+            throw CompilerError.expected("}", endCurlyBlockIndex)
         }
         
         // Getting new elements inside curly block
@@ -225,7 +233,7 @@ class Parser {
     
     func parseExpression() throws -> Node {
         guard canCheckToken else {
-            throw CompilerError.expectedExpression(tokenIndex)
+            throw CompilerError.expectedExpression(Parser.globalTokenIndex)
         }
         let node = try parseValue()
         return try parseInfixOperation(node: node)
@@ -238,7 +246,7 @@ class Parser {
         var priority = try getTokenPriority()
         while priority >= nodePriority {
             guard case let Token.op(op) = popToken() else {
-                throw CompilerError.expectedOperator(tokenIndex)
+                throw CompilerError.expectedOperator(Parser.globalTokenIndex)
             }
             
             var rightNode = try parseValue()
@@ -269,7 +277,7 @@ class Parser {
                 let declaration = try parseReturn()
                 nodes.append(declaration)
             default:
-                throw CompilerError.expected("return", 1)
+                throw CompilerError.expected("return", Parser.globalTokenIndex)
             }
         }
         return Block(nodes: nodes, blockType: blockType)

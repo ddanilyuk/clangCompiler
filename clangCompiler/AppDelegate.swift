@@ -22,11 +22,9 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         
         var tokens: [Token] = []
         
-        
-        
         let multiLineText1 = """
         int main() {
-            return -(-(16.4 / 2) / -4 );
+            return -5;
         }
         """
         
@@ -39,24 +37,23 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let multiLineText22 = """
         int main() {
-            return ( --16 - 2 - 4 );
+            return (16 - (-2) - 4);
         }
         """
         
     
         let multiLineText = multiLineText22
         
-        let oneLineCode = multiLineText.oneLineCode
         print("File text:\n\(multiLineText)\n")
-        
-        print("One line code:\n\(oneLineCode)\n")
-        
+                
         do {
-            let lexer = try Lexer(code: oneLineCode, tokens: &tokens)
+            let lexer = try Lexer(code: multiLineText, tokens: &tokens)
             
             print(lexer.tokensTable)
             
+            Parser.globalTokensArray = tokens
             let parser = Parser(tokens: tokens)
+            
             
             let node = try parser.parseBlock(blockType: .startPoint)
             print("\nTree:\n\(TreePrinter.printTree(root: node))")
@@ -71,7 +68,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             
         } catch let error {
             if let error = error as? CompilerError {
-                error.fullErrorDescription(code: oneLineCode, tokens: tokens)
+                error.fullErrorDescription(code: multiLineText, tokens: tokens)
             } else {
                 print(error.localizedDescription)
             }

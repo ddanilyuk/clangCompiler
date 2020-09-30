@@ -37,24 +37,44 @@ class Lexer {
             tokens.append(token)
 
             // Adding tokens to description table
-            let currentPostiton = Lexer.getPositionFromIndex(tokens: tokens, code: code, index: tokens.count)
-            tokensTable.append("\(part) - \(token) | startPosition \(currentPostiton) endPosition \(currentPostiton + tokens[tokens.count - 1].lenght)\n")
+            let currentPostiton = Lexer.getPositionFromIndex(tokens: tokens, code: code, index: tokens.count, isError: false)
+            
+            tokensTable.append("\(part) - \(token) | line: \(currentPostiton.line), position: [\(currentPostiton.position)-\(currentPostiton.position + tokens[tokens.count - 1].lenght)]\n")
             
             Token.currentTokenIndex += 1
         }
     }
     
-    public static func getPositionFromIndex(tokens: [Token], code: String, index: Int) -> Int {
-        var counter = 0
+    public static func getPositionFromIndex(tokens: [Token], code: String, index: Int, isError: Bool) -> (line: Int, position: Int) {
+        var superPosition = 0
+        var position = 1
+        var line = 1
         // Index of error starts from 1
-        
+
         for token in tokens[0..<(index - 1)] {
-            counter += token.lenght
-            while code[counter] == Character(" ") {
-                counter += 1
+            position += token.lenght
+            superPosition += token.lenght
+            
+            while code[superPosition] == Character(" ") {
+                position += 1
+                superPosition += 1
+            }
+            while code[superPosition] == Character("\n") {
+                line += 1
+                position = 1
+                superPosition += 1
+            }
+            while code[superPosition] == Character(" ") {
+                position += 1
+                superPosition += 1
             }
         }
-        return counter
+
+        if isError {
+            position += tokens[index - 1].lenght
+        }
+        
+        return (line: line, position: position)
     }
 
     private static func getNextPart(with code: String, tokens: [Token]) throws -> (regex: String, prefix: String)? {

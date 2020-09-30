@@ -10,27 +10,15 @@ import Foundation
 
 // Operators
 struct InfixOperation: Node {
-    
-//    func getValue() -> Float {
-//        switch op {
-//        case .plus:
-//            return lhs.getValue() + rhs.getValue()
-//        case .minus:
-//            return lhs.getValue() - rhs.getValue()
-//        case .divideBy:
-//            return lhs.getValue() / rhs.getValue()
-//        case .times:
-//            return lhs.getValue() * rhs.getValue()
-//        }
-//    }
-    
+
     func specialInterpretForInfixOperation(isCPPCode: Bool, isNegative: Bool) throws -> String {
         var result = String()
         
         if var leftPart = lhs as? NumberNode {
             leftPart.register = "eax"
             result += try leftPart.interpret(isCPPCode: isCPPCode)
-        } else if let negativeNode = lhs as? UnaryNegativeNode {
+        } else if var negativeNode = lhs as? UnaryNegativeNode {
+            negativeNode.postition = .lhs
             result += try negativeNode.interpret(isCPPCode: isCPPCode)
         } else {
             // Pop
@@ -42,7 +30,8 @@ struct InfixOperation: Node {
         if var rightPart = rhs as? NumberNode {
             rightPart.register = "ebx"
             result += "\(try rightPart.interpret(isCPPCode: isCPPCode))"
-        } else if let negativeNode = rhs as? UnaryNegativeNode {
+        } else if var negativeNode = rhs as? UnaryNegativeNode {
+            negativeNode.postition = .rhs
             result += try negativeNode.interpret(isCPPCode: isCPPCode)
         } else {
             // Pop
