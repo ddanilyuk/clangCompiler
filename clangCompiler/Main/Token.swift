@@ -79,7 +79,8 @@ enum Token: Equatable {
                 if $0 == "/" || $0 == "-" {
                     return .op(Operator(rawValue: $0)!)
                 } else {
-                    throw CompilerError.notDefined("\($0)", Token.currentTokenIndex)
+                    // If we have "+" or "*", throw error because 7 variant cant compile this operators.
+                    throw CompilerError.invalidOperator($0, Token.currentTokenIndex)
                 }
             },
             "\\(": { _ in .parensOpen },

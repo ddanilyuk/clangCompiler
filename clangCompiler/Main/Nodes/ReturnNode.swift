@@ -19,9 +19,8 @@ struct ReturnNode: Node {
             result += try line.interpret(isCPPCode: isCPPCode)
         }
         result += "; getting result\n"
-        result += "mov eax, ss:[esp]\n"
-        result += "add esp, 4\n"
-        result += "mov b, eaxr"
+        result += "pop eax\n"
+        result += "mov b, eax"
         return result
     }
 }

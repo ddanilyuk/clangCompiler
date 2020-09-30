@@ -8,7 +8,7 @@
 import Foundation
 
 
-enum Operator: String {
+enum Operator: String, CaseIterable {
     case times = "*"
     case divideBy = "/"
     case plus = "+"

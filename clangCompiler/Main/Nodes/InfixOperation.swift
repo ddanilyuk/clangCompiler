@@ -20,11 +20,11 @@ struct InfixOperation: Node {
         } else if var negativeNode = lhs as? UnaryNegativeNode {
             negativeNode.postition = .lhs
             result += try negativeNode.interpret(isCPPCode: isCPPCode)
+            result += "pop eax\n"
         } else {
             // Pop
             result += try lhs.interpret(isCPPCode: isCPPCode)
-            result += "mov eax, ss:[esp]\n"
-            result += "add esp, 4\n"
+            result += "pop eax\n"
         }
         
         if var rightPart = rhs as? NumberNode {
@@ -36,17 +36,14 @@ struct InfixOperation: Node {
         } else {
             // Pop
             result += try rhs.interpret(isCPPCode: isCPPCode)
-            result += "mov ebx, ss:[esp]\n"
-            result += "add esp, 4\n"
+            result += "pop ebx\n"
         }
         
         result += "cdq\n"
         result += "idiv ebx\n"
         
         result += isNegative ? "neg eax\n" : ""
-        
-        result += "sub esp, 4\n"
-        result += "mov ss:[esp], eax\n"
+        result += "push eax\n"
         
         return result
     }

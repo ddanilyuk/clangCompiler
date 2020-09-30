@@ -29,20 +29,56 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         """
         
         
-        let multiLineText21 = """
+        let test1 = """
         int main() {
-            return -(3 + 2 * 8);
+            return -(3 - 2 / 8)ж
+        }
+        """
+        
+        let test2 = """
+        int main() {
+            return -(3 + 2 / 8);
+        }
+        """
+        
+        let test3 = """
+        int main() {
+            return 3 s 2 / 8;
+        }
+        """
+        
+        let test4 = """
+        int main() {
+            return --3 - 2 / 8;
+        }
+        """
+        
+        let test5 = """
+        int main() {
+            return )-3 - 2 / 8;
+        }
+        """
+        
+        let test6 = """
+        int main() {
+            )-3 - 2 / 8;
+        }
+        """
+        
+        let test7 = """
+        int main() {
+            return -(16 / 8) / (-2);
         }
         """
         
         let multiLineText22 = """
         int main() {
-            return (16 - (-2) - 4);
+            return (-16 - (-2) - 4);
         }
         """
         
     
-        let multiLineText = multiLineText22
+        let multiLineText = test7
         
         print("File text:\n\(multiLineText)\n")
                 

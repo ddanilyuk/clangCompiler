@@ -71,7 +71,9 @@ class Lexer {
         }
 
         if isError {
-            position += tokens[index - 1].lenght
+            if tokens.count < index - 1 {
+                position += tokens[index - 1].lenght
+            }
         }
         
         return (line: line, position: position)

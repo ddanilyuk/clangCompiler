@@ -94,14 +94,24 @@ class Parser {
             throw CompilerError.expected("-", tokenIndex)
         }
         
+        
+        if !canCheckToken || Token.op(.minus) == checkToken() {
+            throw CompilerError.expected("number or expression", Parser.globalTokenIndex)
+        }
+        
         var unaryNegativeNode = UnaryNegativeNode(node: try parseValue())
         
-        switch checkToken() {
-        case .parensOpen, .floatNumber, .intNumber:
-            unaryNegativeNode.postition = .rhs
-        default:
-            unaryNegativeNode.postition = .lhs
+        if canCheckToken {
+            switch checkToken() {
+            case .parensOpen, .floatNumber, .intNumber:
+                unaryNegativeNode.postition = .rhs
+            default:
+                unaryNegativeNode.postition = .lhs
+            }
+        } else {
+            throw CompilerError.expected(";", Parser.globalTokenIndex)
         }
+        
 
         return unaryNegativeNode
     }
@@ -128,7 +138,7 @@ class Parser {
             throw CompilerError.expected("return", Parser.globalTokenIndex)
         }
                 
-        let value = try parseValue()
+        let value = try parseExpression()
         
         if !canCheckToken || popToken() != Token.semicolon {
             throw CompilerError.expected("semicolon", Parser.globalTokenIndex)
