@@ -75,7 +75,13 @@ enum Token: Equatable {
     static var generators: [String: Generator] {
         return [
             /// Non didgits or words
-            "\\*|\\/|\\+|\\-": { .op(Operator(rawValue: $0)!) },
+            "\\*|\\/|\\+|\\-": {
+                if $0 == "/" || $0 == "-" {
+                    return .op(Operator(rawValue: $0)!)
+                } else {
+                    throw CompilerError.notDefined("\($0)", Token.currentTokenIndex)
+                }
+            },
             "\\(": { _ in .parensOpen },
             "\\)": { _ in .parensClose },
             "\\{": { _ in .curlyOpen },

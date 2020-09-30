@@ -39,11 +39,14 @@ struct Block: Node {
             }
             
             for line in nodes {
-                result += try line.interpret(isCPPCode: isCPPCode)
+                if isCPPCode {
+                    result += try line.interpret(isCPPCode: isCPPCode).cppModifiedString(numberOfTabs: 2)
+                } else {
+                    result += try line.interpret(isCPPCode: isCPPCode)
+                }
             }
             if isCPPCode {
                 result += """
-                    \n
                     }
                     cout << b << endl;
                 }

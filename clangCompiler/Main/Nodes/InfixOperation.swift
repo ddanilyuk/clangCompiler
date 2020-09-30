@@ -24,12 +24,14 @@ struct InfixOperation: Node {
 //        }
 //    }
     
-    func interpret(isCPPCode: Bool) throws -> String {
+    func specialInterpretForInfixOperation(isCPPCode: Bool, isNegative: Bool) throws -> String {
         var result = String()
         
         if var leftPart = lhs as? NumberNode {
             leftPart.register = "eax"
-            result += "\(try leftPart.interpret(isCPPCode: isCPPCode))"
+            result += try leftPart.interpret(isCPPCode: isCPPCode)
+        } else if let negativeNode = lhs as? UnaryNegativeNode {
+            result += try negativeNode.interpret(isCPPCode: isCPPCode)
         } else {
             // Pop
             result += try lhs.interpret(isCPPCode: isCPPCode)
@@ -40,21 +42,28 @@ struct InfixOperation: Node {
         if var rightPart = rhs as? NumberNode {
             rightPart.register = "ebx"
             result += "\(try rightPart.interpret(isCPPCode: isCPPCode))"
+        } else if let negativeNode = rhs as? UnaryNegativeNode {
+            result += try negativeNode.interpret(isCPPCode: isCPPCode)
         } else {
             // Pop
             result += try rhs.interpret(isCPPCode: isCPPCode)
             result += "mov ebx, ss:[esp]\n"
             result += "add esp, 4\n"
         }
-
-
+        
         result += "cdq\n"
         result += "idiv ebx\n"
+        
+        result += isNegative ? "neg eax\n" : ""
         
         result += "sub esp, 4\n"
         result += "mov ss:[esp], eax\n"
         
         return result
+    }
+    
+    func interpret(isCPPCode: Bool) throws -> String {
+        return try specialInterpretForInfixOperation(isCPPCode: isCPPCode, isNegative: false)
     }
     
     let op: Operator

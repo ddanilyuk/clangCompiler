@@ -26,14 +26,7 @@ struct ReturnNode: Node {
         }
         result += "mov eax, ss:[esp]\n"
         result += "add esp, 4\n"
-
         result += "mov b, eax"
-//        if isCPPCode {
-//            result += "\n\t\tmov b, eax\n"
-//        } else {
-//            result += "\nmov b, eax\n"
-//        }
-                
         return result
     }
 }

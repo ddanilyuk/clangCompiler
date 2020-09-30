@@ -26,7 +26,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let multiLineText1 = """
         int main() {
-            return ( (-16 / 2) / 4 );
+            return -(-(16.4 / 2) / 4 );
         }
         """
         
@@ -61,11 +61,11 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             let node = try parser.parseBlock(blockType: .startPoint)
             print("\nTree:\n\(TreePrinter.printTree(root: node))")
             
-//            print("ASM code: ")
-//            let asmCode = try node.interpret(isCPPCode: false)
-//            print(asmCode)
-//
-            print("C++ code: ")
+            print("ASM code: ")
+            let asmCode = try node.interpret(isCPPCode: false)
+            print(asmCode)
+
+            print("\nC++ code: ")
             let cppCode = try node.interpret(isCPPCode: true)
             print(cppCode)
             

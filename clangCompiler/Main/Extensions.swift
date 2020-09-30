@@ -26,6 +26,21 @@ public extension String {
         return nil
     }
     
+    func cppModifiedString(numberOfTabs: Int) -> String {
+        var selfString = self
+        
+        let subStrings = selfString.split(separator: "\n")
+        
+        var result = String()
+        
+        for subString in subStrings {
+            let arrayOfTabs = Array(repeating: "\t", count: numberOfTabs)
+            let stringOfTabs = arrayOfTabs.reduce("", { "\($0)\($1)"})
+            result += "\(stringOfTabs)\(subString)\n"
+        }
+        return result
+    }
+    
     mutating func deleteLeftWhitespaces() {
         let index = startIndex
         while index < endIndex {
