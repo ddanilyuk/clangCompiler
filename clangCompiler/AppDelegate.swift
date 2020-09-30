@@ -22,40 +22,28 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         
         var tokens: [Token] = []
         
+        
+        
         let multiLineText1 = """
+        int main() {
+            return ( (-16 / 2) / 4 );
+        }
+        """
+        
+        
+        let multiLineText21 = """
         int main() {
             return -(3 + 2 * 8);
         }
         """
         
-        let multiLineText2 = """
+        let multiLineText22 = """
         int main() {
-            return 012;
+            return ( -16 - 2 - 4 );
         }
         """
         
-        let multiLineText3 = """
-        float main() {
-            return 3.4;
-        }
-        """
-        let multiLineText4 = """
-        float main) {
-            return 3.4;
-        }
-        """
-        let multiLineText5 = """
-        int main() {
-            return 3.4;
-        }
-        """
-        
-        let multiLineText6 = """
-        float main() {
-            return 04;
-        }
-        """
-        
+    
         let multiLineText = multiLineText1
         
         let oneLineCode = multiLineText.oneLineCode
@@ -77,9 +65,9 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
 //            let asmCode = try node.interpret(isCPPCode: false)
 //            print(asmCode)
 //
-//            print("C++ code: ")
-//            let cppCode = try node.interpret(isCPPCode: true)
-//            print(cppCode)
+            print("C++ code: ")
+            let cppCode = try node.interpret(isCPPCode: true)
+            print(cppCode)
             
         } catch let error {
             if let error = error as? CompilerError {

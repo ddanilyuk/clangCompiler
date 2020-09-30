@@ -34,7 +34,7 @@ struct Block: Node {
                 int main()
                 {
                     int b;
-                    __asm {
+                    __asm {\n
                 """
             }
             
@@ -43,6 +43,7 @@ struct Block: Node {
             }
             if isCPPCode {
                 result += """
+                    \n
                     }
                     cout << b << endl;
                 }

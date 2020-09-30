@@ -25,8 +25,36 @@ struct InfixOperation: Node {
 //    }
     
     func interpret(isCPPCode: Bool) throws -> String {
-        // return "(\(try lhs.interpret()) \(op.rawValue) \(try rhs.interpret()))"
-        return ""
+        var result = String()
+        
+        if var leftPart = lhs as? NumberNode {
+            leftPart.register = "eax"
+            result += "\(try leftPart.interpret(isCPPCode: isCPPCode))"
+        } else {
+            // Pop
+            result += try lhs.interpret(isCPPCode: isCPPCode)
+            result += "mov eax, ss:[esp]\n"
+            result += "add esp, 4\n"
+        }
+        
+        if var rightPart = rhs as? NumberNode {
+            rightPart.register = "ebx"
+            result += "\(try rightPart.interpret(isCPPCode: isCPPCode))"
+        } else {
+            // Pop
+            result += try rhs.interpret(isCPPCode: isCPPCode)
+            result += "mov ebx, ss:[esp]\n"
+            result += "add esp, 4\n"
+        }
+
+
+        result += "cdq\n"
+        result += "idiv ebx\n"
+        
+        result += "sub esp, 4\n"
+        result += "mov ss:[esp], eax\n"
+        
+        return result
     }
     
     let op: Operator

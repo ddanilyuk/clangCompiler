@@ -15,15 +15,15 @@ struct NumberNode: Node {
         case octal = "int(octal)"
         case float = "float"
     }
-    
-    var isNegative: Bool
-    
+        
     var node: Node
+    
+    var register: String = "xxx"
     
     var numberType: NumberType
     
     func interpret(isCPPCode: Bool) throws -> String {
-        return try node.interpret(isCPPCode: isCPPCode)
+        return "mov \(register), \(try node.interpret(isCPPCode: isCPPCode))\n"
     }
 
 //    func getValue() -> Float {
@@ -34,8 +34,7 @@ struct NumberNode: Node {
 
 extension NumberNode: TreeRepresentable {
     var name: String {
-        let string = isNegative ? " negative" : " positive"
-        return numberType.rawValue + string
+        return numberType.rawValue
     }
     
     var subnodes: [Node] {

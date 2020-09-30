@@ -15,21 +15,24 @@ struct ReturnNode: Node {
     func interpret(isCPPCode: Bool) throws -> String {
         var result = String()
         
-        if isCPPCode {
-            result += "\n\t\tmov eax, "
-        } else {
-            result += "mov eax, "
-        }
+//        if isCPPCode {
+//            result += "\n\t\tmov eax, "
+//        } else {
+//            result += "mov eax, "
+//        }
         
         for line in subnodes {
             result += try line.interpret(isCPPCode: isCPPCode)
         }
-        
-        if isCPPCode {
-            result += "\n\t\tmov b, eax\n"
-        } else {
-            result += "\nmov b, eax\n"
-        }
+        result += "mov eax, ss:[esp]\n"
+        result += "add esp, 4\n"
+
+        result += "mov b, eax"
+//        if isCPPCode {
+//            result += "\n\t\tmov b, eax\n"
+//        } else {
+//            result += "\nmov b, eax\n"
+//        }
                 
         return result
     }

@@ -23,16 +23,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "55571FDA-17B3-4057-901D-BB5A35598FC4"
+            uuid = "2E27CC61-E89D-4D67-B671-FAD597C1F7E8"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "clangCompiler/Main/Parser.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "122"
-            endingLineNumber = "122"
-            landmarkName = "parseReturn()"
+            startingLineNumber = "87"
+            endingLineNumber = "87"
+            landmarkName = "parseUnaryMinus()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

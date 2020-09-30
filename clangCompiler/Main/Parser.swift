@@ -50,7 +50,7 @@ class Parser {
         guard case let Token.floatNumber(float) = popToken() else {
             throw CompilerError.expectedFloat(tokenIndex)
         }
-        return NumberNode(isNegative: false, node: float, numberType: .float)
+        return NumberNode(node: float, numberType: .float)
     }
     
     func parseIntNumber() throws -> Node {
@@ -60,7 +60,7 @@ class Parser {
         let numberType = integerType == .decimal ? NumberNode.NumberType.decimal : NumberNode.NumberType.octal
         let customInt = CustomIntNode(integer: int, type: integerType)
         
-        return NumberNode(isNegative: false, node: customInt, numberType: numberType)
+        return NumberNode(node: customInt, numberType: numberType)
     }
     
     func parseValue() throws -> Node {
@@ -75,7 +75,6 @@ class Parser {
             return try parseUnaryMinus()
         case .identifier:
             throw CompilerError.invalidFunctionIdentifier(tokenIndex)
-        
         default:
             throw CompilerError.invalidValue(tokenIndex)
         }
@@ -86,15 +85,16 @@ class Parser {
             throw CompilerError.expected("-", tokenIndex)
         }
         
-        let value = try parseValue()
-        let unaryNegative = UnaryNegativeNode(node: value)
+        var unaryNegativeNode = UnaryNegativeNode(node: try parseValue())
         
-//        if var numberNode = value as? NumberNode {
-//            numberNode.isNegative = true
-//            return numberNode
-//        }
-        
-        return unaryNegative
+        switch checkToken() {
+        case .parensOpen, .floatNumber, .intNumber:
+            unaryNegativeNode.postition = .rhs
+        default:
+            unaryNegativeNode.postition = .lhs
+        }
+
+        return unaryNegativeNode
     }
     
     func parseExpressionInParens() throws -> Node {
@@ -232,6 +232,7 @@ class Parser {
     }
     
     func parseInfixOperation(node: Node, nodePriority: Int = 0) throws -> Node {
+        
         var leftNode = node
         
         var priority = try getTokenPriority()
@@ -242,9 +243,9 @@ class Parser {
             
             var rightNode = try parseValue()
             
-            let nextPrecedence = try getTokenPriority()
+            let nextPriority = try getTokenPriority()
             
-            if priority < nextPrecedence {
+            if priority < nextPriority {
                 rightNode = try parseInfixOperation(node: rightNode, nodePriority: priority + 1)
             }
             leftNode = InfixOperation(op: op, lhs: leftNode, rhs: rightNode)
