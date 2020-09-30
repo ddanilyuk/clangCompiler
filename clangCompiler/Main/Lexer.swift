@@ -22,6 +22,7 @@ class Lexer {
         
         // Deleting left-side whitespaces.
         lexerCode.deleteLeftWhitespaces()
+        
         // Iterating to find tokens.
         while let next = try Lexer.getNextPart(with: lexerCode, tokens: tokens) {
             let (regular, part) = next
@@ -46,6 +47,7 @@ class Lexer {
     public static func getPositionFromIndex(tokens: [Token], code: String, index: Int) -> Int {
         var counter = 0
         // Index of error starts from 1
+        
         for token in tokens[0..<(index - 1)] {
             counter += token.lenght
             while code[counter] == Character(" ") {

@@ -147,33 +147,33 @@ class Parser {
         }
         
         if popToken() != Token.parensClose {
-            throw CompilerError.expected("(", tokenIndex)
+            throw CompilerError.expected(")", tokenIndex)
         }
         
         let functionNodeBlock = try parseCurlyCodeBlock(blockType: .function)
         
-        // Checking if return value is matches with actual
-        if let functionBlock = functionNodeBlock as? Block {
-            if let returnNode = functionBlock.nodes.last as? ReturnNode {
-                if let numberNode = returnNode.node as? NumberNode {
-                    switch numberNode.numberType {
-                    case .decimal, .octal:
-                        if functionReturnType == .floatType {
-                            
-                            // -2 becauese current postion is after } but i need to know where number.
-                            // TODO: - change when will be possible to return expression
-                            throw CompilerError.invalidReturnType("Int", tokenIndex - 2)
-                        }
-                    case .float:
-                        if functionReturnType == .intType {
-                            throw CompilerError.invalidReturnType("Float", tokenIndex - 2)
-                        }
-                    }
-                } else {
-//                    throw CompilerError.expected("Expected number in return", tokenIndex - 2)
-                }
-            }
-        }
+//        // Checking if return value is matches with actual
+//        if let functionBlock = functionNodeBlock as? Block {
+//            if let returnNode = functionBlock.nodes.last as? ReturnNode {
+//                if let numberNode = returnNode.node as? NumberNode {
+//                    switch numberNode.numberType {
+//                    case .decimal, .octal:
+//                        if functionReturnType == .floatType {
+//
+//                            // -2 becauese current postion is after } but i need to know where number.
+//                            // TODO: - change when will be possible to return expression
+//                            throw CompilerError.invalidReturnType("Int", tokenIndex - 2)
+//                        }
+//                    case .float:
+//                        if functionReturnType == .intType {
+//                            throw CompilerError.invalidReturnType("Float", tokenIndex - 2)
+//                        }
+//                    }
+//                } else {
+////                    throw CompilerError.expected("Expected number in return", tokenIndex - 2)
+//                }
+//            }
+//        }
         
         return FunctionDefinitionNode(identifier: identifier,
                                       block: functionNodeBlock,

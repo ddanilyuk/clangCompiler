@@ -26,7 +26,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let multiLineText1 = """
         int main() {
-            return -(-(16.4 / 2) / 4 );
+            return -(-(16.4 / 2) / -4 );
         }
         """
         
@@ -39,12 +39,12 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let multiLineText22 = """
         int main() {
-            return ( -16 - 2 - 4 );
+            return ( --16 - 2 - 4 );
         }
         """
         
     
-        let multiLineText = multiLineText1
+        let multiLineText = multiLineText22
         
         let oneLineCode = multiLineText.oneLineCode
         print("File text:\n\(multiLineText)\n")
@@ -54,7 +54,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         do {
             let lexer = try Lexer(code: oneLineCode, tokens: &tokens)
             
-//            print(lexer.tokensTable)
+            print(lexer.tokensTable)
             
             let parser = Parser(tokens: tokens)
             

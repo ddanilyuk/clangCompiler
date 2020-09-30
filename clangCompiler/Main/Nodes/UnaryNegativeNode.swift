@@ -45,7 +45,11 @@ struct UnaryNegativeNode: Node {
             result += "neg \(register)\n"
         } else if let operationNode = node as? InfixOperation {
             result += try operationNode.specialInterpretForInfixOperation(isCPPCode: isCPPCode, isNegative: true)
+        } else {
+            result += try node.interpret(isCPPCode: isCPPCode)
+            result += "neg \(register)\n"
         }
+        
         
         return result
     }
