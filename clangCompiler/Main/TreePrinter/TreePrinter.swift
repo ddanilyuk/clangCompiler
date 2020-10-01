@@ -47,7 +47,7 @@ public class TreePrinter {
     
 
     public static func printTree(root: Node,
-                                 options: TreePrinterOptions = TreePrinterOptions()) -> String
+                                 options: TreePrinterOptions = TreePrinterOptions.alternateDefaults) -> String
     {
         return printNode(node: root,
                          depth: 0,

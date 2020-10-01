@@ -41,6 +41,11 @@ public extension String {
             self.remove(at: index)
         }
     }
+    
+    mutating func deleteSufix(_ sufix: String) {
+        guard self.hasSuffix(sufix) else { return }
+        self = String(self.dropLast(sufix.count))
+    }
 }
 
 

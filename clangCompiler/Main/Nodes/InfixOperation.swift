@@ -11,7 +11,7 @@ import Foundation
 // Operators
 struct InfixOperation: Node {
 
-    func specialInterpretForInfixOperation2(isCPPCode: Bool, isNegative: Bool) throws -> String {
+    func specialInterpretForInfixOperation(isCPPCode: Bool, isNegative: Bool) throws -> String {
         
         var result = String()
         var leftPopping = String()
@@ -76,7 +76,7 @@ struct InfixOperation: Node {
     
     
     func interpret(isCPPCode: Bool) throws -> String {
-        return try specialInterpretForInfixOperation2(isCPPCode: isCPPCode, isNegative: false)
+        return try specialInterpretForInfixOperation(isCPPCode: isCPPCode, isNegative: false)
     }
     
     let op: Operator

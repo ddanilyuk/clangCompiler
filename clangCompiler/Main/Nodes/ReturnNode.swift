@@ -15,11 +15,11 @@ struct ReturnNode: Node {
     func interpret(isCPPCode: Bool) throws -> String {
         var result = String()
         
-        for line in subnodes {
-            result += try line.interpret(isCPPCode: isCPPCode)
-        }
+        result += try node.interpret(isCPPCode: isCPPCode)
+        result.deleteSufix("push eax\n")
+        
         result += "; getting result\n"
-        result += "pop eax\n"
+//        result += "pop eax\n"
         result += "mov b, eax"
         return result
     }

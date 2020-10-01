@@ -28,7 +28,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         """
         
-        
+        // Errors
         let test1 = """
         int main() {
             return -(3 - 2 / 8)ж
@@ -64,10 +64,11 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             )-3 - 2 / 8;
         }
         """
+        // end errors
         
         let test7 = """
-        int main() {
-            return -(16 / 8) / (-2);
+        float main() {
+            return (-2);
         }
         """
         let test8 = """
@@ -79,7 +80,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let test9 = """
         int main() {
-            return -(3 / 3) / -(2.8 / 2) / 2;
+            return -(32 / 2.2) / -(-4 / 2) / 2;
         }
         """
         
@@ -96,14 +97,20 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         """
         
     
-        let multiLineText = test9
-        
-        print("File text:\n\(multiLineText)\n")
-                
+        var code = ""
+
         do {
-            let lexer = try Lexer(code: multiLineText, tokens: &tokens)
+            #if !DEBUG
+                code = try String(contentsOfFile: "2-07-Swift-IV-82-Danyliuk.txt", encoding: String.Encoding.utf8)
+            #endif
             
-//            print(lexer.tokensTable)
+            code = test10
+            
+            print("File text:\n\(code)\n")
+
+            let lexer = try Lexer(code: code, tokens: &tokens)
+            
+            print(lexer.tokensTable)
             
             Parser.globalTokensArray = tokens
             let parser = Parser(tokens: tokens)
@@ -116,17 +123,22 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             let asmCode = try node.interpret(isCPPCode: false)
             print(asmCode)
 
-            InfixOperation.isRightCounter = 0
-            InfixOperation.isLeftCounter = 0
-
-
+            #if !DEBUG
+                try asmCode.write(toFile: "2-07-Swift-IV-82-Danyliuk.asm", atomically: false, encoding: String.Encoding.utf8)
+            #endif
+            
             print("\nC++ code: ")
             let cppCode = try node.interpret(isCPPCode: true)
             print(cppCode)
+
+            #if !DEBUG
+                // "\" may cause error
+                try cppCode.write(toFile: "Source/2-07-Swift-IV-82-Danyliuk.cpp", atomically: false, encoding: String.Encoding.utf8)
+            #endif
             
         } catch let error {
             if let error = error as? CompilerError {
-                error.fullErrorDescription(code: multiLineText, tokens: tokens)
+                error.fullErrorDescription(code: code, tokens: tokens)
             } else {
                 print(error.localizedDescription)
             }
