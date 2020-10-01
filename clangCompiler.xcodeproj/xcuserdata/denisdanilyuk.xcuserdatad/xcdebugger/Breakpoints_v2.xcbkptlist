@@ -23,32 +23,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "A5329F47-5244-41A3-B911-411B2C06031F"
-            shouldBeEnabled = "No"
+            uuid = "B5ADD39C-C917-4576-8E53-69FFA29AA050"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "clangCompiler/Main/Lexer.swift"
+            filePath = "clangCompiler/Main/CompilerError.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "54"
-            endingLineNumber = "54"
-            landmarkName = "getPositionFromIndex(tokens:code:index:isError:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "2C3D5049-CE9D-475E-AABD-F43B3C1BE47A"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "clangCompiler/Main/Parser.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "274"
-            endingLineNumber = "274"
-            landmarkName = "parseInfixOperation(node:nodePriority:)"
+            startingLineNumber = "98"
+            endingLineNumber = "98"
+            landmarkName = "fullErrorDescription(code:tokens:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

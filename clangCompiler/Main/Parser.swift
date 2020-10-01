@@ -11,7 +11,6 @@ import Foundation
 class Parser {
     
     public static var globalTokenIndex = -1
-    public static var globalTokensArray: [Token] = []
         
     // All tokensArray
     let tokensArray: [Token]
@@ -46,12 +45,7 @@ class Parser {
     @discardableResult func popToken() -> Token {
         let token = tokensArray[tokenIndex]
         tokenIndex += 1
-        
-//        if tokensArray.count == Parser.globalTokensArray.count {
-//            Parser.globalTokenIndex += 1
-//        }
         Parser.globalTokenIndex += 1
-
         return token
     }
     
@@ -98,22 +92,8 @@ class Parser {
         if !canCheckToken || Token.op(.minus) == checkToken() {
             throw CompilerError.expected("number or expression", Parser.globalTokenIndex)
         }
-        
-        let unaryNegativeNode = UnaryNegativeNode(node: try parseValue())
-        
-//        if canCheckToken {
-//            switch checkToken() {
-//            case .floatNumber, .intNumber:
-//                unaryNegativeNode.postition = .rhs
-//            default:
-//                unaryNegativeNode.postition = .lhs
-//            }
-//        } else {
-//            throw CompilerError.expected(";", Parser.globalTokenIndex)
-//        }
-        
-
-        return unaryNegativeNode
+                
+        return UnaryNegativeNode(node: try parseValue())
     }
     
     func parseExpressionInParens() throws -> Node {
@@ -237,31 +217,6 @@ class Parser {
         
         var leftNode = node
         
-//        if var unaryMinus = node as? UnaryNegativeNode {
-//            unaryMinus.postition = .lhs
-//            var priority = try getTokenPriority()
-//            
-//            var newLeftNode: Node = node
-//            while priority >= nodePriority {
-//                guard case let Token.op(op) = popToken() else {
-//                    throw CompilerError.expectedOperator(Parser.globalTokenIndex)
-//                }
-//                
-//                var rightNode = try parseValue()
-//                
-//                let nextPriority = try getTokenPriority()
-//                
-//                if priority < nextPriority {
-//                    rightNode = try parseInfixOperation(node: rightNode, nodePriority: priority + 1)
-//                }
-//                
-//                newLeftNode = InfixOperation(op: op, lhs: unaryMinus, rhs: rightNode)
-//                
-//                priority = try getTokenPriority()
-//            }
-//            return newLeftNode
-//        }
-        
         var priority = try getTokenPriority()
         while priority >= nodePriority {
             guard case let Token.op(op) = popToken() else {
@@ -272,27 +227,22 @@ class Parser {
             
 
             if var unaryRight = rightNode as? UnaryNegativeNode {
-                
                 unaryRight.postition = .rhs
-
                 let nextPriority = try getTokenPriority()
-//                rightNode = unaryRight
                 if priority < nextPriority {
                     rightNode = try parseInfixOperation(node: unaryRight, nodePriority: priority + 1)
-                    leftNode = InfixOperation(op: op, lhs: leftNode, rhs: rightNode)
+                    leftNode = OperationNode(op: op, lhs: leftNode, rhs: rightNode)
                 } else {
-                    leftNode = InfixOperation(op: op, lhs: leftNode, rhs: unaryRight)
+                    leftNode = OperationNode(op: op, lhs: leftNode, rhs: unaryRight)
                 }
-                
                 priority = try getTokenPriority()
+                
             } else {
                 let nextPriority = try getTokenPriority()
-                
                 if priority < nextPriority {
                     rightNode = try parseInfixOperation(node: rightNode, nodePriority: priority + 1)
                 }
-                leftNode = InfixOperation(op: op, lhs: leftNode, rhs: rightNode)
-                
+                leftNode = OperationNode(op: op, lhs: leftNode, rhs: rightNode)
                 priority = try getTokenPriority()
             }
         }
@@ -313,7 +263,7 @@ class Parser {
                 let declaration = try parseReturn()
                 nodes.append(declaration)
             default:
-                throw CompilerError.expected("return", Parser.globalTokenIndex)
+                throw CompilerError.unexpectedError(Parser.globalTokenIndex)
             }
         }
         return Block(nodes: nodes, blockType: blockType)

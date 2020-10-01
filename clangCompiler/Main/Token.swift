@@ -8,6 +8,22 @@
 import Foundation
 
 
+enum Operator: String, CaseIterable {
+    case times = "*"
+    case divideBy = "/"
+    case plus = "+"
+    case minus = "-"
+    var precedence: Int {
+        switch self {
+        case .minus, .plus:
+            return 100
+        case .times, .divideBy:
+            return 200
+        }
+    }
+}
+
+
 enum IntegerType {
     case decimal
     case octal

@@ -22,11 +22,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         
         var tokens: [Token] = []
         
-        let multiLineText1 = """
-        int main() {
-            return (4 - (-5));
-        }
-        """
+        
         
         // Errors
         let test1 = """
@@ -54,8 +50,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         """
         
         let test5 = """
-        int main() {
-            return )-3 - 2 / 8;
+        in main() {
+            return (-3 - 2 / 8);
         }
         """
         
@@ -66,18 +62,21 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         """
         // end errors
         
+        // -2
         let test7 = """
         float main() {
-            return (-2);
+            return -2.4;
         }
         """
+        
+        // -3 / -1 = 3
         let test8 = """
         int main() {
-            return (3 / -3) / (-1.8);
+            return (9 / -03) / (-1.8);
         }
         """
         
-        
+        // -16 / - (-2) / 2 = - 16 / 2 / 2 = -4
         let test9 = """
         int main() {
             return -(32 / 2.2) / -(-4 / 2) / 2;
@@ -86,17 +85,37 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let test10 = """
         int main() {
-            return (10 / -(-16 / 4)) / (-3 / 1);
+            return 16 / 2 / 2 / 2;
         }
         """
         
-        let multiLineText22 = """
+        let test11 = """
+        int main() {
+            return 16 / 2 / 2 / 2;
+        }
+        """
+        
+        let test12 = """
         int main() {
             return (-16 - (-2) - 4);
         }
         """
         
+        let test13 = """
+        int main() {
+            return (4 - (-5));
+        }
+        """
+        
+        let test14 = """
+        int main() {
+            return (010 / -2);
+        }
+        """
     
+        let _ = [test1, test2, test3, test4, test5, test6, test7, test8, test9, test10, test11, test12, test13]
+        
+
         var code = ""
 
         do {
@@ -104,7 +123,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
                 code = try String(contentsOfFile: "2-07-Swift-IV-82-Danyliuk.txt", encoding: String.Encoding.utf8)
             #endif
             
-            code = test10
+            code = test14
             
             print("File text:\n\(code)\n")
 
@@ -112,10 +131,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             
             print(lexer.tokensTable)
             
-            Parser.globalTokensArray = tokens
             let parser = Parser(tokens: tokens)
-            
-            
+                        
             let node = try parser.parseBlock(blockType: .startPoint)
             print("Tree:\n\(TreePrinter.printTree(root: node))")
             
@@ -148,27 +165,3 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
 }
-
-
-//// Left node code generation
-//if leftNode is Int || leftNode is Float {
-//    if right.hasSuffix("push eax\n") {
-//        codeBufer += "mov eax, \(left)\n"
-//    } else {
-//        code += "mov eax, \(left)\n"
-//    }
-//} else if left.hasSuffix("push eax\n") {
-//    code += left
-//    //            code += "mov eax, ss : [esp]\nadd esp, 4\n"
-//    popLeft += "pop eax\n"
-//} else if var prefixL = leftNode as? PrefixOperation {
-//    prefixL.sideLeft = true
-//    if right.hasSuffix("push eax\n") {
-//        codeBufer += try prefixL.generatingAsmCode()
-//    } else {
-//        code += try prefixL.generatingAsmCode()
-//    }
-//
-//} else {
-//    code += left
-//}

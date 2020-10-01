@@ -11,8 +11,3 @@ import Foundation
 public protocol Node: TreeRepresentable {
     func interpret(isCPPCode: Bool) throws -> String
 }
-
-
-public protocol ValueNode: Node {
-    func getValue() -> Float
-}

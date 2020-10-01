@@ -10,9 +10,9 @@ import Foundation
 
 struct UnaryNegativeNode: Node {
     
-    enum Postition {
-        case lhs
-        case rhs
+    enum Postition: String {
+        case lhs = "left"
+        case rhs = "right"
     }
     
     var node: Node
@@ -20,7 +20,7 @@ struct UnaryNegativeNode: Node {
     var postition: Postition = .rhs
     
     var name: String {
-        return "unary negative \(postition)"
+        return "unary negative \(postition.rawValue)"
     }
     
     var subnodes: [Node] {
@@ -38,12 +38,12 @@ struct UnaryNegativeNode: Node {
         case .rhs:
             register = "ebx"
         }
-        
+    
         if var numberNode = node as? NumberNode {
             numberNode.register = register
             result += try numberNode.interpret(isCPPCode: isCPPCode)
             result += "neg \(register)\n"
-        } else if let operationNode = node as? InfixOperation {
+        } else if let operationNode = node as? OperationNode {
             result += try operationNode.specialInterpretForInfixOperation(isCPPCode: isCPPCode, isNegative: true)
         } else {
             result += try node.interpret(isCPPCode: isCPPCode)

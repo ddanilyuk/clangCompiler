@@ -49,8 +49,10 @@ class Lexer {
         var superPosition = 0
         var position = 1
         var line = 1
+        
         // Index of error starts from 1
-
+        guard index > 1 else { return (line: 1, position: 1) }
+        
         for token in tokens[0..<(index - 1)] {
             position += token.lenght
             superPosition += token.lenght

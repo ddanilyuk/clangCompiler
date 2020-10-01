@@ -25,12 +25,7 @@ struct NumberNode: Node {
     func interpret(isCPPCode: Bool) throws -> String {
         let result = "mov \(register), \(try node.interpret(isCPPCode: isCPPCode))\n"
         return result
-        
     }
-
-//    func getValue() -> Float {
-//        return node.getValue()
-//    }
 }
 
 
