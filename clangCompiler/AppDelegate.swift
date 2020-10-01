@@ -24,7 +24,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let multiLineText1 = """
         int main() {
-            return -5;
+            return (4 - (-5));
         }
         """
         
@@ -70,6 +70,24 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             return -(16 / 8) / (-2);
         }
         """
+        let test8 = """
+        int main() {
+            return (3 / -3) / (-1.8);
+        }
+        """
+        
+        
+        let test9 = """
+        int main() {
+            return -(3 / 3) / -(2.8 / 2) / 2;
+        }
+        """
+        
+        let test10 = """
+        int main() {
+            return (10 / -(-16 / 4)) / (-3 / 1);
+        }
+        """
         
         let multiLineText22 = """
         int main() {
@@ -78,25 +96,29 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         """
         
     
-        let multiLineText = test7
+        let multiLineText = test9
         
         print("File text:\n\(multiLineText)\n")
                 
         do {
             let lexer = try Lexer(code: multiLineText, tokens: &tokens)
             
-            print(lexer.tokensTable)
+//            print(lexer.tokensTable)
             
             Parser.globalTokensArray = tokens
             let parser = Parser(tokens: tokens)
             
             
             let node = try parser.parseBlock(blockType: .startPoint)
-            print("\nTree:\n\(TreePrinter.printTree(root: node))")
+            print("Tree:\n\(TreePrinter.printTree(root: node))")
             
             print("ASM code: ")
             let asmCode = try node.interpret(isCPPCode: false)
             print(asmCode)
+
+            InfixOperation.isRightCounter = 0
+            InfixOperation.isLeftCounter = 0
+
 
             print("\nC++ code: ")
             let cppCode = try node.interpret(isCPPCode: true)
@@ -114,3 +136,27 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
 }
+
+
+//// Left node code generation
+//if leftNode is Int || leftNode is Float {
+//    if right.hasSuffix("push eax\n") {
+//        codeBufer += "mov eax, \(left)\n"
+//    } else {
+//        code += "mov eax, \(left)\n"
+//    }
+//} else if left.hasSuffix("push eax\n") {
+//    code += left
+//    //            code += "mov eax, ss : [esp]\nadd esp, 4\n"
+//    popLeft += "pop eax\n"
+//} else if var prefixL = leftNode as? PrefixOperation {
+//    prefixL.sideLeft = true
+//    if right.hasSuffix("push eax\n") {
+//        codeBufer += try prefixL.generatingAsmCode()
+//    } else {
+//        code += try prefixL.generatingAsmCode()
+//    }
+//
+//} else {
+//    code += left
+//}

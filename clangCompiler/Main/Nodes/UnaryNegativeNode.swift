@@ -17,7 +17,7 @@ struct UnaryNegativeNode: Node {
     
     var node: Node
     
-    var postition: Postition = .lhs
+    var postition: Postition = .rhs
     
     var name: String {
         return "unary negative \(postition)"
@@ -44,7 +44,7 @@ struct UnaryNegativeNode: Node {
             result += try numberNode.interpret(isCPPCode: isCPPCode)
             result += "neg \(register)\n"
         } else if let operationNode = node as? InfixOperation {
-            result += try operationNode.specialInterpretForInfixOperation(isCPPCode: isCPPCode, isNegative: true)
+            result += try operationNode.specialInterpretForInfixOperation2(isCPPCode: isCPPCode, isNegative: true)
         } else {
             result += try node.interpret(isCPPCode: isCPPCode)
             result += "neg \(register)\n"

@@ -99,18 +99,18 @@ class Parser {
             throw CompilerError.expected("number or expression", Parser.globalTokenIndex)
         }
         
-        var unaryNegativeNode = UnaryNegativeNode(node: try parseValue())
+        let unaryNegativeNode = UnaryNegativeNode(node: try parseValue())
         
-        if canCheckToken {
-            switch checkToken() {
-            case .parensOpen, .floatNumber, .intNumber:
-                unaryNegativeNode.postition = .rhs
-            default:
-                unaryNegativeNode.postition = .lhs
-            }
-        } else {
-            throw CompilerError.expected(";", Parser.globalTokenIndex)
-        }
+//        if canCheckToken {
+//            switch checkToken() {
+//            case .floatNumber, .intNumber:
+//                unaryNegativeNode.postition = .rhs
+//            default:
+//                unaryNegativeNode.postition = .lhs
+//            }
+//        } else {
+//            throw CompilerError.expected(";", Parser.globalTokenIndex)
+//        }
         
 
         return unaryNegativeNode
@@ -172,29 +172,6 @@ class Parser {
         
         let functionNodeBlock = try parseCurlyCodeBlock(blockType: .function)
         
-//        // Checking if return value is matches with actual
-//        if let functionBlock = functionNodeBlock as? Block {
-//            if let returnNode = functionBlock.nodes.last as? ReturnNode {
-//                if let numberNode = returnNode.node as? NumberNode {
-//                    switch numberNode.numberType {
-//                    case .decimal, .octal:
-//                        if functionReturnType == .floatType {
-//
-//                            // -2 becauese current postion is after } but i need to know where number.
-//                            // TODO: - change when will be possible to return expression
-//                            throw CompilerError.invalidReturnType("Int", tokenIndex - 2)
-//                        }
-//                    case .float:
-//                        if functionReturnType == .intType {
-//                            throw CompilerError.invalidReturnType("Float", tokenIndex - 2)
-//                        }
-//                    }
-//                } else {
-////                    throw CompilerError.expected("Expected number in return", tokenIndex - 2)
-//                }
-//            }
-//        }
-        
         return FunctionDefinitionNode(identifier: identifier,
                                       block: functionNodeBlock,
                                       returnType: functionReturnType)
@@ -246,12 +223,44 @@ class Parser {
             throw CompilerError.expectedExpression(Parser.globalTokenIndex)
         }
         let node = try parseValue()
-        return try parseInfixOperation(node: node)
+        
+        if var unaryNegativeNode = node as? UnaryNegativeNode {
+            unaryNegativeNode.postition = .lhs
+            return try parseInfixOperation(node: unaryNegativeNode)
+        } else {
+            return try parseInfixOperation(node: node)
+        }
+        
     }
     
     func parseInfixOperation(node: Node, nodePriority: Int = 0) throws -> Node {
         
         var leftNode = node
+        
+//        if var unaryMinus = node as? UnaryNegativeNode {
+//            unaryMinus.postition = .lhs
+//            var priority = try getTokenPriority()
+//            
+//            var newLeftNode: Node = node
+//            while priority >= nodePriority {
+//                guard case let Token.op(op) = popToken() else {
+//                    throw CompilerError.expectedOperator(Parser.globalTokenIndex)
+//                }
+//                
+//                var rightNode = try parseValue()
+//                
+//                let nextPriority = try getTokenPriority()
+//                
+//                if priority < nextPriority {
+//                    rightNode = try parseInfixOperation(node: rightNode, nodePriority: priority + 1)
+//                }
+//                
+//                newLeftNode = InfixOperation(op: op, lhs: unaryMinus, rhs: rightNode)
+//                
+//                priority = try getTokenPriority()
+//            }
+//            return newLeftNode
+//        }
         
         var priority = try getTokenPriority()
         while priority >= nodePriority {
@@ -261,14 +270,31 @@ class Parser {
             
             var rightNode = try parseValue()
             
-            let nextPriority = try getTokenPriority()
-            
-            if priority < nextPriority {
-                rightNode = try parseInfixOperation(node: rightNode, nodePriority: priority + 1)
+
+            if var unaryRight = rightNode as? UnaryNegativeNode {
+                
+                unaryRight.postition = .rhs
+
+                let nextPriority = try getTokenPriority()
+//                rightNode = unaryRight
+                if priority < nextPriority {
+                    rightNode = try parseInfixOperation(node: unaryRight, nodePriority: priority + 1)
+                    leftNode = InfixOperation(op: op, lhs: leftNode, rhs: rightNode)
+                } else {
+                    leftNode = InfixOperation(op: op, lhs: leftNode, rhs: unaryRight)
+                }
+                
+                priority = try getTokenPriority()
+            } else {
+                let nextPriority = try getTokenPriority()
+                
+                if priority < nextPriority {
+                    rightNode = try parseInfixOperation(node: rightNode, nodePriority: priority + 1)
+                }
+                leftNode = InfixOperation(op: op, lhs: leftNode, rhs: rightNode)
+                
+                priority = try getTokenPriority()
             }
-            leftNode = InfixOperation(op: op, lhs: leftNode, rhs: rightNode)
-            
-            priority = try getTokenPriority()
         }
         return leftNode
     }
