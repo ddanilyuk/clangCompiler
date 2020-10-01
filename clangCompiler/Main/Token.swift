@@ -99,6 +99,7 @@ enum Token: Equatable {
                     throw CompilerError.invalidOperator($0, Token.currentTokenIndex)
                 }
             },
+            
             "\\(": { _ in .parensOpen },
             "\\)": { _ in .parensClose },
             "\\{": { _ in .curlyOpen },

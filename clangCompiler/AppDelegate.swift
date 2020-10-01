@@ -27,7 +27,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         // Errors
         let test1 = """
         int main() {
-            return -(3 - 2 / 8)ж
+            return -(3 - 2 / 8)g
         }
         """
         
@@ -56,8 +56,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         """
         
         let test6 = """
-        int main() {
-            )-3 - 2 / 8;
+        int main()
+            return -16 / 7 / 8;
         }
         """
         // end errors
@@ -85,45 +85,27 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let test10 = """
         int main() {
-            return 16 / 2 / 2 / 2;
+            return 16.3 / 2 / 02 / 2;
         }
         """
         
         let test11 = """
         int main() {
-            return 16 / 2 / 2 / 2;
-        }
-        """
-        
-        let test12 = """
-        int main() {
             return (-16 - (-2) - 4);
         }
         """
         
-        let test13 = """
-        int main() {
-            return (4 - (-5));
-        }
-        """
-        
-        let test14 = """
-        int main() {
-            return (010 / -2);
-        }
-        """
     
-        let _ = [test1, test2, test3, test4, test5, test6, test7, test8, test9, test10, test11, test12, test13]
+        let _ = [test1, test2, test3, test4, test5, test6, test7, test8, test9, test10, test11]
         
-
         var code = ""
 
         do {
             #if !DEBUG
-                code = try String(contentsOfFile: "2-07-Swift-IV-82-Danyliuk.txt", encoding: String.Encoding.utf8)
+            code = try String(contentsOfFile: "2-07-Swift-IV-82-Danyliuk.txt", encoding: String.Encoding.windowsCP1251)
             #endif
             
-            code = test14
+            code = test1
             
             print("File text:\n\(code)\n")
 
