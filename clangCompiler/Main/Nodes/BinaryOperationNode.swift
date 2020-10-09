@@ -25,9 +25,9 @@ struct BinaryOperationNode: Node {
     
     func specialInterpretForInfixOperation(isCPPCode: Bool, isNegative: Bool) throws -> String {
         
-        if Operator.divideBy != op {
-            throw CompilerError.expectedOperator(1)
-        }
+//        if Operator.divideBy != op {
+//            throw CompilerError.expectedOperator(1)
+//        }
         
         var result = String()
         var leftPopping = String()

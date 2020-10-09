@@ -205,12 +205,6 @@ class Parser {
         let node = try parseValue()
         
         return try parseInfixOperation(node: node)
-
-//        if var unaryNegativeNode = node as? UnaryNegativeNode {
-//            unaryNegativeNode.postition = .lhs
-//            return try parseInfixOperation(node: unaryNegativeNode)
-//        } else {
-//        }
     }
     
     func parseInfixOperation(node: Node, nodePriority: Int = 0) throws -> Node {
@@ -219,7 +213,7 @@ class Parser {
         
         var priority = try getTokenPriority()
         
-        // If node priority < 0 (not Token.op)
+        // If next token have priority less than 0 (when it is not operator), this while block skips.
         while priority >= nodePriority {
             guard case let Token.op(op) = popToken() else {
                 throw CompilerError.expectedOperator(Parser.globalTokenIndex)
@@ -234,14 +228,16 @@ class Parser {
             }
             
             let nextPriority = try getTokenPriority()
+            
             if priority < nextPriority {
                 rightNode = try parseInfixOperation(node: rightNode, nodePriority: priority + 1)
             }
+            
             leftNode = BinaryOperationNode(op: op, lhs: leftNode, rhs: rightNode)
 
             priority = try getTokenPriority()
-
         }
+        
         return leftNode
     }
 

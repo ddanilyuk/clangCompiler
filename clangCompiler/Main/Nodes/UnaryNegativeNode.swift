@@ -48,6 +48,7 @@ struct UnaryNegativeNode: Node {
             result += try operationNode.specialInterpretForInfixOperation(isCPPCode: isCPPCode, isNegative: true)
         } else {
             // If node is expression
+            assertionFailure("in expression")
             result += try node.interpret(isCPPCode: isCPPCode)
             result += "neg \(register)\n"
         }

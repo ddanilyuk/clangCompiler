@@ -95,6 +95,12 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         """
         
+        
+        let testX = """
+        int main() {
+            return 10 > 3 * 2;
+        }
+        """
     
         let _ = [test1, test2, test3, test4, test5, test6, test7, test8, test9, test10, test11]
         
@@ -105,7 +111,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             code = try String(contentsOfFile: "2-07-Swift-IV-82-Danyliuk.txt", encoding: String.Encoding.windowsCP1251)
             #endif
             
-            code = test8
+            code = testX
             
             print("File text:\n\(code)\n")
 
