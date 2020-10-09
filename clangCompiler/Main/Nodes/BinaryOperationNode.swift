@@ -9,14 +9,14 @@ import Foundation
 
 
 // Operators
-struct OperationNode: Node {
+struct BinaryOperationNode: Node {
 
     let op: Operator
     let lhs: Node
     let rhs: Node
     
     var precedence: Int {
-        return op.precedence
+        return op.priority
     }
 
     func interpret(isCPPCode: Bool) throws -> String {
@@ -89,7 +89,7 @@ struct OperationNode: Node {
 }
 
 
-extension OperationNode: TreeRepresentable {
+extension BinaryOperationNode: TreeRepresentable {
     var name: String {
         return op.rawValue + " operation"
     }

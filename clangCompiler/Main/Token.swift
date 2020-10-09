@@ -13,7 +13,8 @@ enum Operator: String, CaseIterable {
     case divideBy = "/"
     case plus = "+"
     case minus = "-"
-    var precedence: Int {
+    
+    var priority: Int {
         switch self {
         case .minus, .plus:
             return 100

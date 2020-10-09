@@ -72,7 +72,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         // -3 / -1 = 3
         let test8 = """
         int main() {
-            return (9 / -03) / (-1.8);
+            return (-9 / -03) / (-1.8);
         }
         """
         
@@ -105,7 +105,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             code = try String(contentsOfFile: "2-07-Swift-IV-82-Danyliuk.txt", encoding: String.Encoding.windowsCP1251)
             #endif
             
-            code = test1
+            code = test8
             
             print("File text:\n\(code)\n")
 

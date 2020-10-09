@@ -33,12 +33,12 @@ class Parser {
     func getTokenPriority() throws -> Int {
         if canCheckToken {
             if case let Token.op(op) = checkToken() {
-                return op.precedence
+                return op.priority
             } else {
                 return -1
             }
         } else {
-            return -2
+            throw CompilerError.unexpectedError(Parser.globalTokenIndex)
         }
     }
     
@@ -60,7 +60,7 @@ class Parser {
         guard case let Token.intNumber(int, integerType) = popToken() else {
             throw CompilerError.expectedInt(Parser.globalTokenIndex)
         }
-        let numberType = integerType == .decimal ? NumberNode.NumberType.decimal : NumberNode.NumberType.octal
+        let numberType = integerType == .decimal ? NumberNode.NumberType.intDecimal : NumberNode.NumberType.intOctal
         let customInt = CustomIntNode(integer: int, type: integerType)
         
         return NumberNode(node: customInt, numberType: numberType)
@@ -99,7 +99,7 @@ class Parser {
     func parseExpressionInParens() throws -> Node {
         // Check if next element is "("
         if popToken() != Token.parensOpen {
-            throw CompilerError.expected("(", tokenIndex)
+            throw CompilerError.expected("(", Parser.globalTokenIndex)
         }
         
         // Parsing expression inside parens
@@ -140,7 +140,6 @@ class Parser {
         guard case let Token.identifier(identifier) = popToken() else {
             throw CompilerError.invalidFunctionIdentifier(Parser.globalTokenIndex)
         }
-        
         
         if popToken() != Token.parensOpen {
             throw CompilerError.expected("(", Parser.globalTokenIndex)
@@ -202,15 +201,16 @@ class Parser {
         guard canCheckToken else {
             throw CompilerError.expectedExpression(Parser.globalTokenIndex)
         }
+        
         let node = try parseValue()
         
-        if var unaryNegativeNode = node as? UnaryNegativeNode {
-            unaryNegativeNode.postition = .lhs
-            return try parseInfixOperation(node: unaryNegativeNode)
-        } else {
-            return try parseInfixOperation(node: node)
-        }
-        
+        return try parseInfixOperation(node: node)
+
+//        if var unaryNegativeNode = node as? UnaryNegativeNode {
+//            unaryNegativeNode.postition = .lhs
+//            return try parseInfixOperation(node: unaryNegativeNode)
+//        } else {
+//        }
     }
     
     func parseInfixOperation(node: Node, nodePriority: Int = 0) throws -> Node {
@@ -218,6 +218,8 @@ class Parser {
         var leftNode = node
         
         var priority = try getTokenPriority()
+        
+        // If node priority < 0 (not Token.op)
         while priority >= nodePriority {
             guard case let Token.op(op) = popToken() else {
                 throw CompilerError.expectedOperator(Parser.globalTokenIndex)
@@ -225,26 +227,20 @@ class Parser {
             
             var rightNode = try parseValue()
             
-
-            if var unaryRight = rightNode as? UnaryNegativeNode {
-                unaryRight.postition = .rhs
-                let nextPriority = try getTokenPriority()
-                if priority < nextPriority {
-                    rightNode = try parseInfixOperation(node: unaryRight, nodePriority: priority + 1)
-                    leftNode = OperationNode(op: op, lhs: leftNode, rhs: rightNode)
-                } else {
-                    leftNode = OperationNode(op: op, lhs: leftNode, rhs: unaryRight)
-                }
-                priority = try getTokenPriority()
-                
-            } else {
-                let nextPriority = try getTokenPriority()
-                if priority < nextPriority {
-                    rightNode = try parseInfixOperation(node: rightNode, nodePriority: priority + 1)
-                }
-                leftNode = OperationNode(op: op, lhs: leftNode, rhs: rightNode)
-                priority = try getTokenPriority()
+            // If right node is unary negative, select its position
+            if var unaryNegativeNode = rightNode as? UnaryNegativeNode {
+                unaryNegativeNode.postition = .rhs
+                rightNode = unaryNegativeNode
             }
+            
+            let nextPriority = try getTokenPriority()
+            if priority < nextPriority {
+                rightNode = try parseInfixOperation(node: rightNode, nodePriority: priority + 1)
+            }
+            leftNode = BinaryOperationNode(op: op, lhs: leftNode, rhs: rightNode)
+
+            priority = try getTokenPriority()
+
         }
         return leftNode
     }

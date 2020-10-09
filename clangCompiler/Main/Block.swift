@@ -12,7 +12,7 @@ import Foundation
 struct Block: Node {
     
     enum BlockType: String {
-        case function = "function"
+        case function = "function block"
         case startPoint = "start point"
     }
     
@@ -45,6 +45,7 @@ struct Block: Node {
                     result += try line.interpret(isCPPCode: isCPPCode)
                 }
             }
+            
             if isCPPCode {
                 result += """
                     }

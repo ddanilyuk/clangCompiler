@@ -17,10 +17,10 @@ struct UnaryNegativeNode: Node {
     
     var node: Node
     
-    var postition: Postition = .rhs
+    var postition: Postition = .lhs
     
     var name: String {
-        return "unary negative \(postition.rawValue)"
+        return "unary negative | \(postition.rawValue) position"
     }
     
     var subnodes: [Node] {
@@ -29,7 +29,6 @@ struct UnaryNegativeNode: Node {
     
     func interpret(isCPPCode: Bool) throws -> String {
         var result = String()
-        
         var register = String()
         
         switch postition {
@@ -40,12 +39,15 @@ struct UnaryNegativeNode: Node {
         }
     
         if var numberNode = node as? NumberNode {
+            // If node is number
             numberNode.register = register
             result += try numberNode.interpret(isCPPCode: isCPPCode)
             result += "neg \(register)\n"
-        } else if let operationNode = node as? OperationNode {
+        } else if let operationNode = node as? BinaryOperationNode {
+            // If node is Binary operation
             result += try operationNode.specialInterpretForInfixOperation(isCPPCode: isCPPCode, isNegative: true)
         } else {
+            // If node is expression
             result += try node.interpret(isCPPCode: isCPPCode)
             result += "neg \(register)\n"
         }

@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5F37B206251E38CE00B08A6B /* OperationNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F37B205251E38CE00B08A6B /* OperationNode.swift */; };
+		5F37B206251E38CE00B08A6B /* BinaryOperationNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F37B205251E38CE00B08A6B /* BinaryOperationNode.swift */; };
 		5F37B209251E38EF00B08A6B /* Block.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F37B208251E38EF00B08A6B /* Block.swift */; };
 		5F73069A2523C74A00DFC8A4 /* UnaryNegativeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7306992523C74A00DFC8A4 /* UnaryNegativeNode.swift */; };
 		5FCC19B4251A40AD00589EF7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FCC19B3251A40AD00589EF7 /* AppDelegate.swift */; };
@@ -31,7 +31,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		5F37B205251E38CE00B08A6B /* OperationNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationNode.swift; sourceTree = "<group>"; };
+		5F37B205251E38CE00B08A6B /* BinaryOperationNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinaryOperationNode.swift; sourceTree = "<group>"; };
 		5F37B208251E38EF00B08A6B /* Block.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Block.swift; sourceTree = "<group>"; };
 		5F7306992523C74A00DFC8A4 /* UnaryNegativeNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnaryNegativeNode.swift; sourceTree = "<group>"; };
 		5FCC19B0251A40AD00589EF7 /* clangCompiler.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = clangCompiler.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -139,7 +139,7 @@
 				5F7306992523C74A00DFC8A4 /* UnaryNegativeNode.swift */,
 				5FD40642251D20A200BE7A73 /* NumberNode.swift */,
 				5FD40646251D20EF00BE7A73 /* CustomIntNode.swift */,
-				5F37B205251E38CE00B08A6B /* OperationNode.swift */,
+				5F37B205251E38CE00B08A6B /* BinaryOperationNode.swift */,
 			);
 			path = Nodes;
 			sourceTree = "<group>";
@@ -220,7 +220,7 @@
 				5FD4063C251D1C6100BE7A73 /* FunctionDefinitionNode.swift in Sources */,
 				5FCC19E0251AA06400589EF7 /* Extensions.swift in Sources */,
 				5FD40647251D20EF00BE7A73 /* CustomIntNode.swift in Sources */,
-				5F37B206251E38CE00B08A6B /* OperationNode.swift in Sources */,
+				5F37B206251E38CE00B08A6B /* BinaryOperationNode.swift in Sources */,
 				5FD40643251D20A200BE7A73 /* NumberNode.swift in Sources */,
 				5F73069A2523C74A00DFC8A4 /* UnaryNegativeNode.swift in Sources */,
 				5FCC19B4251A40AD00589EF7 /* AppDelegate.swift in Sources */,

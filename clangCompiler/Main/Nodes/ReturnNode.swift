@@ -16,10 +16,9 @@ struct ReturnNode: Node {
         var result = String()
         
         result += try node.interpret(isCPPCode: isCPPCode)
-        result.deleteSufix("push eax\n")
         
+        result.deleteSufix("push eax\n")
         result += "; getting result\n"
-//        result += "pop eax\n"
         result += "mov b, eax"
         return result
     }

@@ -11,8 +11,8 @@ import Foundation
 struct NumberNode: Node {
         
     enum NumberType: String {
-        case decimal = "int(decimal)"
-        case octal = "int(octal)"
+        case intDecimal = "int(decimal)"
+        case intOctal = "int(octal)"
         case float = "float"
     }
         
@@ -23,8 +23,7 @@ struct NumberNode: Node {
     var numberType: NumberType
     
     func interpret(isCPPCode: Bool) throws -> String {
-        let result = "mov \(register), \(try node.interpret(isCPPCode: isCPPCode))\n"
-        return result
+        return "mov \(register), \(try node.interpret(isCPPCode: isCPPCode))\n"
     }
 }
 
