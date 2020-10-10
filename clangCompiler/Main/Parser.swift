@@ -8,22 +8,19 @@
 import Foundation
 
 
-enum Definition {
-    case variable(value: Node)
-//    case function(FunctionDefinition)
-}
+//enum Definition {
+//    case variable(value: Node)
+////    case function(FunctionDefinition)
+//}
 
 class Parser {
+    typealias IdetifiersDictionary = [String : (position: Int, valueType: Token)]
     
-    public static var identifiers: [String: Definition] = [
-        "PI": .variable(value: VariableNode(value: NumberNode(value: Float(3.14), numberType: NumberNode.NumberType.float), identifier: "PI", returnType: Token.floatType)),
-    ]
-    
-//    public static var identifiers: [String: Int] = [ : ]
-//    public static var currentVariablePosition: Int = 4
-//
+    public static var identifiers: IdetifiersDictionary = [ : ]
+    public static var currentVariablePosition: Int = 4
+
     public static var globalTokenIndex = -1
-        
+    
     // All tokensArray
     let tokensArray: [Token]
     
@@ -77,10 +74,11 @@ class Parser {
             guard case let Token.identifier(identifier) = popToken() else {
                 throw CompilerError.invalidIdentifier(Parser.globalTokenIndex)
             }
-            if Parser.identifiers[identifier] == nil {
+            guard let (position, valueType) = Parser.identifiers[identifier] else {
                 throw CompilerError.notDefined(identifier, Parser.globalTokenIndex)
             }
-            return identifier
+            
+            return VariableNode(identifier: identifier, position: position, valueType: valueType, variableNodeType: .getting)
         default:
             throw CompilerError.invalidValue(Parser.globalTokenIndex)
         }
@@ -110,28 +108,20 @@ class Parser {
             throw CompilerError.invalidIdentifier(Parser.globalTokenIndex)
         }
         
-        guard let definition = Parser.identifiers[identifier], case let .variable(variableValue) = definition else {
+        guard let (position, valueType) = Parser.identifiers[identifier] else {
             throw CompilerError.notDefined(identifier, Parser.globalTokenIndex)
         }
         
-        guard var variable = variableValue as? VariableNode else {
-            throw CompilerError.expected("variable", Parser.globalTokenIndex)
-        }
-
         if !canCheckToken || popToken() != Token.op(.equal) {
             throw CompilerError.expected("=", Parser.globalTokenIndex)
         }
         
         let newValue = try parseExpression()
         
-        variable.value = newValue
-        
-        Parser.identifiers[identifier] = .variable(value: variable)
-        
         if !canCheckToken || popToken() != Token.semicolon {
             throw CompilerError.expected(";", Parser.globalTokenIndex)
         }
-        return variable
+        return VariableNode(identifier: identifier, position: position, value: newValue, valueType: valueType, variableNodeType: .changing)
     }
     
     func parseUnaryMinus() throws -> Node {
@@ -204,11 +194,14 @@ class Parser {
     }
     
     func parseVariableDeclaration(valueType: Token, identifier: String) throws -> Node {
-        var variable = VariableNode(identifier: identifier, returnType: valueType)
+        var variable = VariableNode(identifier: identifier, position: Parser.currentVariablePosition, valueType: valueType, variableNodeType: .declarationAndAssignment)
+        Parser.currentVariablePosition += 4
+
+        Parser.identifiers[identifier] = (position: variable.position, valueType: variable.valueType)
 
         // If only declaration of variable
         if checkToken() == Token.semicolon {
-            Parser.identifiers[identifier] = .variable(value: variable)
+            variable.variableNodeType = .onlyDeclaration
             popToken()
             return variable
         }
@@ -219,8 +212,6 @@ class Parser {
         
         let value = try parseExpression()
         variable.value = value
-        
-        Parser.identifiers[identifier] = .variable(value: variable)
         
         if !canCheckToken || popToken() != Token.semicolon {
             throw CompilerError.expected(";", Parser.globalTokenIndex)
@@ -307,8 +298,11 @@ class Parser {
             
             // If right node is unary negative, select its position
             if var unaryNegativeNode = rightNode as? UnaryNegativeNode {
-                unaryNegativeNode.postition = .rhs
+                unaryNegativeNode.lrPostition = .rhs
                 rightNode = unaryNegativeNode
+            } else if var variableNode = rightNode as? VariableNode {
+                variableNode.lrPosition = .rhs
+                rightNode = variableNode
             }
             
             let nextPriority = try getTokenPriority()

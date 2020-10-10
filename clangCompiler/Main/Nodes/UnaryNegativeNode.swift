@@ -8,19 +8,20 @@
 import Foundation
 
 
+enum LRPosition: String {
+    case lhs = "left"
+    case rhs = "right"
+}
+
+
 struct UnaryNegativeNode: Node {
-    
-    enum Postition: String {
-        case lhs = "left"
-        case rhs = "right"
-    }
-    
+
     var node: Node
     
-    var postition: Postition = .lhs
+    var lrPostition: LRPosition = .lhs
     
     var name: String {
-        return "unary negative | \(postition.rawValue) position"
+        return "unary negative | \(lrPostition.rawValue) position"
     }
     
     var subnodes: [Node] {
@@ -31,7 +32,7 @@ struct UnaryNegativeNode: Node {
         var result = String()
         var register = String()
         
-        switch postition {
+        switch lrPostition {
         case .lhs:
             register = "eax"
         case .rhs:

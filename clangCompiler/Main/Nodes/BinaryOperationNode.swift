@@ -50,7 +50,7 @@ struct BinaryOperationNode: Node {
             result += try lhs.interpret(isCPPCode: isCPPCode)
             leftPopping += "pop eax\n"
         } else if var negativeNode = lhs as? UnaryNegativeNode {
-            negativeNode.postition = .lhs
+            negativeNode.lrPostition = .lhs
             
             if rightPartInterpreting.hasSuffix("push eax\n") {
                 buffer += try negativeNode.interpret(isCPPCode: isCPPCode)
@@ -69,7 +69,7 @@ struct BinaryOperationNode: Node {
             result += try rhs.interpret(isCPPCode: isCPPCode)
             rightPopping += "pop ebx\n"
         } else if var negativeNode = rhs as? UnaryNegativeNode {
-            negativeNode.postition = .rhs
+            negativeNode.lrPostition = .rhs
             result += try negativeNode.interpret(isCPPCode: isCPPCode)
         } else {
             result += try rhs.interpret(isCPPCode: isCPPCode)
@@ -79,8 +79,16 @@ struct BinaryOperationNode: Node {
         result += buffer
         result += "\(rightPopping)\(leftPopping)"
         
-        result += "cdq\n"
-        result += "idiv ebx\n"
+        switch op {
+        case .divideBy:
+            result += "cdq\n"
+            result += "idiv ebx\n"
+        case .times:
+            result += "imul eax, ebx"
+        default:
+            assertionFailure("Not / or *")
+        }
+        
         result += isNegative ? "neg eax\n" : ""
         result += "push eax\n"
         

@@ -99,7 +99,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         let testX = """
         int main() {
             int a;
-            a = 3 * a;
+            a = 1;
+            a = 3 / a / (4 / 2);
             int b = 2;
             a = b / 2;
 
@@ -129,9 +130,9 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             let node = try parser.parseBlock(blockType: .startPoint)
             print("Tree:\n\(TreePrinter.printTree(root: node))")
             
-//            print("ASM code: ")
-//            let asmCode = try node.interpret(isCPPCode: false)
-//            print(asmCode)
+            print("ASM code: ")
+            let asmCode = try node.interpret(isCPPCode: false)
+            print(asmCode)
 
             #if !DEBUG
                 try asmCode.write(toFile: "2-07-Swift-IV-82-Danyliuk.asm", atomically: false, encoding: String.Encoding.utf8)
