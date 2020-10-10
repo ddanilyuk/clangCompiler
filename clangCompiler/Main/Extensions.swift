@@ -95,7 +95,9 @@ extension String: Node {
     }
     
     public var name: String {
-        return "variable \(self)"
+//        let value = Parser.identifiers[self] as! Definition
+        
+        return "variable \"\(self)\""
     }
     
     public var subnodes: [Node] {

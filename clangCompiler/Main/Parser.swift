@@ -15,10 +15,13 @@ enum Definition {
 
 class Parser {
     
-    var identifiers: [String: Definition] = [
+    public static var identifiers: [String: Definition] = [
         "PI": .variable(value: VariableNode(value: NumberNode(value: Float(3.14), numberType: NumberNode.NumberType.float), identifier: "PI", returnType: Token.floatType)),
     ]
     
+//    public static var identifiers: [String: Int] = [ : ]
+//    public static var currentVariablePosition: Int = 4
+//
     public static var globalTokenIndex = -1
         
     // All tokensArray
@@ -71,10 +74,13 @@ class Parser {
             return try parseUnaryMinus()
         case .identifier:
             // TODO:- Parse identifier
-            guard case let .identifier(name) = popToken() else {
-                throw CompilerError.expected("id", Parser.globalTokenIndex)
+            guard case let Token.identifier(identifier) = popToken() else {
+                throw CompilerError.invalidIdentifier(Parser.globalTokenIndex)
             }
-            return name
+            if Parser.identifiers[identifier] == nil {
+                throw CompilerError.notDefined(identifier, Parser.globalTokenIndex)
+            }
+            return identifier
         default:
             throw CompilerError.invalidValue(Parser.globalTokenIndex)
         }
@@ -98,18 +104,21 @@ class Parser {
     }
     
     /// Now, this function parse only variables changes.
-    func parseIdentifier() throws -> Node {
+    func parseIdentifierChange() throws -> Node {
         
         guard case let .identifier(identifier) = popToken() else {
-            throw CompilerError.expected("identifier", Parser.globalTokenIndex)
+            throw CompilerError.invalidIdentifier(Parser.globalTokenIndex)
         }
         
-        guard let definition = identifiers[identifier], case let .variable(variableValue) = definition else {
+        guard let definition = Parser.identifiers[identifier], case let .variable(variableValue) = definition else {
             throw CompilerError.notDefined(identifier, Parser.globalTokenIndex)
         }
-        guard var variable = variableValue as? VariableNode else { fatalError("not a variable node") }
+        
+        guard var variable = variableValue as? VariableNode else {
+            throw CompilerError.expected("variable", Parser.globalTokenIndex)
+        }
 
-        if popToken() != Token.op(.equal) {
+        if !canCheckToken || popToken() != Token.op(.equal) {
             throw CompilerError.expected("=", Parser.globalTokenIndex)
         }
         
@@ -117,7 +126,7 @@ class Parser {
         
         variable.value = newValue
         
-        identifiers[identifier] = .variable(value: variable)
+        Parser.identifiers[identifier] = .variable(value: variable)
         
         if !canCheckToken || popToken() != Token.semicolon {
             throw CompilerError.expected(";", Parser.globalTokenIndex)
@@ -126,7 +135,7 @@ class Parser {
     }
     
     func parseUnaryMinus() throws -> Node {
-        if popToken() != Token.op(.minus) {
+        if !canCheckToken || popToken() != Token.op(.minus) {
             throw CompilerError.expected("-", tokenIndex)
         }
         
@@ -139,7 +148,7 @@ class Parser {
     
     func parseExpressionInParens() throws -> Node {
         // Check if next element is "("
-        if popToken() != Token.parensOpen {
+        if !canCheckToken || popToken() != Token.parensOpen {
             throw CompilerError.expected("(", Parser.globalTokenIndex)
         }
         
@@ -147,7 +156,7 @@ class Parser {
         let expressionNode = try parseExpression()
         
         // Check if next element is ")"
-        if popToken() != Token.parensClose {
+        if !canCheckToken || popToken() != Token.parensClose {
             throw CompilerError.expected(")", Parser.globalTokenIndex)
         }
 
@@ -155,7 +164,7 @@ class Parser {
     }
     
     func parseReturn() throws -> Node {
-        if popToken() != Token.return {
+        if !canCheckToken ||  popToken() != Token.return {
             throw CompilerError.expected("return", Parser.globalTokenIndex)
         }
                 
@@ -180,7 +189,11 @@ class Parser {
         }
         
         guard case let Token.identifier(identifier) = popToken() else {
-            throw CompilerError.invalidFunctionIdentifier(Parser.globalTokenIndex)
+            throw CompilerError.invalidIdentifier(Parser.globalTokenIndex)
+        }
+        
+        if Parser.identifiers[identifier] != nil {
+            throw CompilerError.alreadyDefined(identifier, Parser.globalTokenIndex)
         }
         
         if checkToken() == .parensOpen {
@@ -188,7 +201,6 @@ class Parser {
         } else {
             return try parseVariableDeclaration(valueType: valueType, identifier: identifier)
         }
-        
     }
     
     func parseVariableDeclaration(valueType: Token, identifier: String) throws -> Node {
@@ -196,19 +208,19 @@ class Parser {
 
         // If only declaration of variable
         if checkToken() == Token.semicolon {
-            identifiers[identifier] = .variable(value: variable)
+            Parser.identifiers[identifier] = .variable(value: variable)
             popToken()
             return variable
         }
         
-        if popToken() != Token.op(.equal) {
+        if !canCheckToken || popToken() != Token.op(.equal) {
             throw CompilerError.expected("=", Parser.globalTokenIndex)
         }
         
         let value = try parseExpression()
         variable.value = value
         
-        identifiers[identifier] = .variable(value: variable)
+        Parser.identifiers[identifier] = .variable(value: variable)
         
         if !canCheckToken || popToken() != Token.semicolon {
             throw CompilerError.expected(";", Parser.globalTokenIndex)
@@ -218,11 +230,11 @@ class Parser {
     }
     
     func parseFunctionDeclaration(valueType: Token, identifier: String) throws -> Node {
-        if popToken() != Token.parensOpen {
+        if !canCheckToken || popToken() != Token.parensOpen {
             throw CompilerError.expected("(", Parser.globalTokenIndex)
         }
         
-        if popToken() != Token.parensClose {
+        if !canCheckToken || popToken() != Token.parensClose {
             throw CompilerError.expected(")", Parser.globalTokenIndex)
         }
         
@@ -234,10 +246,8 @@ class Parser {
     }
     
     func parseCurlyCodeBlock(blockType: Block.BlockType) throws -> Node {
-        if canCheckToken {
-            if popToken() != Token.curlyOpen {
-                throw CompilerError.expected("{", Parser.globalTokenIndex)
-            }
+        if !canCheckToken || popToken() != Token.curlyOpen {
+            throw CompilerError.expected("{", Parser.globalTokenIndex)
         }
 
         let startCurlyBlockIndex = tokenIndex
@@ -275,9 +285,7 @@ class Parser {
     }
     
     func parseExpression() throws -> Node {
-        guard canCheckToken else {
-            throw CompilerError.expectedExpression(Parser.globalTokenIndex)
-        }
+        guard canCheckToken else { throw CompilerError.expectedExpression(Parser.globalTokenIndex) }
         
         let node = try parseValue()
         
@@ -332,7 +340,7 @@ class Parser {
                 let declaration = try parseReturn()
                 nodes.append(declaration)
             case .identifier:
-                let declaration = try parseIdentifier()
+                let declaration = try parseIdentifierChange()
                 nodes.append(declaration)
             default:
                 throw CompilerError.unexpectedError(Parser.globalTokenIndex)

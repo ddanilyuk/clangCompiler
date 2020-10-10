@@ -99,7 +99,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         let testX = """
         int main() {
             int a;
-            a = 3;
+            a = 3 * a;
             int b = 2;
             a = b / 2;
 

@@ -24,8 +24,8 @@ enum CompilerError: Swift.Error, LocalizedError {
     // Invalid value
     case invalidValue(Int)
     
-    // Inavlid fuction identifier
-    case invalidFunctionIdentifier(Int)
+    // Inavlid identifier
+    case invalidIdentifier(Int)
     
     // Generator Errors
     case invalidNumber(Int)
@@ -50,7 +50,7 @@ enum CompilerError: Swift.Error, LocalizedError {
     
     var index: Int {
         switch self {
-        case let .expectedFloat(index), let .expectedInt(index), let .expectedOperator(index), let .expectedExpression(index), let .invalidValue(index), let .invalidFunctionIdentifier(index), let .invalidNumber(index), let .invalidGenerator(index), let .unexpectedError(index):
+        case let .expectedFloat(index), let .expectedInt(index), let .expectedOperator(index), let .expectedExpression(index), let .invalidValue(index), let .invalidIdentifier(index), let .invalidNumber(index), let .invalidGenerator(index), let .unexpectedError(index):
             return index
         case let .invalidReturnType(_, index), let .expected(_, index), let .notDefined(_, index), let .alreadyDefined(_, index), let .invalidOperator(_, index):
             return index
@@ -67,29 +67,32 @@ enum CompilerError: Swift.Error, LocalizedError {
             return "Operator expected."
         case .expectedExpression:
             return "Expression expected."
+            
         case .invalidValue:
             return "Invalid value given."
-        case .invalidFunctionIdentifier:
-            return "Given invalid funciton identifier."
-        
+        case .invalidIdentifier:
+            return "Given invalid identifier."
         case .invalidNumber:
             return "Given number is invalid."
         case .invalidGenerator:
             return "Unexpected token."
+            
         case .unexpectedError:
             return "Unexpected error."
-
-            
+        
+        // Not used
         case let .invalidReturnType(str, _):
             return "Inavlid return type. Expected: \(str)."
+            
         case let .invalidOperator(str, _):
             return "Inavlid operator \(str) given."
         case let .expected(str, _):
             return "Extected \"\(str)\"."
+            
         case let .notDefined(str, _):
-            return "\(str) not defined."
+            return "\"\(str)\" not defined."
         case let .alreadyDefined(str, _):
-            return "\(str) already defined."
+            return "\"\(str)\" already defined."
         }
     }
     

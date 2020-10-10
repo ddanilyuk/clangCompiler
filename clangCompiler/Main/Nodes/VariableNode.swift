@@ -24,7 +24,11 @@ struct VariableNode: Node {
 
 extension VariableNode: TreeRepresentable {
     var name: String {
-        return "\(identifier) | \(returnType)"
+        var result = "variable \"\(identifier)\" | \(returnType)"
+        if value == nil {
+            result.append(" | only declaration")
+        }
+        return result
     }
     
     var subnodes: [Node] {
