@@ -98,8 +98,12 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let testX = """
         int main() {
-            int a = 1;
-            return 10 > 3 * 2;
+            int a;
+            a = 3;
+            int b = 2;
+            a = b / 2;
+
+            return a / b;
         }
         """
     
@@ -125,17 +129,17 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             let node = try parser.parseBlock(blockType: .startPoint)
             print("Tree:\n\(TreePrinter.printTree(root: node))")
             
-            print("ASM code: ")
-            let asmCode = try node.interpret(isCPPCode: false)
-            print(asmCode)
+//            print("ASM code: ")
+//            let asmCode = try node.interpret(isCPPCode: false)
+//            print(asmCode)
 
             #if !DEBUG
                 try asmCode.write(toFile: "2-07-Swift-IV-82-Danyliuk.asm", atomically: false, encoding: String.Encoding.utf8)
             #endif
             
-            print("\nC++ code: ")
-            let cppCode = try node.interpret(isCPPCode: true)
-            print(cppCode)
+//            print("\nC++ code: ")
+//            let cppCode = try node.interpret(isCPPCode: true)
+//            print(cppCode)
 
             #if !DEBUG
                 // "\" may cause error

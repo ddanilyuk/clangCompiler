@@ -16,14 +16,14 @@ struct NumberNode: Node {
         case float = "float"
     }
         
-    var node: Node
+    var value: Node
     
     var register: String = "eax"
     
     var numberType: NumberType
     
     func interpret(isCPPCode: Bool) throws -> String {
-        return "mov \(register), \(try node.interpret(isCPPCode: isCPPCode))\n"
+        return "mov \(register), \(try value.interpret(isCPPCode: isCPPCode))\n"
     }
 }
 
@@ -34,6 +34,6 @@ extension NumberNode: TreeRepresentable {
     }
     
     var subnodes: [Node] {
-        return [node]
+        return [value]
     }
 }

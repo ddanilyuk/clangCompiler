@@ -10,7 +10,7 @@ import Foundation
 
 struct VariableNode: Node {
     
-    var node: Node
+    var value: Node?
     
     var identifier: String
     
@@ -28,6 +28,10 @@ extension VariableNode: TreeRepresentable {
     }
     
     var subnodes: [Node] {
-        return [node]
-    }    
+        if let node = value {
+            return [node]
+        } else {
+            return []
+        }
+    }
 }

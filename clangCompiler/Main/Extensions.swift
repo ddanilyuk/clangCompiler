@@ -86,3 +86,19 @@ extension Int: Node {
         return []
     }
 }
+
+
+extension String: Node {
+    
+    public func interpret(isCPPCode: Bool) throws -> String {
+        return self
+    }
+    
+    public var name: String {
+        return "variable \(self)"
+    }
+    
+    public var subnodes: [Node] {
+        return []
+    }
+}
