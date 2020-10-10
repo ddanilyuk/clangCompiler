@@ -98,6 +98,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let testX = """
         int main() {
+            int a = 1;
             return 10 > 3 * 2;
         }
         """

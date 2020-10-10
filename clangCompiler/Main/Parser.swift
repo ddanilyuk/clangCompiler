@@ -127,20 +127,7 @@ class Parser {
         return ReturnNode(node: value)
     }
     
-    func parseFunctionDefinition() throws -> Node {
-        var functionReturnType: Token = .floatType
-        
-        switch (checkToken()) {
-        case .floatType, .intType:
-            functionReturnType = popToken()
-        default:
-            throw CompilerError.expected("Function type", Parser.globalTokenIndex)
-        }
-        
-        guard case let Token.identifier(identifier) = popToken() else {
-            throw CompilerError.invalidFunctionIdentifier(Parser.globalTokenIndex)
-        }
-        
+    func parseFunctionDefinition(valueType: Token, identifier: String) throws -> Node {
         if popToken() != Token.parensOpen {
             throw CompilerError.expected("(", Parser.globalTokenIndex)
         }
@@ -153,7 +140,43 @@ class Parser {
         
         return FunctionDefinitionNode(identifier: identifier,
                                       block: functionNodeBlock,
-                                      returnType: functionReturnType)
+                                      returnType: valueType)
+    }
+    
+    func parserVariableOrFunction() throws -> Node {
+        
+        var valueType: Token = .floatType
+        
+        switch (checkToken()) {
+        case .floatType, .intType:
+            valueType = popToken()
+        default:
+            throw CompilerError.expected("Function type", Parser.globalTokenIndex)
+        }
+        
+        guard case let Token.identifier(identifier) = popToken() else {
+            throw CompilerError.invalidFunctionIdentifier(Parser.globalTokenIndex)
+        }
+        
+        if checkToken() == .parensOpen {
+            return try parseFunctionDefinition(valueType: valueType, identifier: identifier)
+        } else {
+            return try parseVariable(valueType: valueType, identifier: identifier)
+        }
+    }
+    
+    func parseVariable(valueType: Token, identifier: String) throws -> Node {
+        if popToken() != Token.op(.equal) {
+            throw CompilerError.expected("=", Parser.globalTokenIndex)
+        }
+
+        let value = try parseValue()
+        
+        if !canCheckToken || popToken() != Token.semicolon {
+            throw CompilerError.expected("semicolon", Parser.globalTokenIndex)
+        }
+        
+        return VariableNode(node: value, identifier: identifier, returnType: valueType)
     }
     
     func parseCurlyCodeBlock(blockType: Block.BlockType) throws -> Node {
@@ -249,8 +272,9 @@ class Parser {
             let token = checkToken()
             switch token {
             case .intType, .floatType:
-                let declaration = try parseFunctionDefinition()
+                let declaration = try parserVariableOrFunction()
                 nodes.append(declaration)
+
             case .return:
                 let declaration = try parseReturn()
                 nodes.append(declaration)

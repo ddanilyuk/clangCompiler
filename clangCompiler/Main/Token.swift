@@ -14,6 +14,7 @@ enum Operator: String, CaseIterable {
     case plus = "+"
     case minus = "-"
     case greater = ">"
+    case equal = "="
     
     var priority: Int {
         switch self {
@@ -23,6 +24,8 @@ enum Operator: String, CaseIterable {
             return 200
         case .greater:
             return 50
+        case .equal:
+            return 25
         }
     }
 }
@@ -95,8 +98,8 @@ enum Token: Equatable {
     static var generators: [String: Generator] {
         return [
             /// Non didgits or words
-            "\\*|\\/|\\+|\\-|\\>": {
-                if $0 == "/" || $0 == "-" || $0 == "*" || $0 == ">" {
+            "\\*|\\/|\\+|\\-|\\>|\\=": {
+                if $0 == "/" || $0 == "-" || $0 == "*" || $0 == ">" || $0 == "=" {
                     return .op(Operator(rawValue: $0)!)
                 } else {
                     // If we have "+" or "*", throw error because 7 variant cant compile this operators.
