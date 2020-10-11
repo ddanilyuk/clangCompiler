@@ -34,7 +34,7 @@ struct BinaryOperationNode: Node {
         
         var buffer = String()
         
-        // Left
+        // Left part
         if leftPartInterpreting.hasSuffix("push eax\n") {
             result += try lhs.interpret(isCPPCode: isCPPCode)
             leftPopping += "pop eax\n"
@@ -46,14 +46,13 @@ struct BinaryOperationNode: Node {
             }
         }
         
-        // Right
+        // Right part
+        result += try rhs.interpret(isCPPCode: isCPPCode)
         if rightPartInterpreting.hasSuffix("push eax\n") {
-            result += try rhs.interpret(isCPPCode: isCPPCode)
             rightPopping += "pop ebx\n"
-        } else {
-            result += try rhs.interpret(isCPPCode: isCPPCode)
         }
         
+        // After parts
         result += buffer
         result += "\(rightPopping)\(leftPopping)"
         

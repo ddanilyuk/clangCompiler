@@ -37,6 +37,12 @@ enum IntegerType {
 }
 
 
+public enum LRPosition: String {
+    case lhs = "left"
+    case rhs = "right"
+}
+
+
 enum Token: Equatable {
 
     typealias Generator = (String) throws -> Token?

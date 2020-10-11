@@ -8,12 +8,6 @@
 import Foundation
 
 
-public enum LRPosition: String {
-    case lhs = "left"
-    case rhs = "right"
-}
-
-
 struct UnaryNegativeNode: PositionNode {
     
     var node: Node

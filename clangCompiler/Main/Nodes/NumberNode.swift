@@ -24,7 +24,7 @@ struct NumberNode: PositionNode {
             case .lhs:
                 register = "eax"
             case .rhs:
-                register = "eax"
+                register = "ebx"
             }
         }
     }
