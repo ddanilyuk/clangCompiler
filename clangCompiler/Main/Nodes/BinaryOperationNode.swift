@@ -25,11 +25,8 @@ struct BinaryOperationNode: Node {
     
     func specialInterpretForInfixOperation(isCPPCode: Bool, isNegative: Bool) throws -> String {
         
-//        if Operator.divideBy != op {
-//            throw CompilerError.expectedOperator(1)
-//        }
-        
         var result = String()
+        
         var leftPopping = String()
         var rightPopping = String()
         
@@ -80,18 +77,17 @@ struct BinaryOperationNode: Node {
         result += "\(rightPopping)\(leftPopping)"
         
         switch op {
-        case .divideBy:
+        case .divide:
             result += "cdq\n"
             result += "idiv ebx\n"
-        case .times:
+        case .multiply:
             result += "imul eax, ebx\n"
         case .greater:
             result += "cmp eax, ebx\n"
             result += "setg al\n"
             result += "movzx eax, al\n"
-
         default:
-            assertionFailure("Not / or *")
+            assertionFailure("Not / or * or >")
         }
         
         result += isNegative ? "neg eax\n" : ""

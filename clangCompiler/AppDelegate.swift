@@ -96,6 +96,16 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         """
         
         
+        let test12 = """
+        int main() {
+            float asw = 4;
+            int some = 3;
+            int booool = 1;
+            int answer = asw / (some * booool);
+            return answer;
+        }
+        """
+        
         /*
          int main() {
          int a;
@@ -109,7 +119,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
          */
         let testX = """
         int main() {
-            int years = 20 * 2;
+            int years = 020 * 2;
             years = years / 2;
             int denysYears = 19;
             return denysYears > years;
@@ -125,7 +135,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             code = try String(contentsOfFile: "2-07-Swift-IV-82-Danyliuk.txt", encoding: String.Encoding.windowsCP1251)
             #endif
             
-            code = testX
+            code = test12
             
             print("File text:\n\(code)\n")
 
@@ -137,18 +147,18 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
                         
             let node = try parser.parseBlock(blockType: .startPoint)
             print("Tree:\n\(TreePrinter.printTree(root: node))")
-            
-            print("ASM code: ")
-            let asmCode = try node.interpret(isCPPCode: false)
-            print(asmCode)
+//
+//            print("ASM code: ")
+//            let asmCode = try node.interpret(isCPPCode: false)
+//            print(asmCode)
 
             #if !DEBUG
                 try asmCode.write(toFile: "2-07-Swift-IV-82-Danyliuk.asm", atomically: false, encoding: String.Encoding.utf8)
             #endif
             
-//            print("\nC++ code: ")
-//            let cppCode = try node.interpret(isCPPCode: true)
-//            print(cppCode)
+            print("\nC++ code: ")
+            let cppCode = try node.interpret(isCPPCode: true)
+            print(cppCode)
 
             #if !DEBUG
                 // "\" may cause error

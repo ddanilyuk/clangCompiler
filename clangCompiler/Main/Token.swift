@@ -9,8 +9,8 @@ import Foundation
 
 
 enum Operator: String, CaseIterable {
-    case times = "*"
-    case divideBy = "/"
+    case multiply = "*"
+    case divide = "/"
     case plus = "+"
     case minus = "-"
     case greater = ">"
@@ -20,7 +20,7 @@ enum Operator: String, CaseIterable {
         switch self {
         case .minus, .plus:
             return 100
-        case .times, .divideBy:
+        case .multiply, .divide:
             return 200
         case .greater:
             return 50
@@ -97,12 +97,12 @@ enum Token: Equatable {
     
     static var generators: [String: Generator] {
         return [
-            /// Non didgits or words
-            "\\*|\\/|\\+|\\-|\\>|\\=": {
+            /// Possible operators
+            "\\*|\\/|\\+|\\-|\\>|\\<|\\=": {
                 if $0 == "/" || $0 == "-" || $0 == "*" || $0 == ">" || $0 == "=" {
                     return .op(Operator(rawValue: $0)!)
                 } else {
-                    // If we have "+" or "*", throw error because 7 variant cant compile this operators.
+                    // Throw error if operator is not available for variant
                     throw CompilerError.invalidOperator($0, Token.currentTokenIndex)
                 }
             },

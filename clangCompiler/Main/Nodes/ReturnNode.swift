@@ -17,13 +17,13 @@ struct ReturnNode: Node {
         
         result += try node.interpret(isCPPCode: isCPPCode)
         
-        result.deleteSufix("push eax\n")
-        result += """
-        \n; function footer
-        mov esp, ebp
-        pop ebp
-        """
-        result += "mov b, eax"
+//        result.deleteSufix("push eax\n")
+//        result += """
+//        \n; function footer
+//        mov esp, ebp
+//        pop ebp
+//        """
+//        result += "mov b, eax"
         return result
     }
 }

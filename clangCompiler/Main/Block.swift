@@ -56,14 +56,26 @@ struct Block: Node {
             
         case .function:
             result += """
+            ; Start function header
             push ebp
             mov ebp, esp
-            ; function header\n
+            ; End function header\n\n
             """
             for line in nodes {
                 result += try line.interpret(isCPPCode: isCPPCode)
             }
+            result.deleteSufix("push eax\n")
+            result += """
+            \n; Start function footer
+            mov esp, ebp
+            pop ebp
+            ; End function footer\n
+            """
             
+            result += """
+            \n; Return value
+            mov b, eax
+            """
         }
         
         return result

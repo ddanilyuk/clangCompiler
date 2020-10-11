@@ -18,7 +18,7 @@ struct CustomIntNode: Node {
             return "\(integer)"
         } else {
             if let octal = Int(String(integer, radix: 8)) {
-                return "\(octal)o"
+                return "\(octal)0"
             } else {
                 fatalError("Not octal")
             }
