@@ -84,7 +84,12 @@ struct BinaryOperationNode: Node {
             result += "cdq\n"
             result += "idiv ebx\n"
         case .times:
-            result += "imul eax, ebx"
+            result += "imul eax, ebx\n"
+        case .greater:
+            result += "cmp eax, ebx\n"
+            result += "setg al\n"
+            result += "movzx eax, al\n"
+
         default:
             assertionFailure("Not / or *")
         }

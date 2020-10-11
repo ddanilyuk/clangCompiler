@@ -96,15 +96,23 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         """
         
         
+        /*
+         int main() {
+         int a;
+         a = 1 / 1;
+         a = 3 / a / (4 / 2);
+         int b = 2;
+         a = b / 2;
+         
+         return a / b;
+         }
+         */
         let testX = """
         int main() {
-            int a;
-            a = 1;
-            a = 3 / a / (4 / 2);
-            int b = 2;
-            a = b / 2;
-
-            return a / b;
+            int years = 20 * 2;
+            years = years / 2;
+            int denysYears = 19;
+            return denysYears > years;
         }
         """
     

@@ -47,11 +47,13 @@ struct UnaryNegativeNode: Node {
         } else if let operationNode = node as? BinaryOperationNode {
             // If node is Binary operation
             result += try operationNode.specialInterpretForInfixOperation(isCPPCode: isCPPCode, isNegative: true)
-        } else {
+        } else if var variable = node as? VariableNode {
             // If node is expression
-            assertionFailure("in expression")
-            result += try node.interpret(isCPPCode: isCPPCode)
+            variable.lrPosition = lrPostition
+            result += try variable.interpret(isCPPCode: isCPPCode)
             result += "neg \(register)\n"
+        } else {
+            assertionFailure("Something unexpected in unary negative node")
         }
         
         return result

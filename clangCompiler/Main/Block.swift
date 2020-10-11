@@ -55,9 +55,15 @@ struct Block: Node {
             }
             
         case .function:
+            result += """
+            push ebp
+            mov ebp, esp
+            ; function header\n
+            """
             for line in nodes {
                 result += try line.interpret(isCPPCode: isCPPCode)
             }
+            
         }
         
         return result
