@@ -99,6 +99,31 @@ enum Token: Equatable {
         }
     }
     
+    var description: String {
+        switch self {
+        case .parensOpen:
+            return "("
+        case .parensClose:
+            return ")"
+        case .curlyOpen:
+            return "{"
+        case .curlyClose:
+            return "}"
+        case .intType:
+            return "int type"
+        case .floatType:
+            return "float type"
+        case let .op(op):
+            return op.rawValue
+        case .return:
+            return "return"
+        case .semicolon:
+            return ";"
+        default:
+            return "\(self)"
+        }
+    }
+    
     static var currentTokenIndex: Int = 1
     
     static var generators: [String: Generator] {
@@ -123,14 +148,13 @@ enum Token: Equatable {
             "[a-zA-Z_$][a-zA-Z_$0-9]*": {
                 if $0 == "return" {
                     return .return
-                }
-                if $0 == "int" {
+                } else if $0 == "int" {
                     return .intType
-                }
-                if $0 == "float" {
+                } else if $0 == "float" {
                     return .floatType
+                } else {
+                    return .identifier($0)
                 }
-                return .identifier($0)
             },
             
             /// For number Int (octal and decimal) and float numbers

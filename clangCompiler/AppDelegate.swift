@@ -97,8 +97,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         
         
         let test12 = """
-        int main() {
-            float asw = -09;
+        int main( {
+            float asw = -9;
 
             return -asw;
         }
