@@ -8,7 +8,7 @@
 import Foundation
 
 
-struct VariableNode: Node {
+struct VariableNode: PositionNode {
     
     enum VariableType {
         case declarationAndAssignment

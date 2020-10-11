@@ -11,3 +11,8 @@ import Foundation
 public protocol Node: TreeRepresentable {
     func interpret(isCPPCode: Bool) throws -> String
 }
+
+
+public protocol PositionNode: Node {
+    var lrPosition: LRPosition { get set }
+}

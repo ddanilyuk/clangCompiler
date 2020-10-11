@@ -8,20 +8,20 @@
 import Foundation
 
 
-enum LRPosition: String {
+public enum LRPosition: String {
     case lhs = "left"
     case rhs = "right"
 }
 
 
-struct UnaryNegativeNode: Node {
-
+struct UnaryNegativeNode: PositionNode {
+    
     var node: Node
     
-    var lrPostition: LRPosition = .lhs
+    var lrPosition: LRPosition = .lhs
     
     var name: String {
-        return "unary negative | \(lrPostition.rawValue) position"
+        return "unary negative | \(lrPosition.rawValue) position"
     }
     
     var subnodes: [Node] {
@@ -32,7 +32,7 @@ struct UnaryNegativeNode: Node {
         var result = String()
         var register = String()
         
-        switch lrPostition {
+        switch lrPosition {
         case .lhs:
             register = "eax"
         case .rhs:
@@ -46,10 +46,10 @@ struct UnaryNegativeNode: Node {
             result += "neg \(register)\n"
         } else if let operationNode = node as? BinaryOperationNode {
             // If node is Binary operation
-            result += try operationNode.specialInterpretForInfixOperation(isCPPCode: isCPPCode, isNegative: true)
+            result += try operationNode.specialInterpret(isCPPCode: isCPPCode, isNegative: true)
         } else if var variable = node as? VariableNode {
             // If node is expression
-            variable.lrPosition = lrPostition
+            variable.lrPosition = lrPosition
             result += try variable.interpret(isCPPCode: isCPPCode)
             result += "neg \(register)\n"
         } else {

@@ -297,12 +297,9 @@ class Parser {
             var rightNode = try parseValue()
             
             // If right node is unary negative, select its position
-            if var unaryNegativeNode = rightNode as? UnaryNegativeNode {
-                unaryNegativeNode.lrPostition = .rhs
-                rightNode = unaryNegativeNode
-            } else if var variableNode = rightNode as? VariableNode {
-                variableNode.lrPosition = .rhs
-                rightNode = variableNode
+            if var positionNode = rightNode as? PositionNode {
+                positionNode.lrPosition = .rhs
+                rightNode = positionNode
             }
             
             let nextPriority = try getTokenPriority()

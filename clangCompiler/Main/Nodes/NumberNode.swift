@@ -8,7 +8,7 @@
 import Foundation
 
 
-struct NumberNode: Node {
+struct NumberNode: PositionNode {
         
     enum NumberType: String {
         case intDecimal = "int(decimal)"
@@ -17,6 +17,17 @@ struct NumberNode: Node {
     }
         
     var value: Node
+    
+    var lrPosition: LRPosition = .lhs {
+        didSet {
+            switch lrPosition {
+            case .lhs:
+                register = "eax"
+            case .rhs:
+                register = "eax"
+            }
+        }
+    }
     
     var register: String = "eax"
     
