@@ -98,11 +98,9 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let test12 = """
         int main() {
-            float asw = 4;
-            int some = 3;
-            int booool = 1;
-            int answer = asw / (some * booool);
-            return answer;
+            float asw = -09;
+
+            return -asw;
         }
         """
         
@@ -135,7 +133,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             code = try String(contentsOfFile: "2-07-Swift-IV-82-Danyliuk.txt", encoding: String.Encoding.windowsCP1251)
             #endif
             
-            code = test9
+            code = test12
             
             print("File text:\n\(code)\n")
 

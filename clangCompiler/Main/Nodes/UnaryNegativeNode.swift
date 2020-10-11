@@ -12,7 +12,40 @@ struct UnaryNegativeNode: PositionNode {
     
     var node: Node
     
-    var lrPosition: LRPosition = .lhs
+    var lrPosition: LRPosition = .lhs {
+        didSet {
+            switch lrPosition {
+            case .lhs:
+                register = "eax"
+            case .rhs:
+                register = "ebx"
+            }
+        }
+    }
+    
+    var register: String = "eax"
+    
+    func interpret(isCPPCode: Bool) throws -> String {
+        var result = String()
+        
+        if var positionNode = node as? PositionNode {
+            positionNode.lrPosition = lrPosition
+            result += try positionNode.interpret(isCPPCode: isCPPCode)
+            result += "neg \(register)\n"
+        } else if let operationNode = node as? BinaryOperationNode {
+            result += try operationNode.specialInterpret(isCPPCode: isCPPCode, isNegative: true)
+        } else {
+            assertionFailure("Something unexpected in unary negative node")
+            result += try node.interpret(isCPPCode: isCPPCode)
+            result += "neg \(register)\n"
+        }
+    
+        return result
+    }
+}
+
+
+extension UnaryNegativeNode: TreeRepresentable {
     
     var name: String {
         return "unary negative | \(lrPosition.rawValue) position"
@@ -20,36 +53,5 @@ struct UnaryNegativeNode: PositionNode {
     
     var subnodes: [Node] {
         return [node]
-    }
-    
-    func interpret(isCPPCode: Bool) throws -> String {
-        var result = String()
-        var register = String()
-        
-        switch lrPosition {
-        case .lhs:
-            register = "eax"
-        case .rhs:
-            register = "ebx"
-        }
-    
-        if var numberNode = node as? NumberNode {
-            // If node is number
-            numberNode.register = register
-            result += try numberNode.interpret(isCPPCode: isCPPCode)
-            result += "neg \(register)\n"
-        } else if let operationNode = node as? BinaryOperationNode {
-            // If node is Binary operation
-            result += try operationNode.specialInterpret(isCPPCode: isCPPCode, isNegative: true)
-        } else if var variable = node as? VariableNode {
-            // If node is expression
-            variable.lrPosition = lrPosition
-            result += try variable.interpret(isCPPCode: isCPPCode)
-            result += "neg \(register)\n"
-        } else {
-            assertionFailure("Something unexpected in unary negative node")
-        }
-        
-        return result
     }
 }

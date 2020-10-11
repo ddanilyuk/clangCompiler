@@ -13,18 +13,7 @@ struct ReturnNode: Node {
     var node: Node
     
     func interpret(isCPPCode: Bool) throws -> String {
-        var result = String()
-        
-        result += try node.interpret(isCPPCode: isCPPCode)
-        
-//        result.deleteSufix("push eax\n")
-//        result += """
-//        \n; function footer
-//        mov esp, ebp
-//        pop ebp
-//        """
-//        result += "mov b, eax"
-        return result
+        return try node.interpret(isCPPCode: isCPPCode)
     }
 }
 

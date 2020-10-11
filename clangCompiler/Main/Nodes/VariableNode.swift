@@ -27,7 +27,18 @@ struct VariableNode: PositionNode {
     
     var variableNodeType: VariableType
     
-    var lrPosition: LRPosition = .lhs
+    var lrPosition: LRPosition = .lhs {
+        didSet {
+            switch lrPosition {
+            case .lhs:
+                register = "eax"
+            case .rhs:
+                register = "ebx"
+            }
+        }
+    }
+    
+    var register: String = "eax"
     
     func interpret(isCPPCode: Bool) throws -> String {
         var result = String()
@@ -42,15 +53,6 @@ struct VariableNode: PositionNode {
         case .onlyDeclaration:
             result += "mov [\(position) + ebp], 0\n"
         case .getting:
-            var register = String()
-            
-            switch lrPosition {
-            case .lhs:
-                register = "eax"
-            case .rhs:
-                register = "ebx"
-            }
-            
             result += "mov \(register), [\(position) + ebp]\n"
         }
         
@@ -77,10 +79,6 @@ extension VariableNode: TreeRepresentable {
     }
     
     var subnodes: [Node] {
-        if let node = value {
-            return [node]
-        } else {
-            return []
-        }
+        return value != nil ? [value!] : []
     }
 }

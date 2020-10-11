@@ -70,7 +70,6 @@ class Parser {
         case .op(.minus):
             return try parseUnaryMinus()
         case .identifier:
-            // TODO:- Parse identifier
             guard case let Token.identifier(identifier) = popToken() else {
                 throw CompilerError.invalidIdentifier(Parser.globalTokenIndex)
             }

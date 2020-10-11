@@ -11,6 +11,7 @@ import Foundation
 struct CustomIntNode: Node {
     
     var integer: Int
+    
     var type: IntegerType
     
     var name: String {
