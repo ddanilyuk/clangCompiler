@@ -67,7 +67,8 @@ struct BinaryOperationNode: Node {
             result += "setg al\n"
             result += "movzx eax, al\n"
         default:
-            assertionFailure("Not / or * or >")
+            assertionFailure()
+//            throw CompilerError.invalidOperator(op.rawValue, 1)
         }
         
         result += isNegative ? "neg eax\n" : ""

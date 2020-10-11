@@ -59,7 +59,7 @@ class Parser {
     }
     
     // Given token must be next token. If not, throw error
-    func popSyntaxToken(token: Token) throws {
+    func popSyntaxToken(_ token: Token) throws {
         if !canCheckToken || popToken() != token {
             throw CompilerError.expected(token.description, Parser.globalTokenIndex)
         }
@@ -89,7 +89,9 @@ extension Parser {
             guard let (position, valueType) = Parser.identifiers[identifier] else {
                 throw CompilerError.notDefined(identifier, Parser.globalTokenIndex)
             }
-            
+            if !canCheckToken || checkToken() == Token.op(.equal) {
+                throw CompilerError.invalidOperator("=", Parser.globalTokenIndex + 1)
+            }
             return VariableNode(identifier: identifier, position: position, valueType: valueType, variableNodeType: .getting)
         default:
             throw CompilerError.invalidValue(Parser.globalTokenIndex)
@@ -110,18 +112,18 @@ extension Parser {
         guard case let Token.floatNumber(float) = popToken() else {
             throw CompilerError.expectedFloat(Parser.globalTokenIndex)
         }
-        return NumberNode(value: float, numberType: .float)
+        return NumberNode(value: Int(float), numberType: .float)
     }
     
     // MARK:- Exressions and operations
     
     func parseExpressionInParens() throws -> Node {
-        try popSyntaxToken(token: Token.parensOpen)
+        try popSyntaxToken(Token.parensOpen)
         
         // Parsing expression inside parens
         let expressionNode = try parseExpression()
         
-        try popSyntaxToken(token: Token.parensClose)
+        try popSyntaxToken(Token.parensClose)
         
         return expressionNode
     }
@@ -170,7 +172,7 @@ extension Parser {
     
     func parseCurlyCodeBlock(blockType: Block.BlockType) throws -> Node {
         
-        try popSyntaxToken(token: .curlyOpen)
+        try popSyntaxToken(.curlyOpen)
         let startCurlyBlockIndex = tokenIndex
         
         // Parsing deeper
@@ -194,7 +196,7 @@ extension Parser {
         
         let endCurlyBlockIndex = tokenIndex
         
-        try popSyntaxToken(token: .curlyClose)
+        try popSyntaxToken(.curlyClose)
         
         // Getting new elements inside curly block
         let tokensInsideCurlyBlock: [Token] = Array(self.tokensArray[startCurlyBlockIndex..<endCurlyBlockIndex])
@@ -204,7 +206,7 @@ extension Parser {
     }
     
     func parseUnaryMinus() throws -> Node {
-        try popSyntaxToken(token: Token.op(.minus))
+        try popSyntaxToken(Token.op(.minus))
         
         if !canCheckToken || Token.op(.minus) == checkToken() {
             throw CompilerError.expected("number or expression", Parser.globalTokenIndex)
@@ -254,22 +256,29 @@ extension Parser {
             return variable
         }
         
-        try popSyntaxToken(token: Token.op(.equal))
+        try popSyntaxToken(Token.op(.equal))
         
         let value = try parseExpression()
         variable.value = value
         
-        try popSyntaxToken(token: Token.semicolon)
+        try popSyntaxToken(Token.semicolon)
         
         return variable
     }
     
     func parseFunctionDeclaration(valueType: Token, identifier: String) throws -> Node {
         
-        try popSyntaxToken(token: .parensOpen)
-        try popSyntaxToken(token: .parensClose)
+        try popSyntaxToken(.parensOpen)
+        try popSyntaxToken(.parensClose)
         
         let functionNodeBlock = try parseCurlyCodeBlock(blockType: .function)
+        
+        // Check if last node in function block is ReturnNode
+        if let block = functionNodeBlock as? Block {
+            if !(block.nodes.last is ReturnNode) {
+                throw CompilerError.expected("return", Parser.globalTokenIndex)
+            }
+        }
         
         return FunctionDefinitionNode(identifier: identifier,
                                       block: functionNodeBlock,
@@ -285,20 +294,17 @@ extension Parser {
             throw CompilerError.notDefined(identifier, Parser.globalTokenIndex)
         }
         
-        try popSyntaxToken(token: Token.op(.equal))
+        try popSyntaxToken(Token.op(.equal))
         let newValue = try parseExpression()
-        try popSyntaxToken(token: Token.semicolon)
+        try popSyntaxToken(Token.semicolon)
         
         return VariableNode(identifier: identifier, position: position, value: newValue, valueType: valueType, variableNodeType: .changing)
     }
     
     func parseReturn() throws -> Node {
-        
-        try popSyntaxToken(token: Token.return)
-        
+        try popSyntaxToken(Token.return)
         let value = try parseExpression()
-        
-        try popSyntaxToken(token: Token.semicolon)
+        try popSyntaxToken(Token.semicolon)
         
         return ReturnNode(node: value)
     }
