@@ -20,7 +20,7 @@
 		5FCC19CB251A40D400589EF7 /* TreeRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FCC19C8251A40D400589EF7 /* TreeRepresentable.swift */; };
 		5FCC19CC251A40D400589EF7 /* TreePrinter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FCC19C9251A40D400589EF7 /* TreePrinter.swift */; };
 		5FCC19D2251A45D700589EF7 /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FCC19D1251A45D700589EF7 /* Parser.swift */; };
-		5FCC19D9251AA02600589EF7 /* Node.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FCC19D8251AA02600589EF7 /* Node.swift */; };
+		5FCC19D9251AA02600589EF7 /* ProtocolsAndEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FCC19D8251AA02600589EF7 /* ProtocolsAndEnums.swift */; };
 		5FCC19DC251AA03300589EF7 /* Lexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FCC19DB251AA03300589EF7 /* Lexer.swift */; };
 		5FCC19E0251AA06400589EF7 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FCC19DF251AA06400589EF7 /* Extensions.swift */; };
 		5FCC19E3251AA0A600589EF7 /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FCC19E2251AA0A600589EF7 /* Token.swift */; };
@@ -47,7 +47,7 @@
 		5FCC19C8251A40D400589EF7 /* TreeRepresentable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TreeRepresentable.swift; sourceTree = "<group>"; };
 		5FCC19C9251A40D400589EF7 /* TreePrinter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TreePrinter.swift; sourceTree = "<group>"; };
 		5FCC19D1251A45D700589EF7 /* Parser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Parser.swift; sourceTree = "<group>"; };
-		5FCC19D8251AA02600589EF7 /* Node.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Node.swift; sourceTree = "<group>"; };
+		5FCC19D8251AA02600589EF7 /* ProtocolsAndEnums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProtocolsAndEnums.swift; sourceTree = "<group>"; };
 		5FCC19DB251AA03300589EF7 /* Lexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lexer.swift; sourceTree = "<group>"; };
 		5FCC19DF251AA06400589EF7 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		5FCC19E2251AA0A600589EF7 /* Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
@@ -103,9 +103,9 @@
 				5FCC19DB251AA03300589EF7 /* Lexer.swift */,
 				5FCC19D1251A45D700589EF7 /* Parser.swift */,
 				5FD40649251D422900BE7A73 /* CompilerError.swift */,
-				5FCC19D8251AA02600589EF7 /* Node.swift */,
 				5F37B208251E38EF00B08A6B /* Block.swift */,
 				5FCC19DF251AA06400589EF7 /* Extensions.swift */,
+				5FCC19D8251AA02600589EF7 /* ProtocolsAndEnums.swift */,
 				5FD4063A251D1C5400BE7A73 /* Nodes */,
 				5FCC19D0251A45C400589EF7 /* TreePrinter */,
 			);
@@ -229,7 +229,7 @@
 				5FCC19B4251A40AD00589EF7 /* AppDelegate.swift in Sources */,
 				5FCC19CB251A40D400589EF7 /* TreeRepresentable.swift in Sources */,
 				5FCC19CC251A40D400589EF7 /* TreePrinter.swift in Sources */,
-				5FCC19D9251AA02600589EF7 /* Node.swift in Sources */,
+				5FCC19D9251AA02600589EF7 /* ProtocolsAndEnums.swift in Sources */,
 				5FCC19B6251A40AD00589EF7 /* SceneDelegate.swift in Sources */,
 				5FCC19DC251AA03300589EF7 /* Lexer.swift in Sources */,
 				5F37B209251E38EF00B08A6B /* Block.swift in Sources */,
