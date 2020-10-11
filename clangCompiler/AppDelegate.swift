@@ -115,7 +115,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
          */
         let testX = """
         int main() {
-            int years = 020 * 2;
+            int years = 40 * 2;
             years = years / 2;
             int denysYears = 19;
             return denysYears > years;
