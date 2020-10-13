@@ -57,6 +57,7 @@ class Lexer {
             position += token.lenght
             superPosition += token.lenght
             
+            // TODO:- rewrite this piece of SHIT
             while code[superPosition] == Character(" ") {
                 position += 1
                 superPosition += 1

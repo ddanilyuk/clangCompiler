@@ -92,7 +92,7 @@ extension Parser {
             if !canCheckToken || checkToken() == Token.op(.equal) {
                 throw CompilerError.invalidOperator("=", Parser.globalTokenIndex + 1)
             }
-            return VariableNode(identifier: identifier, position: position, valueType: valueType, variableNodeType: .getting)
+            return VariableNode(identifier: identifier, address: position, valueType: valueType, variableNodeType: .getting)
         default:
             throw CompilerError.invalidValue(Parser.globalTokenIndex)
         }
@@ -244,10 +244,10 @@ extension Parser {
     }
     
     func parseVariableDeclaration(valueType: Token, identifier: String) throws -> Node {
-        var variable = VariableNode(identifier: identifier, position: Parser.currentVariablePosition, valueType: valueType, variableNodeType: .declarationAndAssignment)
+        var variable = VariableNode(identifier: identifier, address: Parser.currentVariablePosition, valueType: valueType, variableNodeType: .declarationAndAssignment)
         Parser.currentVariablePosition += 4
         
-        Parser.identifiers[identifier] = (position: variable.position, valueType: variable.valueType)
+        Parser.identifiers[identifier] = (position: variable.address, valueType: variable.valueType)
         
         // If only declaration of variable
         if checkToken() == Token.semicolon {
@@ -298,7 +298,7 @@ extension Parser {
         let newValue = try parseExpression()
         try popSyntaxToken(Token.semicolon)
         
-        return VariableNode(identifier: identifier, position: position, value: newValue, valueType: valueType, variableNodeType: .changing)
+        return VariableNode(identifier: identifier, address: position, value: newValue, valueType: valueType, variableNodeType: .changing)
     }
     
     func parseReturn() throws -> Node {

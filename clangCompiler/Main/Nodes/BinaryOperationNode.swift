@@ -67,8 +67,7 @@ struct BinaryOperationNode: Node {
             result += "setg al\n"
             result += "movzx eax, al\n"
         default:
-            assertionFailure()
-//            throw CompilerError.invalidOperator(op.rawValue, 1)
+            throw CompilerError.invalidOperator(op.rawValue, 1)
         }
         
         result += isNegative ? "neg eax\n" : ""
@@ -80,6 +79,7 @@ struct BinaryOperationNode: Node {
 
 
 extension BinaryOperationNode: TreeRepresentable {
+    
     var name: String {
         return op.rawValue + " operation"
     }

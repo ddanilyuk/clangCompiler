@@ -86,43 +86,120 @@ struct Testers {
     
     // MARK:- LAB 3 tests
 
+    /*
+     Result: 9
+     */
     let lab3test1 = """
         int main() {
-            float asw = -9;
-            return -asw;
+            float answ = -9;
+            return -answ;
         }
         """
     
+    /*
+     Result: 3
+     */
     let lab3test2 = """
-        int main() {
-            int a = 10 / 5;
-            int b = a * 3;
-            return -b;
+        float main() {
+            float a = 10 / 5;
+            float b = a * 3;
+            return b / a;
         }
         """
     
+    /*
+     010 = 8
+     Result: 128
+     */
     let lab3test3 = """
         int main() {
-            int a = 10 / 5;
-            int b = a * 3;
-            return -b;
+            int deadline;
+            deadline = 16;
+            int time = 010;
+            return time * deadline;
         }
         """
     
+    /*
+     a = -4
+     b = -12
+     Result: 48
+     */
     let lab3test4 = """
         int main() {
             int a;
-            a = 1 / 1;
-            a = 3 / a / (4 / 2);
-            int b = 2;
-            a = b / 2;
-            return a / b;
+            int b;
+            a = (14 * 2) / -7;
+            b = a * (12.0 / 4);
+            return a * b;
         }
         """
     
-    
+    /*
+     c not defind
+     */
     let lab3error1 = """
-        
+        int main() {
+            int a = 2;
+            int b = c * a;
+            return a * b;
+        }
+        """
+    
+    /*
+     Missing return
+     */
+    let lab3error2 = """
+        int main() {
+            int a = -12.3;
+            int b = a * a;
+            int c = b * b;
+        }
+        """
+    
+    /*
+     Invalid value number
+     */
+    let lab3error3 = """
+        float main() {
+            int somevariable;
+            somevariable = 2;
+            float number = somevariable = 4;
+            return number;
+        }
+        """
+    
+    /*
+     Missing semicolon
+     */
+    let lab3error4 = """
+        int main() {
+            int value = 3
+            return value;
+        }
+        """
+    
+    /*
+     + is not defind
+     */
+    let lab3error5 = """
+        int main() {
+            int a;
+            int b = c + a;
+            return a * b;
+        }
+        """
+    
+    /*
+     + is not defind
+     */
+    let lab3error6 = """
+        int main() {
+            float value1 = 3.14;
+            int value2 = 2;
+            int value2 = 4;
+            return value2;
+        }
         """
     
 }

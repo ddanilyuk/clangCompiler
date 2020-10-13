@@ -40,6 +40,7 @@ struct NumberNode: PositionNode {
 
 
 extension NumberNode: TreeRepresentable {
+    
     var name: String {
         return numberType.rawValue
     }

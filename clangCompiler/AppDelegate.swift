@@ -17,14 +17,13 @@ import let WinSDK.CW_USEDEFAULT
 @main
 final class AppDelegate: UIResponder, UIApplicationDelegate {
 
-    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         var tokens: [Token] = []
 
         let testCode = """
         int main() {
-            int a = 12 / 5;
+            int a;
             return a;
         }
         """
@@ -35,10 +34,11 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
 
         do {
             #if !DEBUG
-            code = try String(contentsOfFile: "2-07-Swift-IV-82-Danyliuk.txt", encoding: String.Encoding.windowsCP1251)
+            code = try String(contentsOfFile: "3-07-Swift-IV-82-Danyliuk.txt", encoding: String.Encoding.windowsCP1251)
             #endif
             
-            code = testCode
+            code = testers.lab3test1
+//            code = testCode
             
             print("File text:\n\(code)\n")
 
@@ -56,7 +56,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
 //            print(asmCode)
 
             #if !DEBUG
-                try asmCode.write(toFile: "2-07-Swift-IV-82-Danyliuk.asm", atomically: false, encoding: String.Encoding.utf8)
+                try asmCode.write(toFile: "Sources/3-07-Swift-IV-82-Danyliuk.asm", atomically: false, encoding: String.Encoding.utf8)
             #endif
             
             print("\nC++ code: ")
@@ -65,7 +65,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
 
             #if !DEBUG
                 // "\" may cause error
-                try cppCode.write(toFile: "Source/2-07-Swift-IV-82-Danyliuk.cpp", atomically: false, encoding: String.Encoding.utf8)
+                try cppCode.write(toFile: "3-07-Swift-IV-82-Danyliuk.cpp", atomically: false, encoding: String.Encoding.utf8)
             #endif
             
         } catch let error {
@@ -78,5 +78,4 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         
         return true
     }
-
 }

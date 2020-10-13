@@ -49,7 +49,7 @@ struct Block: Node {
             if isCPPCode {
                 result += """
                     }
-                    cout << b << endl;
+                    cout << "Result: " << b << endl;
                 }
                 """
             }

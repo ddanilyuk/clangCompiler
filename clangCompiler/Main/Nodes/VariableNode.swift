@@ -19,7 +19,7 @@ struct VariableNode: PositionNode {
     
     var identifier: String
     
-    var position: Int
+    var address: Int
     
     var value: Node?
         
@@ -48,12 +48,12 @@ struct VariableNode: PositionNode {
             if let value = value {
                 result += try value.interpret(isCPPCode: isCPPCode)
                 result.deleteSufix("push eax\n")
-                result += "mov [\(position) + ebp], eax\n"
+                result += "mov [\(address) + ebp], eax\n"
             }
         case .onlyDeclaration:
-            result += "mov [\(position) + ebp], 0\n"
+            result += "mov [\(address) + ebp], 0\n"
         case .getting:
-            result += "mov \(register), [\(position) + ebp]\n"
+            result += "mov \(register), [\(address) + ebp]\n"
         }
         
         return result
@@ -64,7 +64,7 @@ struct VariableNode: PositionNode {
 extension VariableNode: TreeRepresentable {
     
     var name: String {
-        var result = "variable \"\(identifier)\" | \(valueType) | position \(position)"
+        var result = "variable \"\(identifier)\" | \(valueType) | address \(address)"
         switch variableNodeType {
         case .declarationAndAssignment:
             result += " | declaration and assign"
@@ -73,7 +73,7 @@ extension VariableNode: TreeRepresentable {
         case .changing:
             result += " | changing"
         case .getting:
-            result += " | using | lrPosition \(lrPosition.rawValue)"
+            result += " | using | position \(lrPosition.rawValue)"
         }
         return result
     }

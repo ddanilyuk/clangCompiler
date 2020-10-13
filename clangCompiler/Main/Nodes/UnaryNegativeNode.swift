@@ -35,7 +35,9 @@ struct UnaryNegativeNode: PositionNode {
         } else if let operationNode = node as? BinaryOperationNode {
             result += try operationNode.specialInterpret(isCPPCode: isCPPCode, isNegative: true)
         } else {
-            assertionFailure("Something unexpected in unary negative node")
+            #if DEBUG
+                assertionFailure("Something unexpected in unary negative node")
+            #endif
             result += try node.interpret(isCPPCode: isCPPCode)
             result += "neg \(register)\n"
         }

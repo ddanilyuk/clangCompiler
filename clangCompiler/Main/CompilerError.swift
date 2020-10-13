@@ -39,11 +39,9 @@ enum CompilerError: Swift.Error, LocalizedError {
     
     case invalidOperator(String, Int)
 
-
     // Something expected
     case expected(String, Int)
     
-
     // For functions (now not used)
     case notDefined(String, Int)
     case alreadyDefined(String, Int)
@@ -109,6 +107,7 @@ enum CompilerError: Swift.Error, LocalizedError {
         print("Line: \(lineAndPosition.line), position: \(lineAndPosition.position)\n")
         
         let splittedLines = code.split(separator: "\n")
+        
         for i in 0..<splittedLines.count {
             print(splittedLines[i])
             if i == lineAndPosition.line - 1 {
