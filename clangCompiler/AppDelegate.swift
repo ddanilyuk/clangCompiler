@@ -23,8 +23,10 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
 
         let testCode = """
         int main() {
-            int a;
-            return a;
+            int some() {
+                return 3;
+            }
+            return 5;
         }
         """
         
@@ -37,7 +39,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             code = try String(contentsOfFile: "3-07-Swift-IV-82-Danyliuk.txt", encoding: String.Encoding.windowsCP1251)
             #endif
             
-            code = testers.lab3test1
+            code = testers.lab3test4
 //            code = testCode
             
             print("File text:\n\(code)\n")
@@ -51,12 +53,14 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             let node = try parser.parseBlock(blockType: .startPoint)
             print("Tree:\n\(TreePrinter.printTree(root: node))")
 
-//            print("ASM code: ")
-//            let asmCode = try node.interpret(isCPPCode: false)
-//            print(asmCode)
+            /*
+             print("ASM code: ")
+             let asmCode = try node.interpret(isCPPCode: false)
+             print(asmCode)
+             */
 
             #if !DEBUG
-                try asmCode.write(toFile: "Sources/3-07-Swift-IV-82-Danyliuk.asm", atomically: false, encoding: String.Encoding.utf8)
+                try asmCode.write(toFile: "Source/3-07-Swift-IV-82-Danyliuk.asm", atomically: false, encoding: String.Encoding.utf8)
             #endif
             
             print("\nC++ code: ")
@@ -64,7 +68,6 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             print(cppCode)
 
             #if !DEBUG
-                // "\" may cause error
                 try cppCode.write(toFile: "3-07-Swift-IV-82-Danyliuk.cpp", atomically: false, encoding: String.Encoding.utf8)
             #endif
             

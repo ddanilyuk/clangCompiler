@@ -9,6 +9,7 @@ import Foundation
 
 
 struct FunctionDefinitionNode: Node {
+    
     // Funciton name
     let identifier: String
     
@@ -24,6 +25,7 @@ struct FunctionDefinitionNode: Node {
 
 
 extension FunctionDefinitionNode: TreeRepresentable {
+    
     var name: String {
         return identifier
     }

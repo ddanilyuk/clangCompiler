@@ -25,7 +25,7 @@ public extension String {
         var result = String()
         
         for subString in subStrings {
-            let arrayOfTabs = Array(repeating: "\t", count: numberOfTabs)
+            let arrayOfTabs = Array(repeating: "    ", count: numberOfTabs)
             let stringOfTabs = arrayOfTabs.reduce("", { "\($0)\($1)"})
             result += "\(stringOfTabs)\(subString)\n"
         }

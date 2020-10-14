@@ -55,10 +55,11 @@ struct Block: Node {
             }
             
         case .function:
+            let esp = Parser.identifiers.isEmpty ? "" : "\nsub esp, \(Parser.currentVariablePosition)\n"
             result += """
             ; Start function header
             push ebp
-            mov ebp, esp
+            mov ebp, esp \(esp)
             ; End function header\n\n
             """
             for line in nodes {

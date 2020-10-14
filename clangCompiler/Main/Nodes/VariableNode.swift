@@ -48,12 +48,12 @@ struct VariableNode: PositionNode {
             if let value = value {
                 result += try value.interpret(isCPPCode: isCPPCode)
                 result.deleteSufix("push eax\n")
-                result += "mov [\(address) + ebp], eax\n"
+                result += "mov [ebp - \(address)], eax\n"
             }
         case .onlyDeclaration:
-            result += "mov [\(address) + ebp], 0\n"
+             result += "mov [ebp - \(address)], 0\n"
         case .getting:
-            result += "mov \(register), [\(address) + ebp]\n"
+            result += "mov \(register), [ebp - \(address)]\n"
         }
         
         return result
