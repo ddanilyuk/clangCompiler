@@ -83,7 +83,7 @@ enum CompilerError: Swift.Error, LocalizedError {
             return "Inavlid return type. Expected: \(str)."
             
         case let .invalidOperator(str, _):
-            return "Inavlid operator \(str) given."
+            return "Invalid operator \(str) given."
         case let .expected(str, _):
             return "Extected \"\(str)\"."
             

@@ -14,6 +14,7 @@ struct Block: Node {
     enum BlockType: String {
         case function = "function block"
         case startPoint = "start point"
+        case codeBlock = "code block"
     }
     
     let nodes: [Node]
@@ -77,6 +78,12 @@ struct Block: Node {
             \n; Return value
             mov b, eax
             """
+            
+        case .codeBlock:
+            for line in nodes {
+                result += try line.interpret(isCPPCode: isCPPCode)
+            }
+            return result
         }
         
         return result

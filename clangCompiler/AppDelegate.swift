@@ -23,10 +23,12 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
 
         let testCode = """
         int main() {
-            int some() {
-                return 3;
+            int some = (1) ? 2 : 3;
+            {
+                int tr = 5;
+                some = (1) ? 10 : 22;
             }
-            return 5;
+            return (1) ? (4 / 2) : 3;
         }
         """
         
@@ -39,8 +41,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             code = try String(contentsOfFile: "3-07-Swift-IV-82-Danyliuk.txt", encoding: String.Encoding.windowsCP1251)
             #endif
             
-            code = testers.lab3test4
-//            code = testCode
+//            code = testers.lab3test4
+            code = testCode
             
             print("File text:\n\(code)\n")
 

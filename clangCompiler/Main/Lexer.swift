@@ -84,7 +84,8 @@ class Lexer {
 
     private static func getNextPart(with code: String, tokens: [Token]) throws -> (regex: String, prefix: String)? {
         let key = Token.generators.first(where: { regular, generator in
-                                                code.getStringPrefix(with: regular) != nil })
+            code.getStringPrefix(with: regular) != nil
+        })
         guard let regularExpression = key?.key, key?.value != nil else {
             if !code.isEmpty {
                 throw CompilerError.invalidGenerator(tokens.count)

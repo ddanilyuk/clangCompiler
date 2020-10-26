@@ -133,7 +133,26 @@ extension Parser {
         
         let node = try parseValue()
         
-        return try parseInfixOperation(node: node)
+        if checkToken() == Token.questionMark {
+            return try parseTernaryOperator(node: node)
+        } else {
+            return try parseInfixOperation(node: node)
+        }
+    }
+    
+    func parseTernaryOperator(node: Node) throws -> Node {
+        
+        try popSyntaxToken(Token.questionMark)
+        
+        let trueNode = try parseExpression()
+        
+        try popSyntaxToken(Token.colon)
+        
+        let falseNode = try parseExpression()
+        
+//        try popSyntaxToken(Token.semicolon)
+
+        return TernaryNode(conditionNode: node, trueNode: trueNode, falseNode: falseNode)
     }
     
     func parseInfixOperation(node: Node, nodePriority: Int = 0) throws -> Node {
@@ -322,6 +341,8 @@ extension Parser {
                 nodes.append(try parseReturn())
             case .identifier:
                 nodes.append(try parseIdentifierChange())
+            case .curlyOpen:
+                nodes.append(try parseCurlyCodeBlock(blockType: .codeBlock))
             default:
                 throw CompilerError.unexpectedError(Parser.globalTokenIndex)
             }

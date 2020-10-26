@@ -30,6 +30,8 @@ enum Token: Equatable {
     
     // Other
     case op(Operator)
+    case questionMark
+    case colon
     case identifier(String)
     case `return`
     case semicolon
@@ -57,6 +59,10 @@ enum Token: Equatable {
             return 5
         case .op:
             return 1
+        case .colon:
+            return 1
+        case .questionMark:
+            return 1
         case let .identifier(string):
             return string.count
         case .return:
@@ -80,10 +86,14 @@ enum Token: Equatable {
             return "float type"
         case let .op(op):
             return op.rawValue
+        case .questionMark:
+            return "?"
         case .return:
             return "return"
         case .semicolon:
             return ";"
+        case .colon:
+            return ":"
         default:
             return "\(self)"
         }
@@ -108,6 +118,9 @@ enum Token: Equatable {
             "\\{": { _ in .curlyOpen },
             "\\}": { _ in .curlyClose },
             "\\;": { _ in .semicolon },
+            "\\?": { _ in .questionMark },
+            "\\:": { _ in .colon },
+
 
             /// For words and keywords
             "[a-zA-Z_$][a-zA-Z_$0-9]*": {
