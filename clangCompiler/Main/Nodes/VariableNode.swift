@@ -21,6 +21,8 @@ struct VariableNode: PositionNode {
     
     var address: Int
     
+    var depth: Int
+    
     var value: Node?
         
     var valueType: Token
@@ -64,7 +66,7 @@ struct VariableNode: PositionNode {
 extension VariableNode: TreeRepresentable {
     
     var name: String {
-        var result = "variable \"\(identifier)\" | \(valueType) | address \(address)"
+        var result = "variable \"\(identifier)\" | \(valueType) | address \(address) | depth \(depth)"
         switch variableNodeType {
         case .declarationAndAssignment:
             result += " | declaration and assign"

@@ -144,6 +144,8 @@ enum Token: Equatable {
                     number.removeFirst()
                     if let int8 = UInt8(number, radix: 8) {
                         return .intNumber(Int(int8), .octal)
+                    } else if $0 == "0" {
+                        return .intNumber(0, .decimal)
                     } else {
                         throw CompilerError.invalidNumber(Token.currentTokenIndex)
                     }

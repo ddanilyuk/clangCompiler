@@ -10,9 +10,23 @@ import Foundation
 
 class Parser {
     
-    typealias IdetifiersDictionary = [String : (position: Int, valueType: Token)]
+//    typealias IdetifiersDictionary = [String : (position: Int, valueType: Token)]
     
-    public static var identifiers: IdetifiersDictionary = [ : ]
+    typealias IdArray = [(id: String, position: Int, depth: Int, valueType: Token)]
+    
+    public static var maxIdentifires: Int = 0
+    
+    public static var identifiersArray: IdArray = [] {
+        didSet {
+            if identifiersArray.count > maxIdentifires {
+                maxIdentifires = identifiersArray.count
+            }
+        }
+    }
+    
+    public static var currentDepth: Int = 0
+    
+//    public static var identifiers: IdetifiersDictionary = [ : ]
     public static var currentVariablePosition: Int = 4
 
     public static var globalTokenIndex = -1
@@ -86,13 +100,25 @@ extension Parser {
             guard case let Token.identifier(identifier) = popToken() else {
                 throw CompilerError.invalidIdentifier(Parser.globalTokenIndex)
             }
-            guard let (position, valueType) = Parser.identifiers[identifier] else {
+            
+            if let (_, position, _, valueType) = Parser.identifiersArray.last(where: { (id, position, depth, valueType) -> Bool in
+                return id == identifier
+            }) {
+                if !canCheckToken || checkToken() == Token.op(.equal) {
+                    throw CompilerError.invalidOperator("=", Parser.globalTokenIndex + 1)
+                }
+                return VariableNode(identifier: identifier, address: position, depth: Parser.currentDepth, valueType: valueType, variableNodeType: .getting)
+            } else {
                 throw CompilerError.notDefined(identifier, Parser.globalTokenIndex)
             }
-            if !canCheckToken || checkToken() == Token.op(.equal) {
-                throw CompilerError.invalidOperator("=", Parser.globalTokenIndex + 1)
-            }
-            return VariableNode(identifier: identifier, address: position, valueType: valueType, variableNodeType: .getting)
+            
+//            guard let (position, valueType) = Parser.identifiers[identifier] else {
+//                throw CompilerError.notDefined(identifier, Parser.globalTokenIndex)
+//            }
+//            if !canCheckToken || checkToken() == Token.op(.equal) {
+//                throw CompilerError.invalidOperator("=", Parser.globalTokenIndex + 1)
+//            }
+//            return VariableNode(identifier: identifier, address: position, valueType: valueType, variableNodeType: .getting)
         default:
             throw CompilerError.invalidValue(Parser.globalTokenIndex)
         }
@@ -194,6 +220,7 @@ extension Parser {
         try popSyntaxToken(.curlyOpen)
         let startCurlyBlockIndex = tokenIndex
         
+        
         // Parsing deeper
         var blockDepth = 1
         while canCheckToken {
@@ -251,9 +278,18 @@ extension Parser {
             throw CompilerError.invalidIdentifier(Parser.globalTokenIndex)
         }
         
-        if Parser.identifiers[identifier] != nil {
+        
+        
+        
+        if Parser.identifiersArray.last(where: { (id, position, depth, valueType) -> Bool in
+            return id == identifier && depth == Parser.currentDepth
+        }) != nil {
             throw CompilerError.alreadyDefined(identifier, Parser.globalTokenIndex)
         }
+        
+//        if Parser.identifiers[identifier] != nil {
+//            throw CompilerError.alreadyDefined(identifier, Parser.globalTokenIndex)
+//        }
         
         if checkToken() == .parensOpen {
             return try parseFunctionDeclaration(valueType: valueType, identifier: identifier)
@@ -263,10 +299,13 @@ extension Parser {
     }
     
     func parseVariableDeclaration(valueType: Token, identifier: String) throws -> Node {
-        var variable = VariableNode(identifier: identifier, address: Parser.currentVariablePosition, valueType: valueType, variableNodeType: .declarationAndAssignment)
+        var variable = VariableNode(identifier: identifier, address: Parser.currentVariablePosition, depth: Parser.currentDepth, valueType: valueType, variableNodeType: .declarationAndAssignment)
         Parser.currentVariablePosition += 4
         
-        Parser.identifiers[identifier] = (position: variable.address, valueType: variable.valueType)
+//        var blockIndex = Parser.identifiersArray.count
+        
+        Parser.identifiersArray.append((id: identifier, position: variable.address, depth: Parser.currentDepth, valueType: variable.valueType))
+//        Parser.identifiers[identifier] = (position: variable.address, valueType: variable.valueType)
         
         // If only declaration of variable
         if checkToken() == Token.semicolon {
@@ -309,7 +348,10 @@ extension Parser {
         guard case let .identifier(identifier) = popToken() else {
             throw CompilerError.invalidIdentifier(Parser.globalTokenIndex)
         }
-        guard let (position, valueType) = Parser.identifiers[identifier] else {
+        
+        guard let (_, position, depth, valueType) = Parser.identifiersArray.last(where: { (id, position, depth, valueType) in
+            return id == identifier
+        }) else {
             throw CompilerError.notDefined(identifier, Parser.globalTokenIndex)
         }
         
@@ -317,7 +359,7 @@ extension Parser {
         let newValue = try parseExpression()
         try popSyntaxToken(Token.semicolon)
         
-        return VariableNode(identifier: identifier, address: position, value: newValue, valueType: valueType, variableNodeType: .changing)
+        return VariableNode(identifier: identifier, address: position, depth: depth, value: newValue, valueType: valueType, variableNodeType: .changing)
     }
     
     func parseReturn() throws -> Node {
@@ -342,7 +384,14 @@ extension Parser {
             case .identifier:
                 nodes.append(try parseIdentifierChange())
             case .curlyOpen:
+                let beforeBlockCount = Parser.identifiersArray.count
+                Parser.currentDepth += 1
                 nodes.append(try parseCurlyCodeBlock(blockType: .codeBlock))
+                while Parser.identifiersArray.count != beforeBlockCount {
+                    Parser.identifiersArray.removeLast()
+                    Parser.currentVariablePosition -= 4
+                }
+                Parser.currentDepth -= 1
             default:
                 throw CompilerError.unexpectedError(Parser.globalTokenIndex)
             }

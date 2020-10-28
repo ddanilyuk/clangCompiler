@@ -21,24 +21,45 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         
         var tokens: [Token] = []
 
+//        let testCode = """
+//        int main() {
+//            int some = 4;
+//            {
+//                int tr = 5;
+//                {
+//                    int tr = 6;
+//                    int inSecondBlock;
+//                    inSecondBlock = 2;
+//                    tr = inSecondBlock;
+//                }
+//                {
+//                    int tr = 7;
+//                    int inThirdBlock = 10;
+//                    tr = inThirdBlock;
+//                    some = tr;
+//                }
+//            }
+//            return some;
+//        }
+//        """
         let testCode = """
         int main() {
-            int some = (1) ? 2 : 3;
+            int some = (0) ? 2 : 4;
             {
-                int tr = 5;
-                some = (1) ? 10 : 22;
+                int true = 1;
+                some = true ? 6 : 8;
             }
-            return (1) ? (4 / 2) : 3;
+            return some;
         }
         """
         
-        let testers = Testers()
+//        let testers = Testers()
         
         var code = ""
 
         do {
             #if !DEBUG
-            code = try String(contentsOfFile: "3-07-Swift-IV-82-Danyliuk.txt", encoding: String.Encoding.windowsCP1251)
+            code = try String(contentsOfFile: "4-07-Swift-IV-82-Danyliuk.txt", encoding: String.Encoding.windowsCP1251)
             #endif
             
 //            code = testers.lab3test4
@@ -60,17 +81,17 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
              let asmCode = try node.interpret(isCPPCode: false)
              print(asmCode)
              */
-
-            #if !DEBUG
-                try asmCode.write(toFile: "Source/3-07-Swift-IV-82-Danyliuk.asm", atomically: false, encoding: String.Encoding.utf8)
-            #endif
-            
+//
+//            #if !DEBUG
+//                try asmCode.write(toFile: "Source/4-07-Swift-IV-82-Danyliuk.asm", atomically: false, encoding: String.Encoding.utf8)
+//            #endif
+//            
             print("\nC++ code: ")
             let cppCode = try node.interpret(isCPPCode: true)
             print(cppCode)
 
             #if !DEBUG
-                try cppCode.write(toFile: "3-07-Swift-IV-82-Danyliuk.cpp", atomically: false, encoding: String.Encoding.utf8)
+                try cppCode.write(toFile: "4-07-Swift-IV-82-Danyliuk.cpp", atomically: false, encoding: String.Encoding.utf8)
             #endif
             
         } catch let error {

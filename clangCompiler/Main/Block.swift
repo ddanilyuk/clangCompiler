@@ -56,7 +56,7 @@ struct Block: Node {
             }
             
         case .function:
-            let esp = Parser.identifiers.isEmpty ? "" : "\nsub esp, \(Parser.currentVariablePosition)\n"
+            let esp = "\nsub esp, \(Parser.maxIdentifires * 4)\n"
             result += """
             ; Start function header
             push ebp
