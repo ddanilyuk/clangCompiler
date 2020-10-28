@@ -28,8 +28,10 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             {
                 int true = 1;
                 some = true ? 6 : 8;
+                {
+                    some = 6;
+                }
             }
-            return some;
         }
         """
         // ------
@@ -48,7 +50,6 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
 //            code = testCode
             // ------
 
-            
             print("File text:\n\(code)\n")
 
             let lexer = try Lexer(code: code, tokens: &tokens)

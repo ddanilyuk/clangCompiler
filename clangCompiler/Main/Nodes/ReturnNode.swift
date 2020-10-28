@@ -13,7 +13,9 @@ struct ReturnNode: Node {
     var node: Node
     
     func interpret() throws -> String {
-        return try node.interpret()
+        var result = try node.interpret()
+        result += "jmp _ret\n"
+        return result
     }
 }
 

@@ -46,11 +46,13 @@ enum CompilerError: Swift.Error, LocalizedError {
     case notDefined(String, Int)
     case alreadyDefined(String, Int)
     
+    case noReturn(String, Int)
+    
     var index: Int {
         switch self {
         case let .expectedFloat(index), let .expectedInt(index), let .expectedOperator(index), let .expectedExpression(index), let .invalidValue(index), let .invalidIdentifier(index), let .invalidNumber(index), let .invalidGenerator(index), let .unexpectedError(index):
             return index
-        case let .invalidReturnType(_, index), let .expected(_, index), let .notDefined(_, index), let .alreadyDefined(_, index), let .invalidOperator(_, index):
+        case let .invalidReturnType(_, index), let .expected(_, index), let .notDefined(_, index), let .alreadyDefined(_, index), let .invalidOperator(_, index), let .noReturn(_, index):
             return index
         }
     }
@@ -91,6 +93,8 @@ enum CompilerError: Swift.Error, LocalizedError {
             return "\"\(str)\" not defined."
         case let .alreadyDefined(str, _):
             return "\"\(str)\" already defined."
+        case let .noReturn(str, _):
+            return "Function \"\(str)\" do not have return."
         }
     }
     

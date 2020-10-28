@@ -60,6 +60,7 @@ struct Block: Node {
             result.deleteSufix("push eax\n")
             result += """
             \n; Start function footer
+            _ret:
             mov esp, ebp
             pop ebp
             ; End function footer\n

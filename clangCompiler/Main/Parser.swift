@@ -310,8 +310,26 @@ extension Parser {
         
         // Check if last node in function block is ReturnNode
         if let block = functionNodeBlock as? Block {
-            if !(block.nodes.last is ReturnNode) {
-                throw CompilerError.expected("return", Parser.globalTokenIndex)
+            
+            var isHaveReturn: Bool = false
+            var currentBlock: Block = block
+            
+            repeat {
+                if currentBlock.nodes.contains(where: { $0 is ReturnNode ? true : false }) {
+                    isHaveReturn = true
+                    break
+                }
+            } while currentBlock.nodes.contains(where: { node -> Bool in
+                if let block = node as? Block {
+                    currentBlock = block
+                    return true
+                } else {
+                    return false
+                }
+            })
+                        
+            if !isHaveReturn {
+                throw CompilerError.noReturn(identifier, Parser.globalTokenIndex)
             }
         }
         
