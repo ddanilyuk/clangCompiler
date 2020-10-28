@@ -33,8 +33,8 @@ struct NumberNode: PositionNode {
     
     var numberType: NumberType
     
-    func interpret(isCPPCode: Bool) throws -> String {
-        return "mov \(register), \(try value.interpret(isCPPCode: isCPPCode))\n"
+    func interpret() throws -> String {
+        return "mov \(register), \(try value.interpret())\n"
     }
 }
 

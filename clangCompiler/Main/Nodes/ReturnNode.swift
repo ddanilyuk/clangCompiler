@@ -12,8 +12,8 @@ struct ReturnNode: Node {
     
     var node: Node
     
-    func interpret(isCPPCode: Bool) throws -> String {
-        return try node.interpret(isCPPCode: isCPPCode)
+    func interpret() throws -> String {
+        return try node.interpret()
     }
 }
 

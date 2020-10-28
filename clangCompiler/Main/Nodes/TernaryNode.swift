@@ -22,21 +22,21 @@ struct TernaryNode: Node {
         self.falseNode = TernaryInsideNode(node: falseNode, positionName: "if false")
     }
     
-    func interpret(isCPPCode: Bool) throws -> String {
+    func interpret() throws -> String {
         var result = String()
-        result += try conditionNode.interpret(isCPPCode: isCPPCode)
+        result += try conditionNode.interpret()
         result.deleteSufix("push eax\n")
         
         result += "cmp eax, 0\n"
-        result += "je _if_false\(TernaryNode.ternaryNumber)\n"
+        result += "je _if_false_\(TernaryNode.ternaryNumber)\n"
         
-        result += try trueNode.interpret(isCPPCode: isCPPCode)
+        result += try trueNode.interpret()
         
-        result += "jmp _post_conditional\(TernaryNode.ternaryNumber)\n"
-        result += "_if_false\(TernaryNode.ternaryNumber):\n"
+        result += "jmp _post_conditional_\(TernaryNode.ternaryNumber)\n"
+        result += "_if_false_\(TernaryNode.ternaryNumber):\n"
         
-        result += try falseNode.interpret(isCPPCode: isCPPCode)
-        result += "_post_conditional\(TernaryNode.ternaryNumber):\n"
+        result += try falseNode.interpret()
+        result += "_post_conditional_\(TernaryNode.ternaryNumber):\n"
         
         TernaryNode.ternaryNumber += 1
         
@@ -62,8 +62,8 @@ struct TernaryInsideNode: Node {
     
     var positionName: String
     
-    func interpret(isCPPCode: Bool) throws -> String {
-        return try node.interpret(isCPPCode: isCPPCode)
+    func interpret() throws -> String {
+        return try node.interpret()
     }
     
     var name: String {

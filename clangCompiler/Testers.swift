@@ -251,4 +251,103 @@ int main() {
 }
 """
     
+    
+    
+    let lab4test1 = """
+int main() {
+    int mainVar;
+    {
+        int secondVar = 5;
+        {
+            int secondVar = 6;
+            int thirdVar = 20;
+            secondVar = thirdVar;
+        }
+        {
+            int insideBlock = 15;
+            secondVar = insideBlock;
+        }
+        mainVar = secondVar;
+    }
+    return mainVar;
+}
+"""
+    
+    let lab4test2 = """
+int main() {
+    int falseVar = 0;
+    int bar = falseVar ? (falseVar) : (10 * 4 / 8);
+    return (1 * bar) ? bar : -10;
+}
+"""
+    
+    let lab4test3 = """
+int main() {
+    int foo = (0) ? 2 : 4;
+    {
+        foo = (foo > 4) ? 6 : 8;
+    }
+    return foo;
+}
+"""
+    
+    let lab4test4 = """
+int main() {
+    int mainVar;
+    {
+        int secondVar;
+        {
+            int thirdVar;
+            {
+                thirdVar = (-4 * (1 > 0)) ? 5 : 10;
+            }
+            secondVar = 40 / thirdVar;
+        }
+        mainVar = secondVar;
+    }
+    return (16 / 020) ? mainVar : 0;
+}
+"""
+    
+    let lab4error1 = """
+int main() {
+    int variable;
+    {
+        int some = 3;
+    }
+    return some;
+}
+"""
+    
+    let lab4error2 = """
+int main() {
+    int trueVal = 1;
+    float a = trueVal ? 10;
+    return a;
+}
+"""
+    
+    let lab4error3 = """
+int main() {
+    int some = 10 / 2 ? 10 : 2;
+    return some;
+}
+"""
+    
+    let lab4error4 = """
+int main() {
+    int first = (1) ? int second = 4 : int third = 5;
+    return first;
+}
+"""
+    
+    let lab4error5 = """
+int main() {
+    int b;
+    int c;
+    int a = (1) ? b = 4 : c = 5;
+    return first;
+}
+"""
+    
 }

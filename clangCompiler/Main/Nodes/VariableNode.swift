@@ -42,13 +42,13 @@ struct VariableNode: PositionNode {
     
     var register: String = "eax"
     
-    func interpret(isCPPCode: Bool) throws -> String {
+    func interpret() throws -> String {
         var result = String()
         
         switch variableNodeType {
         case .declarationAndAssignment, .changing:
             if let value = value {
-                result += try value.interpret(isCPPCode: isCPPCode)
+                result += try value.interpret()
                 result.deleteSufix("push eax\n")
                 result += "mov [ebp - \(address)], eax\n"
             }

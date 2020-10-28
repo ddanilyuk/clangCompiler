@@ -25,20 +25,20 @@ struct UnaryNegativeNode: PositionNode {
     
     var register: String = "eax"
     
-    func interpret(isCPPCode: Bool) throws -> String {
+    func interpret() throws -> String {
         var result = String()
         
         if var positionNode = node as? PositionNode {
             positionNode.lrPosition = lrPosition
-            result += try positionNode.interpret(isCPPCode: isCPPCode)
+            result += try positionNode.interpret()
             result += "neg \(register)\n"
         } else if let operationNode = node as? BinaryOperationNode {
-            result += try operationNode.specialInterpret(isCPPCode: isCPPCode, isNegative: true)
+            result += try operationNode.specialInterpret(isNegative: true)
         } else {
             #if DEBUG
                 assertionFailure("Something unexpected in unary negative node")
             #endif
-            result += try node.interpret(isCPPCode: isCPPCode)
+            result += try node.interpret()
             result += "neg \(register)\n"
         }
     

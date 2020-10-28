@@ -19,18 +19,18 @@ struct BinaryOperationNode: Node {
         return op.priority
     }
 
-    func interpret(isCPPCode: Bool) throws -> String {
-        return try specialInterpret(isCPPCode: isCPPCode, isNegative: false)
+    func interpret() throws -> String {
+        return try specialInterpret(isNegative: false)
     }
     
-    func specialInterpret(isCPPCode: Bool, isNegative: Bool) throws -> String {
+    func specialInterpret(isNegative: Bool) throws -> String {
         var result = String()
         
         var leftPopping = String()
         var rightPopping = String()
         
-        let leftPartInterpreting = try lhs.interpret(isCPPCode: isCPPCode)
-        let rightPartInterpreting = try rhs.interpret(isCPPCode: isCPPCode)
+        let leftPartInterpreting = try lhs.interpret()
+        let rightPartInterpreting = try rhs.interpret()
         
         var buffer = String()
         

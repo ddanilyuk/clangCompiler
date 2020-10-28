@@ -120,7 +120,7 @@ extension Parser {
 //            }
 //            return VariableNode(identifier: identifier, address: position, valueType: valueType, variableNodeType: .getting)
         default:
-            throw CompilerError.invalidValue(Parser.globalTokenIndex)
+            throw CompilerError.invalidValue(Parser.globalTokenIndex + 1)
         }
     }
     

@@ -58,7 +58,7 @@ extension StringProtocol {
 
 extension Float: Node {
     
-    public func interpret(isCPPCode: Bool) throws -> String {
+    public func interpret() throws -> String {
         return "\(Int(self))"
     }
     
@@ -74,7 +74,7 @@ extension Float: Node {
 
 extension Int: Node {
     
-    public func interpret(isCPPCode: Bool) throws -> String {
+    public func interpret() throws -> String {
         return "\(self)"
     }
     

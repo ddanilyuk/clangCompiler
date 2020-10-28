@@ -18,8 +18,8 @@ struct FunctionDefinitionNode: Node {
     
     var returnType: Token
     
-    func interpret(isCPPCode: Bool) throws -> String {
-        return try block.interpret(isCPPCode: isCPPCode)
+    func interpret() throws -> String {
+        return try block.interpret()
     }
 }
 

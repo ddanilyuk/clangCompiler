@@ -9,7 +9,7 @@ import Foundation
 
 
 public protocol Node: TreeRepresentable {
-    func interpret(isCPPCode: Bool) throws -> String
+    func interpret() throws -> String
 }
 
 

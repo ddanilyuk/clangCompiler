@@ -21,40 +21,31 @@ struct Block: Node {
     
     var blockType: BlockType
     
-    func interpret(isCPPCode: Bool) throws -> String {
+    func interpret() throws -> String {
         var result = String()
         
         switch blockType {
         case .startPoint:
-            if isCPPCode {
-                result += """
-                #include <iostream>
-                #include <string>
-                #include <stdint.h>
-                using namespace std;
-                int main()
-                {
-                    int b;
-                    __asm {\n
-                """
+            result += """
+            #include <iostream>
+            #include <string>
+            #include <stdint.h>
+            using namespace std;
+            int main()
+            {
+                int b;
+                __asm {\n
+            """
+            
+            for node in nodes {
+                result += try node.interpret().cppModifiedString(numberOfTabs: 2)
             }
             
-            for line in nodes {
-                if isCPPCode {
-                    result += try line.interpret(isCPPCode: isCPPCode).cppModifiedString(numberOfTabs: 2)
-                } else {
-                    result += try line.interpret(isCPPCode: isCPPCode)
+            result += """
                 }
+                cout << "Result: " << b << endl;
             }
-            
-            if isCPPCode {
-                result += """
-                    }
-                    cout << "Result: " << b << endl;
-                }
-                """
-            }
-            
+            """
         case .function:
             let esp = "\nsub esp, \(Parser.maxIdentifires * 4)\n"
             result += """
@@ -63,8 +54,8 @@ struct Block: Node {
             mov ebp, esp \(esp)
             ; End function header\n\n
             """
-            for line in nodes {
-                result += try line.interpret(isCPPCode: isCPPCode)
+            for node in nodes {
+                result += try node.interpret()
             }
             result.deleteSufix("push eax\n")
             result += """
@@ -80,8 +71,8 @@ struct Block: Node {
             """
             
         case .codeBlock:
-            for line in nodes {
-                result += try line.interpret(isCPPCode: isCPPCode)
+            for node in nodes {
+                result += try node.interpret()
             }
             return result
         }

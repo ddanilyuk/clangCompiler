@@ -53,7 +53,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         """
         
-//        let testers = Testers()
+        let testers = Testers()
         
         var code = ""
 
@@ -62,8 +62,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             code = try String(contentsOfFile: "4-07-Swift-IV-82-Danyliuk.txt", encoding: String.Encoding.windowsCP1251)
             #endif
             
-//            code = testers.lab3test4
-            code = testCode
+            code = testers.lab4error5
+//            code = testCode
             
             print("File text:\n\(code)\n")
 
@@ -76,18 +76,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             let node = try parser.parseBlock(blockType: .startPoint)
             print("Tree:\n\(TreePrinter.printTree(root: node))")
 
-            /*
-             print("ASM code: ")
-             let asmCode = try node.interpret(isCPPCode: false)
-             print(asmCode)
-             */
-//
-//            #if !DEBUG
-//                try asmCode.write(toFile: "Source/4-07-Swift-IV-82-Danyliuk.asm", atomically: false, encoding: String.Encoding.utf8)
-//            #endif
-//            
             print("\nC++ code: ")
-            let cppCode = try node.interpret(isCPPCode: true)
+            let cppCode = try node.interpret()
             print(cppCode)
 
             #if !DEBUG
