@@ -19,29 +19,9 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
-        var tokens: [Token] = []
+        // ------
+        let testers = Testers()
 
-//        let testCode = """
-//        int main() {
-//            int some = 4;
-//            {
-//                int tr = 5;
-//                {
-//                    int tr = 6;
-//                    int inSecondBlock;
-//                    inSecondBlock = 2;
-//                    tr = inSecondBlock;
-//                }
-//                {
-//                    int tr = 7;
-//                    int inThirdBlock = 10;
-//                    tr = inThirdBlock;
-//                    some = tr;
-//                }
-//            }
-//            return some;
-//        }
-//        """
         let testCode = """
         int main() {
             int some = (0) ? 2 : 4;
@@ -52,8 +32,9 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             return some;
         }
         """
-        
-        let testers = Testers()
+        // ------
+
+        var tokens: [Token] = []
         
         var code = ""
 
@@ -62,8 +43,11 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             code = try String(contentsOfFile: "4-07-Swift-IV-82-Danyliuk.txt", encoding: String.Encoding.windowsCP1251)
             #endif
             
-            code = testers.lab4error5
+            // ------
+            code = testers.lab4test4
 //            code = testCode
+            // ------
+
             
             print("File text:\n\(code)\n")
 

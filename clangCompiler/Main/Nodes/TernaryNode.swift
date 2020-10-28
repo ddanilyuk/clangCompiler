@@ -10,11 +10,11 @@ import Foundation
 
 struct TernaryNode: Node {
     
+    static var ternaryNumber: Int = 1
+
     var conditionNode: Node
     var trueNode: Node
     var falseNode: Node
-    
-    static var ternaryNumber: Int = 1
     
     init(conditionNode: Node, trueNode: Node, falseNode: Node) {
         self.conditionNode = TernaryInsideNode(node: conditionNode, positionName: "condition")

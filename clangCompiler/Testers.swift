@@ -299,13 +299,13 @@ int main() {
         {
             int thirdVar;
             {
-                thirdVar = (-4 * (1 > 0)) ? 5 : 10;
+                thirdVar = (-4 * (0 > 1)) ? 5 : 10;
             }
             secondVar = 40 / thirdVar;
         }
         mainVar = secondVar;
     }
-    return (16 / 020) ? mainVar : 0;
+    return (16 / 020) ? (mainVar / 2) : 0;
 }
 """
     

@@ -10,13 +10,11 @@ import Foundation
 
 class Parser {
     
-//    typealias IdetifiersDictionary = [String : (position: Int, valueType: Token)]
-    
-    typealias IdArray = [(id: String, position: Int, depth: Int, valueType: Token)]
+    typealias IdentifiersArray = [(id: String, position: Int, depth: Int, valueType: Token)]
     
     public static var maxIdentifires: Int = 0
     
-    public static var identifiersArray: IdArray = [] {
+    public static var identifiersArray: IdentifiersArray = [] {
         didSet {
             if identifiersArray.count > maxIdentifires {
                 maxIdentifires = identifiersArray.count
@@ -25,8 +23,6 @@ class Parser {
     }
     
     public static var currentDepth: Int = 0
-    
-//    public static var identifiers: IdetifiersDictionary = [ : ]
     public static var currentVariablePosition: Int = 4
 
     public static var globalTokenIndex = -1
@@ -101,24 +97,16 @@ extension Parser {
                 throw CompilerError.invalidIdentifier(Parser.globalTokenIndex)
             }
             
-            if let (_, position, _, valueType) = Parser.identifiersArray.last(where: { (id, position, depth, valueType) -> Bool in
+            if let (_, position, depth, valueType) = Parser.identifiersArray.last(where: { (id, position, depth, valueType) -> Bool in
                 return id == identifier
             }) {
                 if !canCheckToken || checkToken() == Token.op(.equal) {
                     throw CompilerError.invalidOperator("=", Parser.globalTokenIndex + 1)
                 }
-                return VariableNode(identifier: identifier, address: position, depth: Parser.currentDepth, valueType: valueType, variableNodeType: .getting)
+                return VariableNode(identifier: identifier, address: position, depth: depth, valueType: valueType, variableNodeType: .getting)
             } else {
                 throw CompilerError.notDefined(identifier, Parser.globalTokenIndex)
             }
-            
-//            guard let (position, valueType) = Parser.identifiers[identifier] else {
-//                throw CompilerError.notDefined(identifier, Parser.globalTokenIndex)
-//            }
-//            if !canCheckToken || checkToken() == Token.op(.equal) {
-//                throw CompilerError.invalidOperator("=", Parser.globalTokenIndex + 1)
-//            }
-//            return VariableNode(identifier: identifier, address: position, valueType: valueType, variableNodeType: .getting)
         default:
             throw CompilerError.invalidValue(Parser.globalTokenIndex + 1)
         }
@@ -176,8 +164,6 @@ extension Parser {
         
         let falseNode = try parseExpression()
         
-//        try popSyntaxToken(Token.semicolon)
-
         return TernaryNode(conditionNode: node, trueNode: trueNode, falseNode: falseNode)
     }
     
@@ -279,18 +265,12 @@ extension Parser {
         }
         
         
-        
-        
         if Parser.identifiersArray.last(where: { (id, position, depth, valueType) -> Bool in
             return id == identifier && depth == Parser.currentDepth
         }) != nil {
             throw CompilerError.alreadyDefined(identifier, Parser.globalTokenIndex)
         }
-        
-//        if Parser.identifiers[identifier] != nil {
-//            throw CompilerError.alreadyDefined(identifier, Parser.globalTokenIndex)
-//        }
-        
+
         if checkToken() == .parensOpen {
             return try parseFunctionDeclaration(valueType: valueType, identifier: identifier)
         } else {
@@ -301,11 +281,8 @@ extension Parser {
     func parseVariableDeclaration(valueType: Token, identifier: String) throws -> Node {
         var variable = VariableNode(identifier: identifier, address: Parser.currentVariablePosition, depth: Parser.currentDepth, valueType: valueType, variableNodeType: .declarationAndAssignment)
         Parser.currentVariablePosition += 4
-        
-//        var blockIndex = Parser.identifiersArray.count
-        
+                
         Parser.identifiersArray.append((id: identifier, position: variable.address, depth: Parser.currentDepth, valueType: variable.valueType))
-//        Parser.identifiers[identifier] = (position: variable.address, valueType: variable.valueType)
         
         // If only declaration of variable
         if checkToken() == Token.semicolon {
