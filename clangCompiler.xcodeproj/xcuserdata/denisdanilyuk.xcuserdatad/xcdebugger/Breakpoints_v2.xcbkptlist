@@ -1,38 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Bucket
-   uuid = "4EE075CF-52E2-4010-9177-654C2DA8B488"
+   uuid = "DA3516B2-44C2-4C18-B1F4-3D22621EE43D"
    type = "1"
    version = "2.0">
    <Breakpoints>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "C8A0FA56-C175-4EA6-9EFD-1C2972570109"
+            uuid = "6874F0D7-B543-4AD6-AFC8-6F2DC385ECCD"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "lab1SP/Main/Parser.swift"
+            filePath = "clangCompiler/Source/Parser.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "99"
-            endingLineNumber = "99"
-            landmarkName = "parseReturn()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "ED418500-C3A9-4F54-80CB-2CFEC4265B08"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "clangCompiler/Main/Parser.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "314"
-            endingLineNumber = "314"
-            landmarkName = "parseFunctionDeclaration(valueType:identifier:)"
+            startingLineNumber = "157"
+            endingLineNumber = "157"
+            landmarkName = "parseExpression()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

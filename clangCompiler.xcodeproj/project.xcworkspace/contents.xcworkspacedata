@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:/Users/denisdanilyuk/Documents/_5semestr/SP/lab1SP/clangCompiler.xcodeproj">
+      location = "self:">
    </FileRef>
 </Workspace>
