@@ -47,7 +47,7 @@ struct Block: Node {
             }
             """
         case .function:
-            let esp = "\nsub esp, \(Parser.maxIdentifires * 4)\n"
+            let esp = Parser.maxIdentifires != 0 ? "\nsub esp, \(Parser.maxIdentifires * 4)\n" : "\n"
             result += """
             ; Start function header
             push ebp

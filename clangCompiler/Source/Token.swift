@@ -121,7 +121,6 @@ enum Token: Equatable {
             "\\?": { _ in .questionMark },
             "\\:": { _ in .colon },
 
-
             /// For words and keywords
             "[a-zA-Z_$][a-zA-Z_$0-9]*": {
                 if $0 == "return" {
