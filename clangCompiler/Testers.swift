@@ -337,13 +337,6 @@ int main() {
     
     let lab4error4 = """
 int main() {
-    int first = (1) ? 4 : 5;
-    int second = first ? 10 : -10;
-}
-"""
-    
-    let lab4error5 = """
-int main() {
     int b;
     int c;
     int a = (1) ? b = 4 : c = 5;

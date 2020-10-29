@@ -25,7 +25,7 @@ int main() {
 """
 
 //compile(code: testCode)
-compile(code: testers.lab4test1)
+compile(code: testers.lab4error4)
 #endif
 
 
@@ -38,8 +38,13 @@ final class AppDelegate: ApplicationDelegate {
     
     func application(_ application: Application, didFinishLaunchingWithOptions launchOptions: [Application.LaunchOptionsKey: Any]?) -> Bool {
         
-        let code = try String(contentsOfFile: "4-07-Swift-IV-82-Danyliuk.txt", encoding: String.Encoding.windowsCP1251)
-        compile(code: code)
+        do {
+            let code = try String(contentsOfFile: "4-07-Swift-IV-82-Danyliuk.txt", encoding: String.Encoding.windowsCP1251)
+            compile(code: code)
+        } catch let error {
+            print(error.localizedDescription)
+        }
+        
         return true
     }
 }
