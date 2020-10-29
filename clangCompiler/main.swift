@@ -17,14 +17,15 @@ int main() {
         int true = 1;
         some = true ? 6 : 8;
         {
-            some = 6;
+            some = 6
         }
     }
+    return some;
 }
 """
 
-// compile(code: testCode)
-compile(code: testers.lab1test1)
+//compile(code: testCode)
+compile(code: testers.lab4test1)
 #endif
 
 

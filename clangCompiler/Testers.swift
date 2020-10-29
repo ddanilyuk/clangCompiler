@@ -262,6 +262,7 @@ int main() {
             int secondVar = 6;
             int thirdVar = 20;
             secondVar = thirdVar;
+            return secondVar;
         }
         {
             int insideBlock = 15;
@@ -336,8 +337,8 @@ int main() {
     
     let lab4error4 = """
 int main() {
-    int first = (1) ? int second = 4 : int third = 5;
-    return first;
+    int first = (1) ? 4 : 5;
+    int second = first ? 10 : -10;
 }
 """
     

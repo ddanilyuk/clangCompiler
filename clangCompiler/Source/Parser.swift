@@ -147,11 +147,16 @@ extension Parser {
         
         let node = try parseValue()
         
-        if checkToken() == Token.questionMark {
-            return try parseTernaryOperator(node: node)
+        if canCheckToken {
+            if checkToken() == Token.questionMark {
+                return try parseTernaryOperator(node: node)
+            } else {
+                return try parseInfixOperation(node: node)
+            }
         } else {
-            return try parseInfixOperation(node: node)
+            throw CompilerError.unexpectedError(Parser.globalTokenIndex - 1)
         }
+        
     }
     
     func parseTernaryOperator(node: Node) throws -> Node {
