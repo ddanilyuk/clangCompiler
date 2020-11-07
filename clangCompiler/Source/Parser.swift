@@ -10,9 +10,10 @@ import Foundation
 
 class Parser {
     
-    public static var newIdDictionary: [String: IdentifiersArray] = [:]
+//    public static var newIdDictionary: [String: IdentifiersArray] = [:]
     
     typealias IdentifiersArray = [(id: String, position: Int, depth: Int, valueType: Token)]
+    
     
     public static var maxIdentifires: Int = 0
     
@@ -24,8 +25,11 @@ class Parser {
         }
     }
     
+    public static var functionsArray: [FunctionDefinitionNode] = []
+    
+    
     public static var currentDepth: Int = 0
-    public static var currentVariablePosition: Int = 4
+    public static var currentVariablePosition: Int = -4
 
     public static var globalTokenIndex = -1
     
@@ -80,6 +84,7 @@ class Parser {
 
 
 // MARK:- Parsing functions
+
 extension Parser {
     
     // MARK:- Values and numbers
@@ -95,26 +100,55 @@ extension Parser {
         case .op(.minus):
             return try parseUnaryMinus()
         case .identifier:
-            return try pareseIndetifier()
+            return try parseIndetifier()
         default:
             throw CompilerError.invalidValue(Parser.globalTokenIndex + 1)
         }
     }
     
-    func pareseIndetifier() throws -> Node {
+    func parseIndetifier() throws -> Node {
         guard case let Token.identifier(identifier) = popToken() else {
             throw CompilerError.invalidIdentifier(Parser.globalTokenIndex)
         }
         
-        if let (_, position, depth, valueType) = Parser.identifiersArray.last(where: { (id, _, _, _) -> Bool in
-            return id == identifier
-        }) {
-            if !canCheckToken || checkToken() == Token.op(.equal) {
-                throw CompilerError.invalidOperator("=", Parser.globalTokenIndex + 1)
+        if !canCheckToken || checkToken() == Token.op(.equal) {
+            throw CompilerError.invalidOperator("=", Parser.globalTokenIndex + 1)
+        }
+        
+        if !canCheckToken || checkToken() == Token.parensOpen {
+            // Function
+            if var functionNode = Parser.functionsArray.first(where: { function -> Bool in
+                return function.identifier == identifier
+            }) {
+                try popSyntaxToken(.parensOpen)
+                var nodes = [Node]()
+                while canCheckToken {
+                    let value = try parseValue()
+                    let variable = VariableNode(identifier: "", address: 0, depth: 0, value: value, valueType: .questionMark, variableNodeType: .parameterPushing)
+                    nodes.append(variable)
+                    if Token.parensClose == checkToken() {
+                        try popSyntaxToken(.parensClose)
+                        break
+                    } else {
+                        try popSyntaxToken(.comma)
+                    }
+                }
+                functionNode.parametersBlock = Block(nodes: nodes, blockType: .parameters)
+                functionNode.functionType = .using
+                
+                return functionNode
+            } else {
+                throw CompilerError.notDefined(identifier, Parser.globalTokenIndex)
             }
-            return VariableNode(identifier: identifier, address: position, depth: depth, valueType: valueType, variableNodeType: .getting)
         } else {
-            throw CompilerError.notDefined(identifier, Parser.globalTokenIndex)
+            // Variable
+            if let (_, position, depth, valueType) = Parser.identifiersArray.last(where: { (id, _, _, _) -> Bool in
+                return id == identifier
+            }) {
+                return VariableNode(identifier: identifier, address: position, depth: depth, valueType: valueType, variableNodeType: .using)
+            } else {
+                throw CompilerError.notDefined(identifier, Parser.globalTokenIndex)
+            }
         }
     }
     
@@ -289,7 +323,7 @@ extension Parser {
     
     func parseVariableDeclaration(valueType: Token, identifier: String) throws -> Node {
         var variable = VariableNode(identifier: identifier, address: Parser.currentVariablePosition, depth: Parser.currentDepth, valueType: valueType, variableNodeType: .declarationAndAssignment)
-        Parser.currentVariablePosition += 4
+        Parser.currentVariablePosition -= 4
                 
         Parser.identifiersArray.append((id: identifier, position: variable.address, depth: Parser.currentDepth, valueType: variable.valueType))
         
@@ -313,37 +347,64 @@ extension Parser {
     func parseFunctionDeclaration(valueType: Token, identifier: String) throws -> Node {
         
         let parametersBlock = try parseFunctionParameters()
-        let functionNodeBlock = try parseCurlyCodeBlock(blockType: .function)
         
-        // Check if last node in function block is ReturnNode
-        if let block = functionNodeBlock as? Block {
+        let functionNode = FunctionDefinitionNode(identifier: identifier,
+                                                  parametersBlock: parametersBlock,
+                                                  functionBlock: Block(nodes: [], blockType: .function),
+                                                  returnType: .floatType,
+                                                  functionType: .onlyDeclaration,
+                                                  variablesCount: 0)
+        Parser.functionsArray.append(functionNode)
+        
+        if !canCheckToken || checkToken() == Token.semicolon {
+            // If only declaration
+            try popSyntaxToken(.semicolon)
+            return functionNode
             
-            var isHaveReturn: Bool = false
-            var currentBlock: Block = block
+        } else {
+            // If declaration and assing
             
-            repeat {
-                if currentBlock.nodes.contains(where: { $0 is ReturnNode ? true : false }) {
-                    isHaveReturn = true
-                    break
+            let functionNodeBlock = try parseCurlyCodeBlock(blockType: .function)
+            
+            // Check if last node in function block is ReturnNode
+            if let block = functionNodeBlock as? Block {
+                
+                var isHaveReturn: Bool = false
+                var currentBlock: Block = block
+                
+                repeat {
+                    if currentBlock.nodes.contains(where: { $0 is ReturnNode ? true : false }) {
+                        isHaveReturn = true
+                        break
+                    }
+                } while currentBlock.nodes.contains(where: { node -> Bool in
+                    if let block = node as? Block {
+                        currentBlock = block
+                        return true
+                    } else {
+                        return false
+                    }
+                })
+                
+                if !isHaveReturn {
+                    throw CompilerError.noReturn(identifier, Parser.globalTokenIndex)
                 }
-            } while currentBlock.nodes.contains(where: { node -> Bool in
-                if let block = node as? Block {
-                    currentBlock = block
-                    return true
-                } else {
-                    return false
-                }
-            })
-                        
-            if !isHaveReturn {
-                throw CompilerError.noReturn(identifier, Parser.globalTokenIndex)
             }
+            
+            let functionNode = FunctionDefinitionNode(identifier: identifier,
+                                                      parametersBlock: parametersBlock,
+                                                      functionBlock: functionNodeBlock,
+                                                      returnType: valueType,
+                                                      functionType: .declarationAndAssignment,
+                                                      variablesCount: Parser.maxIdentifires)
+            
+            Parser.functionsArray.removeAll { functionDefinitionNode in
+                return functionDefinitionNode.identifier == identifier && functionDefinitionNode.functionType == .onlyDeclaration
+            }
+            Parser.functionsArray.append(functionNode)
+            
+            return functionNode
         }
-        
-        return FunctionDefinitionNode(identifier: identifier,
-                                      parametersBlock: parametersBlock,
-                                      functionBlock: functionNodeBlock,
-                                      returnType: valueType)
     }
     
     func parseFunctionParameters() throws -> Node {
@@ -358,7 +419,7 @@ extension Parser {
         var parameterPosition = 8
         
         while canCheckToken {
-            nodes.append(try parseParameter(position: parameterPosition))
+            nodes.append(try parseParameterDeclare(position: parameterPosition))
             parameterPosition += 4
             
             if Token.parensClose == checkToken() {
@@ -372,21 +433,22 @@ extension Parser {
         return Block(nodes: nodes, blockType: .parameters)
     }
     
-    func parseParameter(position: Int) throws -> Node {
+    func parseParameterDeclare(position: Int) throws -> Node {
         var valueType: Token = .floatType
         
         switch (checkToken()) {
         case .floatType, .intType:
             valueType = popToken()
         default:
-            throw CompilerError.expected("value type", Parser.globalTokenIndex)
+            throw CompilerError.expected("Value type", Parser.globalTokenIndex)
         }
         
         guard case let Token.identifier(identifier) = popToken() else {
             throw CompilerError.invalidIdentifier(Parser.globalTokenIndex)
         }
                 
-        return VariableNode(identifier: identifier, address: position, depth: 0, valueType: valueType, variableNodeType: .parameter)
+        Parser.identifiersArray.append((id: identifier, position: position, depth: 0, valueType: valueType))
+        return VariableNode(identifier: identifier, address: position, depth: 0, valueType: valueType, variableNodeType: .parameterDeclare)
     }
     
     /// Now, this function parse only variables changes.
@@ -413,7 +475,7 @@ extension Parser {
         let value = try parseExpression()
         try popSyntaxToken(Token.semicolon)
         
-        return ReturnNode(node: value)
+        return ReturnNode(node: value, functionIdenitifer: Parser.functionsArray.last?.identifier ?? "")
     }
     
     // MARK:- Main parse function
@@ -424,7 +486,16 @@ extension Parser {
             let token = checkToken()
             switch token {
             case .intType, .floatType:
-                nodes.append(try parserVariableOrFunctionDeclaration())
+                let node = try parserVariableOrFunctionDeclaration()
+                
+                if node is FunctionDefinitionNode {
+                    Parser.currentDepth = 0
+                    Parser.currentVariablePosition = -4
+                    Parser.identifiersArray = []
+                    Parser.maxIdentifires = 0
+                }
+                nodes.append(node)
+                
             case .return:
                 nodes.append(try parseReturn())
             case .identifier:
@@ -435,7 +506,7 @@ extension Parser {
                 nodes.append(try parseCurlyCodeBlock(blockType: .codeBlock))
                 while Parser.identifiersArray.count != beforeBlockCount {
                     Parser.identifiersArray.removeLast()
-                    Parser.currentVariablePosition -= 4
+                    Parser.currentVariablePosition += 4
                 }
                 Parser.currentDepth -= 1
             default:

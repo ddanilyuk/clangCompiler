@@ -20,11 +20,9 @@ public extension String {
     }
     
     func cppModifiedString(numberOfTabs: Int) -> String {
-        let subStrings = self.split(separator: "\n")
-        
         var result = String()
-        
-        for subString in subStrings {
+
+        self.enumerateLines { subString, _ in
             let arrayOfTabs = Array(repeating: "    ", count: numberOfTabs)
             let stringOfTabs = arrayOfTabs.reduce("", { "\($0)\($1)"})
             result += "\(stringOfTabs)\(subString)\n"

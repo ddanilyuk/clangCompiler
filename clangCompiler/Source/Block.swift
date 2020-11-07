@@ -35,7 +35,9 @@ struct Block: Node {
             int main()
             {
                 int b;
-                __asm {\n
+                __asm {
+                    call _main
+                    jmp _mainReturn\n
             """
             
             for node in nodes {
@@ -43,35 +45,17 @@ struct Block: Node {
             }
             
             result += """
+                    
+                    _mainReturn:
+                    mov b, eax
                 }
                 cout << "Result: " << b << endl;
             }
             """
         case .function:
-            let esp = Parser.maxIdentifires != 0 ? "\nsub esp, \(Parser.maxIdentifires * 4)\n" : "\n"
-            result += """
-            ; Start function header
-            push ebp
-            mov ebp, esp \(esp)
-            ; End function header\n\n
-            """
             for node in nodes {
                 result += try node.interpret()
             }
-            result.deleteSufix("push eax\n")
-            result += """
-            \n; Start function footer
-            _ret:
-            mov esp, ebp
-            pop ebp
-            ; End function footer\n
-            """
-            
-            result += """
-            \n; Return value
-            mov b, eax
-            """
-            
         case .codeBlock, .parameters:
             for node in nodes {
                 result += try node.interpret()

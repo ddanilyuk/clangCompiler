@@ -14,8 +14,9 @@ struct VariableNode: PositionNode {
         case declarationAndAssignment
         case onlyDeclaration
         case changing
-        case getting
-        case parameter
+        case using
+        case parameterDeclare
+        case parameterPushing
     }
     
     var identifier: String
@@ -25,7 +26,7 @@ struct VariableNode: PositionNode {
     var depth: Int
     
     var value: Node?
-        
+    
     var valueType: Token
     
     var variableNodeType: VariableType
@@ -40,25 +41,30 @@ struct VariableNode: PositionNode {
             }
         }
     }
-    
+        
     var register: String = "eax"
     
     func interpret() throws -> String {
         var result = String()
+        
+        let sign = address < 0 ? "-" : "+"
         
         switch variableNodeType {
         case .declarationAndAssignment, .changing:
             if let value = value {
                 result += try value.interpret()
                 result.deleteSufix("push eax\n")
-                result += "mov [ebp - \(address)], eax\n"
+                result += "mov [ebp \(sign) \(abs(address))], eax\n"
             }
         case .onlyDeclaration:
-             result += "mov [ebp - \(address)], 0\n"
-        case .getting:
-            result += "mov \(register), [ebp - \(address)]\n"
-        case .parameter:
-            result += "mov \(register), [ebp + \(address)]\n"
+             result += "mov [ebp \(sign) \(abs(address))], 0\n"
+        case .using:
+            result += "mov \(register), [ebp \(sign) \(abs(address))]\n"
+        case .parameterDeclare:
+            result += ""
+        case .parameterPushing:
+            result += "\(try value!.interpret())"
+            result += "push \(register)\n"
         }
         
         return result
@@ -69,7 +75,9 @@ struct VariableNode: PositionNode {
 extension VariableNode: TreeRepresentable {
     
     var name: String {
-        var result = "variable \"\(identifier)\" | \(valueType) | address \(address) | depth \(depth)"
+        
+        let sign = address < 0 ? "-" : "+"
+        var result = "variable \"\(identifier)\" | \(valueType) | address \(sign)\(abs(address)) | depth \(depth)"
         switch variableNodeType {
         case .declarationAndAssignment:
             result += " | declaration and assign"
@@ -77,10 +85,12 @@ extension VariableNode: TreeRepresentable {
             result += " | declare only"
         case .changing:
             result += " | changing"
-        case .getting:
+        case .using:
             result += " | using | position \(lrPosition.rawValue)"
-        case .parameter:
-            result += " | parameter"
+        case .parameterDeclare:
+            result += " | parameter declare"
+        case .parameterPushing:
+            result = "parameter"
         }
         return result
     }

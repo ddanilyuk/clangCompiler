@@ -11,15 +11,21 @@ import Foundation
 let testers = Testers()
 
 let testCode = """
+int foo(int bla);
+
 int main() {
-    return 1;
+    return foo(4);
 }
 
-int bar(int some, int foo) {
-    int result = some * foo;
-    return result;
+int foo(int bla) {
+    return bla * 2;
 }
 """
+
+//int bar(int some, int vari) {
+//    int result = some * vari;
+//    return result;
+//}
 
 compile(code: testCode)
 //compile(code: testers.lab4test1)
@@ -63,9 +69,9 @@ func compile(code: String) {
         let node = try parser.parseBlock(blockType: .startPoint)
         print("Tree:\n\(TreePrinter.printTree(root: node))")
         
-//        print("\nC++ code: ")
-//        let cppCode = try node.interpret()
-//        print(cppCode)
+        print("\nC++ code: ")
+        let cppCode = try node.interpret()
+        print(cppCode)
 //
 //        try cppCode.write(toFile: "5-07-Swift-IV-82-Danyliuk.cpp", atomically: false, encoding: String.Encoding.utf8)
         
