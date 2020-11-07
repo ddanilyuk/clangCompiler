@@ -15,6 +15,7 @@ struct Block: Node {
         case function = "function block"
         case startPoint = "start point"
         case codeBlock = "code block"
+        case parameters = "parameters"
     }
     
     let nodes: [Node]
@@ -71,13 +72,13 @@ struct Block: Node {
             mov b, eax
             """
             
-        case .codeBlock:
+        case .codeBlock, .parameters:
             for node in nodes {
                 result += try node.interpret()
             }
             return result
         }
-        
+                
         return result
     }
 }

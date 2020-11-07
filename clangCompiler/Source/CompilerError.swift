@@ -110,13 +110,13 @@ enum CompilerError: Swift.Error, LocalizedError {
         print(self.localizedDescription)
         print("Line: \(lineAndPosition.line), position: \(lineAndPosition.position)\n")
         
-        let splittedLines = code.split(separator: "\n")
-        
-        for i in 0..<splittedLines.count {
-            print(splittedLines[i])
-            if i == lineAndPosition.line - 1 {
+        var counter = 0
+        code.enumerateLines { (string, _) in
+            print(string)
+            if counter == lineAndPosition.line - 1 {
                 print(graphicalOutputErrorPosition)
             }
+            counter += 1
         }
     }
 }

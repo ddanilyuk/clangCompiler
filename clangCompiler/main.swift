@@ -1,5 +1,5 @@
 //
-//  4-07-Swift-IV-82-Danyliuk.swift
+//  5-07-Swift-IV-82-Danyliuk.swift
 //  clangCompiler
 //
 //  Created by Денис Данилюк on 29.10.2020.
@@ -12,20 +12,17 @@ let testers = Testers()
 
 let testCode = """
 int main() {
-    int some = (0) ? 2 : 4;
-    {
-        int true = 1;
-        some = true ? 6 : 8;
-        {
-            some = 6
-        }
-    }
-    return some;
+    return 1;
+}
+
+int bar(int some, int foo) {
+    int result = some * foo;
+    return result;
 }
 """
 
-//compile(code: testCode)
-compile(code: testers.lab4error4)
+compile(code: testCode)
+//compile(code: testers.lab4test1)
 #endif
 
 
@@ -39,7 +36,7 @@ final class AppDelegate: ApplicationDelegate {
     func application(_ application: Application, didFinishLaunchingWithOptions launchOptions: [Application.LaunchOptionsKey: Any]?) -> Bool {
         
         do {
-            let code = try String(contentsOfFile: "4-07-Swift-IV-82-Danyliuk.txt", encoding: String.Encoding.windowsCP1251)
+            let code = try String(contentsOfFile: "5-07-Swift-IV-82-Danyliuk.txt", encoding: String.Encoding.windowsCP1251)
             compile(code: code)
         } catch let error {
             print(error.localizedDescription)
@@ -66,11 +63,11 @@ func compile(code: String) {
         let node = try parser.parseBlock(blockType: .startPoint)
         print("Tree:\n\(TreePrinter.printTree(root: node))")
         
-        print("\nC++ code: ")
-        let cppCode = try node.interpret()
-        print(cppCode)
-        
-        try cppCode.write(toFile: "4-07-Swift-IV-82-Danyliuk.cpp", atomically: false, encoding: String.Encoding.utf8)
+//        print("\nC++ code: ")
+//        let cppCode = try node.interpret()
+//        print(cppCode)
+//
+//        try cppCode.write(toFile: "5-07-Swift-IV-82-Danyliuk.cpp", atomically: false, encoding: String.Encoding.utf8)
         
     } catch let error {
         if let error = error as? CompilerError {

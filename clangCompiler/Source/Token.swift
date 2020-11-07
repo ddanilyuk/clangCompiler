@@ -35,6 +35,7 @@ enum Token: Equatable {
     case identifier(String)
     case `return`
     case semicolon
+    case comma
     
     var lenght: Int {
         switch self {
@@ -60,6 +61,8 @@ enum Token: Equatable {
         case .op:
             return 1
         case .colon:
+            return 1
+        case .comma:
             return 1
         case .questionMark:
             return 1
@@ -94,6 +97,8 @@ enum Token: Equatable {
             return ";"
         case .colon:
             return ":"
+        case .comma:
+            return ","
         default:
             return "\(self)"
         }
@@ -120,6 +125,8 @@ enum Token: Equatable {
             "\\;": { _ in .semicolon },
             "\\?": { _ in .questionMark },
             "\\:": { _ in .colon },
+            "\\,": { _ in .comma },
+
 
             /// For words and keywords
             "[a-zA-Z_$][a-zA-Z_$0-9]*": {

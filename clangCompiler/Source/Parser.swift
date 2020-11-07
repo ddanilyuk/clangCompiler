@@ -10,6 +10,8 @@ import Foundation
 
 class Parser {
     
+    public static var newIdDictionary: [String: IdentifiersArray] = [:]
+    
     typealias IdentifiersArray = [(id: String, position: Int, depth: Int, valueType: Token)]
     
     public static var maxIdentifires: Int = 0
@@ -93,22 +95,26 @@ extension Parser {
         case .op(.minus):
             return try parseUnaryMinus()
         case .identifier:
-            guard case let Token.identifier(identifier) = popToken() else {
-                throw CompilerError.invalidIdentifier(Parser.globalTokenIndex)
-            }
-            
-            if let (_, position, depth, valueType) = Parser.identifiersArray.last(where: { (id, position, depth, valueType) -> Bool in
-                return id == identifier
-            }) {
-                if !canCheckToken || checkToken() == Token.op(.equal) {
-                    throw CompilerError.invalidOperator("=", Parser.globalTokenIndex + 1)
-                }
-                return VariableNode(identifier: identifier, address: position, depth: depth, valueType: valueType, variableNodeType: .getting)
-            } else {
-                throw CompilerError.notDefined(identifier, Parser.globalTokenIndex)
-            }
+            return try pareseIndetifier()
         default:
             throw CompilerError.invalidValue(Parser.globalTokenIndex + 1)
+        }
+    }
+    
+    func pareseIndetifier() throws -> Node {
+        guard case let Token.identifier(identifier) = popToken() else {
+            throw CompilerError.invalidIdentifier(Parser.globalTokenIndex)
+        }
+        
+        if let (_, position, depth, valueType) = Parser.identifiersArray.last(where: { (id, _, _, _) -> Bool in
+            return id == identifier
+        }) {
+            if !canCheckToken || checkToken() == Token.op(.equal) {
+                throw CompilerError.invalidOperator("=", Parser.globalTokenIndex + 1)
+            }
+            return VariableNode(identifier: identifier, address: position, depth: depth, valueType: valueType, variableNodeType: .getting)
+        } else {
+            throw CompilerError.notDefined(identifier, Parser.globalTokenIndex)
         }
     }
     
@@ -211,7 +217,6 @@ extension Parser {
         try popSyntaxToken(.curlyOpen)
         let startCurlyBlockIndex = tokenIndex
         
-        
         // Parsing deeper
         var blockDepth = 1
         while canCheckToken {
@@ -269,8 +274,7 @@ extension Parser {
             throw CompilerError.invalidIdentifier(Parser.globalTokenIndex)
         }
         
-        
-        if Parser.identifiersArray.last(where: { (id, position, depth, valueType) -> Bool in
+        if Parser.identifiersArray.last(where: { (id, _, depth, _) -> Bool in
             return id == identifier && depth == Parser.currentDepth
         }) != nil {
             throw CompilerError.alreadyDefined(identifier, Parser.globalTokenIndex)
@@ -290,7 +294,7 @@ extension Parser {
         Parser.identifiersArray.append((id: identifier, position: variable.address, depth: Parser.currentDepth, valueType: variable.valueType))
         
         // If only declaration of variable
-        if checkToken() == Token.semicolon {
+        if checkToken() != Token.op(.equal) {
             variable.variableNodeType = .onlyDeclaration
             popToken()
             return variable
@@ -308,9 +312,7 @@ extension Parser {
     
     func parseFunctionDeclaration(valueType: Token, identifier: String) throws -> Node {
         
-        try popSyntaxToken(.parensOpen)
-        try popSyntaxToken(.parensClose)
-        
+        let parametersBlock = try parseFunctionParameters()
         let functionNodeBlock = try parseCurlyCodeBlock(blockType: .function)
         
         // Check if last node in function block is ReturnNode
@@ -339,8 +341,52 @@ extension Parser {
         }
         
         return FunctionDefinitionNode(identifier: identifier,
-                                      block: functionNodeBlock,
+                                      parametersBlock: parametersBlock,
+                                      functionBlock: functionNodeBlock,
                                       returnType: valueType)
+    }
+    
+    func parseFunctionParameters() throws -> Node {
+        try popSyntaxToken(.parensOpen)
+        
+        if checkToken() == Token.parensClose {
+            try popSyntaxToken(.parensClose)
+            return Block(nodes: [], blockType: .parameters)
+        }
+        
+        var nodes = [Node]()
+        var parameterPosition = 8
+        
+        while canCheckToken {
+            nodes.append(try parseParameter(position: parameterPosition))
+            parameterPosition += 4
+            
+            if Token.parensClose == checkToken() {
+                try popSyntaxToken(.parensClose)
+                break
+            } else {
+                try popSyntaxToken(.comma)
+            }
+        }
+        
+        return Block(nodes: nodes, blockType: .parameters)
+    }
+    
+    func parseParameter(position: Int) throws -> Node {
+        var valueType: Token = .floatType
+        
+        switch (checkToken()) {
+        case .floatType, .intType:
+            valueType = popToken()
+        default:
+            throw CompilerError.expected("value type", Parser.globalTokenIndex)
+        }
+        
+        guard case let Token.identifier(identifier) = popToken() else {
+            throw CompilerError.invalidIdentifier(Parser.globalTokenIndex)
+        }
+                
+        return VariableNode(identifier: identifier, address: position, depth: 0, valueType: valueType, variableNodeType: .parameter)
     }
     
     /// Now, this function parse only variables changes.
@@ -349,7 +395,7 @@ extension Parser {
             throw CompilerError.invalidIdentifier(Parser.globalTokenIndex)
         }
         
-        guard let (_, position, depth, valueType) = Parser.identifiersArray.last(where: { (id, position, depth, valueType) in
+        guard let (_, position, depth, valueType) = Parser.identifiersArray.last(where: { (id, _, _, _) in
             return id == identifier
         }) else {
             throw CompilerError.notDefined(identifier, Parser.globalTokenIndex)

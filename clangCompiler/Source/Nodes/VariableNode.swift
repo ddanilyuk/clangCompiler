@@ -15,6 +15,7 @@ struct VariableNode: PositionNode {
         case onlyDeclaration
         case changing
         case getting
+        case parameter
     }
     
     var identifier: String
@@ -56,6 +57,8 @@ struct VariableNode: PositionNode {
              result += "mov [ebp - \(address)], 0\n"
         case .getting:
             result += "mov \(register), [ebp - \(address)]\n"
+        case .parameter:
+            result += "mov \(register), [ebp + \(address)]\n"
         }
         
         return result
@@ -76,6 +79,8 @@ extension VariableNode: TreeRepresentable {
             result += " | changing"
         case .getting:
             result += " | using | position \(lrPosition.rawValue)"
+        case .parameter:
+            result += " | parameter"
         }
         return result
     }

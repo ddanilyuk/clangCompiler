@@ -13,13 +13,18 @@ struct FunctionDefinitionNode: Node {
     // Funciton name
     let identifier: String
     
+    // TODO:- add variables count
+    
+    let parametersBlock: Node
+    
     // Block inside function
-    let block: Node
+    let functionBlock: Node
     
     var returnType: Token
     
     func interpret() throws -> String {
-        return try block.interpret()
+        // TODO:- move block interpreting to here
+        return try functionBlock.interpret()
     }
 }
 
@@ -31,6 +36,6 @@ extension FunctionDefinitionNode: TreeRepresentable {
     }
     
     var subnodes: [Node] {
-        return [block]
+        return [parametersBlock, functionBlock]
     }
 }

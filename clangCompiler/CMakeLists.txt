@@ -1,8 +1,8 @@
-add_executable(4-07-Swift-IV-82-Danyliuk
-  4-07-Swift-IV-82-Danyliuk.swift)
+add_executable(5-07-Swift-IV-82-Danyliuk
+  5-07-Swift-IV-82-Danyliuk.swift)
 
 # add_subdirectory(Sources)
-target_sources(4-07-Swift-IV-82-Danyliuk PRIVATE
+target_sources(5-07-Swift-IV-82-Danyliuk PRIVATE
   Source/Block.swift
   Source/CompilerError.swift
   Source/Extensions.swift
@@ -25,5 +25,5 @@ target_sources(4-07-Swift-IV-82-Danyliuk PRIVATE
   Source/TreePrinter/TreeRepresentable.swift 
 )
 
-target_compile_options(4-07-Swift-IV-82-Danyliuk PRIVATE -parse-as-library)
-target_link_libraries(4-07-Swift-IV-82-Danyliuk PRIVATE SwiftWin32)
+target_compile_options(5-07-Swift-IV-82-Danyliuk PRIVATE -parse-as-library)
+target_link_libraries(5-07-Swift-IV-82-Danyliuk PRIVATE SwiftWin32)
