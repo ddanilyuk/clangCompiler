@@ -32,6 +32,16 @@ struct FunctionDefinitionNode: Node {
     
     var variablesCount: Int
     
+    var parametersCount: Int {
+        get {
+            if let block = parametersBlock as? Block {
+                return block.nodes.count
+            } else {
+                return 0
+            }
+        }
+    }
+    
     func interpret() throws -> String {
         var result = String()
         switch functionType {

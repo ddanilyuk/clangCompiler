@@ -42,9 +42,16 @@ enum CompilerError: Swift.Error, LocalizedError {
     // Something expected
     case expected(String, Int)
     
-    // For functions (now not used)
-    case notDefined(String, Int)
-    case alreadyDefined(String, Int)
+    // For functions
+    case variableNotDefined(String, Int)
+    case variableAlreadyDefined(String, Int)
+    
+    case functionNotDefined(String, Int)
+    case functionAlreadyDefined(String, Int)
+    
+    case invalidNumberOfArguments((identifier: String, expected: Int, given: Int), Int)
+
+    case invalidfunctionAssignment((identifier: String, expected: Int, given: Int), Int)
     
     case noReturn(String, Int)
     
@@ -52,7 +59,7 @@ enum CompilerError: Swift.Error, LocalizedError {
         switch self {
         case let .expectedFloat(index), let .expectedInt(index), let .expectedOperator(index), let .expectedExpression(index), let .invalidValue(index), let .invalidIdentifier(index), let .invalidNumber(index), let .invalidGenerator(index), let .unexpectedError(index):
             return index
-        case let .invalidReturnType(_, index), let .expected(_, index), let .notDefined(_, index), let .alreadyDefined(_, index), let .invalidOperator(_, index), let .noReturn(_, index):
+        case let .invalidReturnType(_, index), let .expected(_, index), let .variableNotDefined(_, index), let .variableAlreadyDefined(_, index), let .invalidOperator(_, index), let .functionNotDefined(_, index), let .functionAlreadyDefined(_, index), let .invalidNumberOfArguments(_, index), let .invalidfunctionAssignment(_, index), let .noReturn(_, index):
             return index
         }
     }
@@ -89,10 +96,22 @@ enum CompilerError: Swift.Error, LocalizedError {
         case let .expected(str, _):
             return "Extected \"\(str)\"."
             
-        case let .notDefined(str, _):
-            return "\"\(str)\" not defined."
-        case let .alreadyDefined(str, _):
-            return "\"\(str)\" already defined."
+        case let .variableNotDefined(str, _):
+            return "Variable \"\(str)\" not defined."
+        case let .variableAlreadyDefined(str, _):
+            return "Variable \"\(str)\" already defined."
+        
+        case let .functionNotDefined(str, _):
+            return "Function \"\(str)\" not defined."
+        case let .functionAlreadyDefined(str, _):
+            return "Function \"\(str)\" already defined."
+            
+        case let .invalidNumberOfArguments((identifier, expected, given), _):
+            return "In function \"\(identifier)\" expected \(expected) arguments, but given \(given)."
+        case let .invalidfunctionAssignment((identifier, expected, given), _):
+            return "Invalid function assignment! In \"\(identifier)\" expected \(expected) parameters, but given \(given)."
+
+        
         case let .noReturn(str, _):
             return "Function \"\(str)\" do not have return."
         }
@@ -100,7 +119,9 @@ enum CompilerError: Swift.Error, LocalizedError {
     
     public func fullErrorDescription(code: String, tokens: [Token]) {
         
-        let lineAndPosition = Lexer.getPositionFromIndex(tokens: tokens, code: code, index: self.index, isError: true)
+//        let lineAndPosition = Lexer.getPositionFromIndex(tokens: tokens, code: code, index: self.index, isError: true)
+        let lineAndPosition = Lexer.getPositionOf(inputIndex: index, tokens: tokens, code: code, isError: true)
+
         
         let arrayOfAsterisks = Array(repeating: "-", count: lineAndPosition.position - 1)
         var graphicalOutputErrorPosition = arrayOfAsterisks.reduce("") { "\($0)\($1)" }

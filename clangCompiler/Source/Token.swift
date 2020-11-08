@@ -58,8 +58,8 @@ enum Token: Equatable {
             return 3
         case .floatType:
             return 5
-        case .op:
-            return 1
+        case let .op(op):
+            return op == .divideEqual ? 2 : 1
         case .colon:
             return 1
         case .comma:

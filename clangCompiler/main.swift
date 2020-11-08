@@ -11,26 +11,23 @@ import Foundation
 let testers = Testers()
 
 let testCode = """
-int foo(int bla);
+int foo(int a, int b);
 
 int main() {
-    return foo(4);
+    float asfd;
+    int bbbbbb = 1231;
+    return foo(4, 10);
 }
 
-int foo(int bla) {
+int foo(int a, int b) {
     int value = 8;
     value /= 2;
-    return bla * value;
+    return a * value;
 }
 """
 
-//int bar(int some, int vari) {
-//    int result = some * vari;
-//    return result;
-//}
-
 compile(code: testCode)
-//compile(code: testers.lab4test1)
+//compile(code: testers.lab4e)
 #endif
 
 
@@ -62,14 +59,24 @@ func compile(code: String) {
     do {
         print("File text:\n\(code)\n")
         
+//        code.enumerateLines { (some, _) in
+//            print("-")
+//            print(some)
+//        }
+        
         let lexer = try Lexer(code: code, tokens: &tokens)
         
         print(lexer.tokensTable)
         
+//        let some = Lexer.getPositionOf(index: 20, tokens: tokens, code: code, isError: false)
+//        print(some)
+//
         let parser = Parser(tokens: tokens)
         
         let node = try parser.parseBlock(blockType: .startPoint)
         print("Tree:\n\(TreePrinter.printTree(root: node))")
+        
+        
         
         print("\nC++ code: ")
         let cppCode = try node.interpret()

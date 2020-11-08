@@ -9,24 +9,11 @@ import Foundation
 
 
 class Parser {
-    
-//    public static var newIdDictionary: [String: IdentifiersArray] = [:]
-    
+        
     typealias IdentifiersArray = [(id: String, position: Int, depth: Int, valueType: Token)]
     
-    
-    public static var maxIdentifires: Int = 0
-    
-    public static var identifiersArray: IdentifiersArray = [] {
-        didSet {
-            if identifiersArray.count > maxIdentifires {
-                maxIdentifires = identifiersArray.count
-            }
-        }
-    }
-    
+    public static var identifiersArray: IdentifiersArray = []
     public static var functionsArray: [FunctionDefinitionNode] = []
-    
     
     public static var currentDepth: Int = 0
     public static var currentVariablePosition: Int = -4
@@ -76,8 +63,10 @@ class Parser {
     
     // Given token must be next token. If not, throw error
     func popSyntaxToken(_ token: Token) throws {
-        if !canCheckToken || popToken() != token {
+        if !canCheckToken || checkToken() != token {
             throw CompilerError.expected(token.description, Parser.globalTokenIndex)
+        } else {
+            popToken()
         }
     }
 }
@@ -112,11 +101,12 @@ extension Parser {
         }
         
         if !canCheckToken || checkToken() == Token.op(.equal) {
-            throw CompilerError.invalidOperator("=", Parser.globalTokenIndex + 1)
+            throw CompilerError.invalidOperator("=", Parser.globalTokenIndex)
         }
         
         if !canCheckToken || checkToken() == Token.parensOpen {
             // Function
+            print(Parser.functionsArray)
             if var functionNode = Parser.functionsArray.last(where: { function -> Bool in
                 return function.identifier == identifier
             }) {
@@ -133,12 +123,17 @@ extension Parser {
                         try popSyntaxToken(.comma)
                     }
                 }
-                functionNode.parametersBlock = Block(nodes: nodes, blockType: .parameters)
+                
+                if functionNode.parametersCount != nodes.count {
+                    throw CompilerError.invalidNumberOfArguments((identifier: identifier, expected: functionNode.parametersCount, given: nodes.count), Parser.globalTokenIndex)
+                }
+                
+                functionNode.parametersBlock = Block(nodes: nodes.reversed(), blockType: .parameters)
                 functionNode.functionType = .using
                 
                 return functionNode
             } else {
-                throw CompilerError.notDefined(identifier, Parser.globalTokenIndex)
+                throw CompilerError.functionNotDefined(identifier, Parser.globalTokenIndex)
             }
         } else {
             // Variable
@@ -147,7 +142,7 @@ extension Parser {
             }) {
                 return VariableNode(identifier: identifier, address: position, depth: depth, valueType: valueType, variableNodeType: .using)
             } else {
-                throw CompilerError.notDefined(identifier, Parser.globalTokenIndex)
+                throw CompilerError.variableNotDefined(identifier, Parser.globalTokenIndex)
             }
         }
     }
@@ -182,8 +177,7 @@ extension Parser {
         return expressionNode
     }
     
-    func parseExpression(node: Node? = nil, isAssignmentOperator: Bool = false) throws -> Node {
-        
+    func parseExpression() throws -> Node {
         guard canCheckToken else { throw CompilerError.expectedExpression(Parser.globalTokenIndex) }
         
         let node = try parseValue()
@@ -192,7 +186,7 @@ extension Parser {
             if checkToken() == Token.questionMark {
                 return try parseTernaryOperator(node: node)
             } else {
-                return try parseInfixOperation(leftNode: node)
+                return try parseBinaryOperation(leftNode: node)
             }
         } else {
             throw CompilerError.unexpectedError(Parser.globalTokenIndex - 1)
@@ -201,7 +195,6 @@ extension Parser {
     }
     
     func parseTernaryOperator(node: Node) throws -> Node {
-        
         try popSyntaxToken(Token.questionMark)
         
         let trueNode = try parseExpression()
@@ -213,7 +206,7 @@ extension Parser {
         return TernaryNode(conditionNode: node, trueNode: trueNode, falseNode: falseNode)
     }
     
-    func parseInfixOperation(leftNode: Node, nodePriority: Int = 0) throws -> Node {
+    func parseBinaryOperation(leftNode: Node, nodePriority: Int = 0) throws -> Node {
         
         var leftNode = leftNode
         var priority = try getTokenPriority()
@@ -235,7 +228,7 @@ extension Parser {
             let nextPriority = try getTokenPriority()
             
             if priority < nextPriority {
-                rightNode = try parseInfixOperation(leftNode: rightNode, nodePriority: priority + 1)
+                rightNode = try parseBinaryOperation(leftNode: rightNode, nodePriority: priority + 1)
             }
             
             leftNode = BinaryOperationNode(op: op, lhs: leftNode, rhs: rightNode)
@@ -312,7 +305,7 @@ extension Parser {
         if Parser.identifiersArray.last(where: { (id, _, depth, _) -> Bool in
             return id == identifier && depth == Parser.currentDepth
         }) != nil {
-            throw CompilerError.alreadyDefined(identifier, Parser.globalTokenIndex)
+            throw CompilerError.variableAlreadyDefined(identifier, Parser.globalTokenIndex)
         }
 
         if checkToken() == .parensOpen {
@@ -347,6 +340,8 @@ extension Parser {
     
     func parseFunctionDeclaration(valueType: Token, identifier: String) throws -> Node {
         
+        let functionStartIndex = Parser.globalTokenIndex
+        
         let parametersBlock = try parseFunctionParameters()
         
         let functionNode = FunctionDefinitionNode(identifier: identifier,
@@ -356,6 +351,7 @@ extension Parser {
                                                   functionType: .onlyDeclaration,
                                                   variablesCount: 0)
         Parser.functionsArray.append(functionNode)
+        print(Parser.functionsArray)
         
         if !canCheckToken || checkToken() == Token.semicolon {
             // If only declaration
@@ -363,7 +359,7 @@ extension Parser {
             return functionNode
             
         } else {
-            // If declaration and assing
+            // If declaration and assign
             
             let functionNodeBlock = try parseCurlyCodeBlock(blockType: .function)
             
@@ -397,10 +393,20 @@ extension Parser {
                                                       functionBlock: functionNodeBlock,
                                                       returnType: valueType,
                                                       functionType: .declarationAndAssignment,
-                                                      variablesCount: Parser.maxIdentifires)
+                                                      variablesCount: Parser.identifiersArray.filter { $0.1 < 0 }.count)
             
-            Parser.functionsArray.removeAll { functionDefinitionNode in
-                return functionDefinitionNode.identifier == identifier && functionDefinitionNode.functionType == .onlyDeclaration
+            try Parser.functionsArray.removeAll { functionDefinitionNode in
+                if functionDefinitionNode.identifier == identifier {
+                    if functionDefinitionNode.functionType == .declarationAndAssignment {
+                        throw CompilerError.functionAlreadyDefined(identifier, functionStartIndex)
+                    } else if functionDefinitionNode.parametersCount != functionNode.parametersCount {
+                        throw CompilerError.invalidfunctionAssignment((identifier: identifier, expected: functionDefinitionNode.parametersCount, given: functionNode.parametersCount), functionStartIndex)
+                    } else {
+                        return true
+                    }
+                } else {
+                    return false
+                }
             }
             Parser.functionsArray.append(functionNode)
             
@@ -461,13 +467,13 @@ extension Parser {
         guard let (_, position, depth, valueType) = Parser.identifiersArray.last(where: { (id, _, _, _) in
             return id == identifier
         }) else {
-            throw CompilerError.notDefined(identifier, Parser.globalTokenIndex)
+            throw CompilerError.variableNotDefined(identifier, Parser.globalTokenIndex)
         }
         
         if checkToken() == .op(.divideEqual) {
             let oldVariable = VariableNode(identifier: identifier, address: position, depth: depth, valueType: valueType, variableNodeType: .using)
             
-            let newValue = try parseInfixOperation(leftNode: oldVariable)
+            let newValue = try parseBinaryOperation(leftNode: oldVariable)
 
             try popSyntaxToken(Token.semicolon)
             
@@ -478,7 +484,6 @@ extension Parser {
             try popSyntaxToken(Token.semicolon)
             return VariableNode(identifier: identifier, address: position, depth: depth, value: newValue, valueType: valueType, variableNodeType: .changing)
         }
-        
     }
     
     func parseReturn() throws -> Node {
@@ -497,13 +502,23 @@ extension Parser {
             let token = checkToken()
             switch token {
             case .intType, .floatType:
+                let beforeBlockFunctionsCount = Parser.functionsArray.count
+                
+                
                 let node = try parserVariableOrFunctionDeclaration()
                 
-                if node is FunctionDefinitionNode {
-                    Parser.currentDepth = 0
-                    Parser.currentVariablePosition = -4
-                    Parser.identifiersArray = []
-                    Parser.maxIdentifires = 0
+                if let funcNode = node as? FunctionDefinitionNode {
+                    
+                    if funcNode.functionType == .declarationAndAssignment {
+                        while Parser.functionsArray.count != beforeBlockFunctionsCount {
+                            Parser.functionsArray.removeLast()
+                        }
+                        
+                        Parser.currentDepth = 0
+                        Parser.currentVariablePosition = -4
+                        Parser.identifiersArray = []
+                    }
+                    
                 }
                 nodes.append(node)
                 
@@ -512,13 +527,20 @@ extension Parser {
             case .identifier:
                 nodes.append(try parseIdentifierChange())
             case .curlyOpen:
-                let beforeBlockCount = Parser.identifiersArray.count
+                let beforeBlockIdentifiersCount = Parser.identifiersArray.count
+                let beforeBlockFunctionsCount = Parser.functionsArray.count
+
                 Parser.currentDepth += 1
                 nodes.append(try parseCurlyCodeBlock(blockType: .codeBlock))
-                while Parser.identifiersArray.count != beforeBlockCount {
+                
+                while Parser.identifiersArray.count != beforeBlockIdentifiersCount {
                     Parser.identifiersArray.removeLast()
                     Parser.currentVariablePosition += 4
                 }
+                while Parser.functionsArray.count != beforeBlockFunctionsCount {
+                    Parser.functionsArray.removeLast()
+                }
+                
                 Parser.currentDepth -= 1
             default:
                 throw CompilerError.unexpectedError(Parser.globalTokenIndex)
