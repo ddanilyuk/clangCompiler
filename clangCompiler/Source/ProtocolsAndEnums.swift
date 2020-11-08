@@ -25,6 +25,7 @@ enum Operator: String, CaseIterable {
     case minus = "-"
     case greater = ">"
     case equal = "="
+    case divideEqual = "/="
     
     var priority: Int {
         switch self {
@@ -34,7 +35,7 @@ enum Operator: String, CaseIterable {
             return 200
         case .greater:
             return 50
-        case .equal:
+        case .equal, .divideEqual:
             return 25
         }
     }

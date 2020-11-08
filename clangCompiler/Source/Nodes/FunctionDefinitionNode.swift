@@ -46,8 +46,10 @@ struct FunctionDefinitionNode: Node {
             mov ebp, esp \(esp)
             ; End \(identifier) header\n
             """
+            
             result += try functionBlock.interpret()
             result.deleteSufix("push eax\n")
+            
             result += """
             ; Start \(identifier) footer
             _ret_\(identifier):

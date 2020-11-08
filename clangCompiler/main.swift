@@ -18,7 +18,9 @@ int main() {
 }
 
 int foo(int bla) {
-    return bla * 2;
+    int value = 8;
+    value /= 2;
+    return bla * value;
 }
 """
 

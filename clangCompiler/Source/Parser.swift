@@ -117,7 +117,7 @@ extension Parser {
         
         if !canCheckToken || checkToken() == Token.parensOpen {
             // Function
-            if var functionNode = Parser.functionsArray.first(where: { function -> Bool in
+            if var functionNode = Parser.functionsArray.last(where: { function -> Bool in
                 return function.identifier == identifier
             }) {
                 try popSyntaxToken(.parensOpen)
@@ -182,7 +182,8 @@ extension Parser {
         return expressionNode
     }
     
-    func parseExpression() throws -> Node {
+    func parseExpression(node: Node? = nil, isAssignmentOperator: Bool = false) throws -> Node {
+        
         guard canCheckToken else { throw CompilerError.expectedExpression(Parser.globalTokenIndex) }
         
         let node = try parseValue()
@@ -191,7 +192,7 @@ extension Parser {
             if checkToken() == Token.questionMark {
                 return try parseTernaryOperator(node: node)
             } else {
-                return try parseInfixOperation(node: node)
+                return try parseInfixOperation(leftNode: node)
             }
         } else {
             throw CompilerError.unexpectedError(Parser.globalTokenIndex - 1)
@@ -212,9 +213,9 @@ extension Parser {
         return TernaryNode(conditionNode: node, trueNode: trueNode, falseNode: falseNode)
     }
     
-    func parseInfixOperation(node: Node, nodePriority: Int = 0) throws -> Node {
+    func parseInfixOperation(leftNode: Node, nodePriority: Int = 0) throws -> Node {
         
-        var leftNode = node
+        var leftNode = leftNode
         var priority = try getTokenPriority()
         
         // If next token have priority less than 0 (when it is not operator), this while block skips.
@@ -224,7 +225,7 @@ extension Parser {
             }
             
             var rightNode = try parseValue()
-            
+                        
             // If right node is unary negative, select its position
             if var positionNode = rightNode as? PositionNode {
                 positionNode.lrPosition = .rhs
@@ -234,7 +235,7 @@ extension Parser {
             let nextPriority = try getTokenPriority()
             
             if priority < nextPriority {
-                rightNode = try parseInfixOperation(node: rightNode, nodePriority: priority + 1)
+                rightNode = try parseInfixOperation(leftNode: rightNode, nodePriority: priority + 1)
             }
             
             leftNode = BinaryOperationNode(op: op, lhs: leftNode, rhs: rightNode)
@@ -463,11 +464,21 @@ extension Parser {
             throw CompilerError.notDefined(identifier, Parser.globalTokenIndex)
         }
         
-        try popSyntaxToken(Token.op(.equal))
-        let newValue = try parseExpression()
-        try popSyntaxToken(Token.semicolon)
+        if checkToken() == .op(.divideEqual) {
+            let oldVariable = VariableNode(identifier: identifier, address: position, depth: depth, valueType: valueType, variableNodeType: .using)
+            
+            let newValue = try parseInfixOperation(leftNode: oldVariable)
+
+            try popSyntaxToken(Token.semicolon)
+            
+            return VariableNode(identifier: identifier, address: position, depth: depth, value: newValue, valueType: valueType, variableNodeType: .changing)
+        } else {
+            try popSyntaxToken(Token.op(.equal))
+            let newValue = try parseExpression()
+            try popSyntaxToken(Token.semicolon)
+            return VariableNode(identifier: identifier, address: position, depth: depth, value: newValue, valueType: valueType, variableNodeType: .changing)
+        }
         
-        return VariableNode(identifier: identifier, address: position, depth: depth, value: newValue, valueType: valueType, variableNodeType: .changing)
     }
     
     func parseReturn() throws -> Node {

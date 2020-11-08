@@ -109,8 +109,8 @@ enum Token: Equatable {
     static var generators: [String: Generator] {
         return [
             /// Possible operators
-            "\\*|\\/|\\+|\\-|\\>|\\<|\\=": {
-                if $0 == "/" || $0 == "-" || $0 == "*" || $0 == ">" || $0 == "=" {
+            "\\/=|\\*|\\/|\\+|\\-|\\>|\\<|\\=": {
+                if $0 == "/" || $0 == "-" || $0 == "*" || $0 == ">" || $0 == "=" || $0 == "/=" {
                     return .op(Operator(rawValue: $0)!)
                 } else {
                     // Throw error if operator is not available for variant

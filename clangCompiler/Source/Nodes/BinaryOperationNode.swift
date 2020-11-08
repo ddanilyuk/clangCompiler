@@ -57,7 +57,7 @@ struct BinaryOperationNode: Node {
         result += "\(rightPopping)\(leftPopping)"
         
         switch op {
-        case .divide:
+        case .divide, .divideEqual:
             result += "cdq\n"
             result += "idiv ebx\n"
         case .multiply:
