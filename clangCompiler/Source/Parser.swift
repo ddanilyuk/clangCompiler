@@ -106,10 +106,16 @@ extension Parser {
         
         if !canCheckToken || checkToken() == Token.parensOpen {
             // Function
+            Parser.functionsArray.forEach { (node) in
+                print("--")
+                print(node)
+            }
+            print("****")
             if var functionNode = Parser.functionsArray.last(where: { function -> Bool in
                 return function.identifier == identifier
             }) {
-                // Set is was used to true
+//                print(functionNode)
+//                 Set is was used to true
                 if let index = Parser.functionsArray.lastIndex(where: { (function) -> Bool in
                     return function.identifier == identifier
                 }) {
@@ -118,29 +124,46 @@ extension Parser {
                     newFunction.isWasUsed = true
                     Parser.functionsArray.insert(newFunction, at: index)
                 }
-                
+//
                 try popSyntaxToken(.parensOpen)
                 var nodes = [Node]()
-                while canCheckToken {
-                    let value = try parseValue()
-                    let variable = VariableNode(identifier: "", address: 0, depth: 0, value: value, valueType: .questionMark, variableNodeType: .parameterPushing)
-                    nodes.append(variable)
-                    
-                    if Token.parensClose == checkToken() {
-                        try popSyntaxToken(.parensClose)
-                        break
-                    } else {
-                        try popSyntaxToken(.comma)
+                
+                if checkToken() != .parensClose {
+                    while canCheckToken {
+                        // TODO: - change variable with .parameterPushing to some struct
+                        let value = try parseValue()
+                        if var variable = value as? VariableNode {
+                            variable.variableNodeType = .using
+                            let newVariable = VariableNode(identifier: "", address: 0, depth: 0, value: variable, valueType: .questionMark, variableNodeType: .parameterPushing)
+                            nodes.append(newVariable)
+                        } else {
+                            if var function = value as? FunctionDefinitionNode {
+                                function.functionType = .using
+                                let newVariable = VariableNode(identifier: "", address: 0, depth: 0, value: function, valueType: .questionMark, variableNodeType: .parameterPushing)
+                                nodes.append(newVariable)
+                            } else {
+                                let variable = VariableNode(identifier: "", address: 0, depth: 0, value: value, valueType: .questionMark, variableNodeType: .parameterPushing)
+                                nodes.append(variable)
+                            }
+                        }
+                        if Token.parensClose == checkToken() {
+                            try popSyntaxToken(.parensClose)
+                            break
+                        } else {
+                            try popSyntaxToken(.comma)
+                        }
                     }
+                    
+                    if functionNode.parametersCount != nodes.count {
+                        throw CompilerError.invalidNumberOfArguments((identifier: identifier, expected: functionNode.parametersCount, given: nodes.count), Parser.globalTokenIndex)
+                    }
+                } else {
+                    try popSyntaxToken(.parensClose)
                 }
                 
-                if functionNode.parametersCount != nodes.count {
-                    throw CompilerError.invalidNumberOfArguments((identifier: identifier, expected: functionNode.parametersCount, given: nodes.count), Parser.globalTokenIndex)
-                }
-                
-                functionNode.isWasUsed = true
                 functionNode.parametersBlock = Block(nodes: nodes.reversed(), blockType: .parameters)
-
+                functionNode.functionType = .using
+                
                 return functionNode
             } else {
                 throw CompilerError.functionNotDefined(identifier, Parser.globalTokenIndex)
@@ -350,7 +373,7 @@ extension Parser {
     
     func parseFunctionDeclaration(valueType: Token, identifier: String) throws -> Node {
         
-        let functionStartIndex = Parser.globalTokenIndex
+        let functionStartIndex = Parser.globalTokenIndex - 1
         
         let parametersBlock = try parseFunctionParameters()
         
@@ -403,6 +426,11 @@ extension Parser {
                                                       returnType: valueType,
                                                       functionType: .declarationAndAssignment,
                                                       variablesCount: Parser.identifiersArray.filter { $0.1 < 0 }.count)
+            Parser.currentDepth += 1
+
+            if identifier == "sos" {
+                print(identifier)
+            }
             
             try Parser.functionsArray.removeAll { functionDefinitionNode in
                 if functionDefinitionNode.identifier == identifier {
@@ -417,8 +445,14 @@ extension Parser {
                     return false
                 }
             }
+
+            print(functionNode)
+            if Parser.currentDepth != 1 {
+                throw CompilerError.functionCantBeDefinedInBlock(identifier, functionStartIndex)
+            }
             Parser.functionsArray.append(functionNode)
-            
+            Parser.currentDepth -= 1
+
             return functionNode
         }
     }
@@ -517,12 +551,13 @@ extension Parser {
                 
                 if let funcNode = node as? FunctionDefinitionNode {
                     
+                    
                     if funcNode.functionType == .declarationAndAssignment {
-                        while Parser.functionsArray.count != beforeBlockFunctionsCount {
+                        while Parser.functionsArray.count != beforeBlockFunctionsCount && Parser.currentDepth != 1 {
                             Parser.functionsArray.removeLast()
                         }
                         
-                        Parser.currentDepth = 0
+                        Parser.currentDepth = 1
                         Parser.currentVariablePosition = -4
                         Parser.identifiersArray = []
                     }

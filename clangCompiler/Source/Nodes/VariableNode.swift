@@ -63,7 +63,9 @@ struct VariableNode: PositionNode {
         case .parameterDeclare:
             result += ""
         case .parameterPushing:
-            result += "\(try value!.interpret())"
+            if let value = value {
+                result += "\(try value.interpret())"
+            }
             result += "push \(register)\n"
         }
         

@@ -13,11 +13,20 @@ let testers = Testers()
 let testCode = """
 int foo(int a, int b);
 
-int main() {
-    float asfd;
-    int bbbbbb = 1231;
-    return foo(4, 10);
+int two() {
+    return 2;
 }
+
+int main() {
+    int sos() {
+        return 505;
+    }
+    float asfd = sos();
+    int bbbbbb = 20;
+    return foo(two(), 10);
+}
+
+
 
 int foo(int a, int b) {
     int value = 8;

@@ -55,13 +55,15 @@ enum CompilerError: Swift.Error, LocalizedError {
     
     case functionUsedButNotHaveDefinition(String, Int)
     
+    case functionCantBeDefinedInBlock(String, Int)
+    
     case noReturn(String, Int)
     
     var index: Int {
         switch self {
         case let .expectedFloat(index), let .expectedInt(index), let .expectedOperator(index), let .expectedExpression(index), let .invalidValue(index), let .invalidIdentifier(index), let .invalidNumber(index), let .invalidGenerator(index), let .unexpectedError(index):
             return index
-        case let .invalidReturnType(_, index), let .expected(_, index), let .variableNotDefined(_, index), let .variableAlreadyDefined(_, index), let .invalidOperator(_, index), let .functionNotDefined(_, index), let .functionAlreadyDefined(_, index), let .invalidNumberOfArguments(_, index), let .invalidfunctionAssignment(_, index), let .functionUsedButNotHaveDefinition(_, index), let .noReturn(_, index):
+        case let .invalidReturnType(_, index), let .expected(_, index), let .variableNotDefined(_, index), let .variableAlreadyDefined(_, index), let .invalidOperator(_, index), let .functionNotDefined(_, index), let .functionAlreadyDefined(_, index), let .invalidNumberOfArguments(_, index), let .invalidfunctionAssignment(_, index), let .functionUsedButNotHaveDefinition(_, index), let .functionCantBeDefinedInBlock(_, index), let .noReturn(_, index):
             return index
         }
     }
@@ -114,10 +116,14 @@ enum CompilerError: Swift.Error, LocalizedError {
             return "Invalid function assignment! In \"\(identifier)\" expected \(expected) parameters, but given \(given)."
 
         case let .functionUsedButNotHaveDefinition(identifier, _):
-            return "Function \"\(identifier)\" was called but not have definition"
+            return "Function \"\(identifier)\" was called but not have definition."
+            
+        case let .functionCantBeDefinedInBlock(identifier, _):
+            return "Function \"\(identifier)\" cant be defined inside block."
         
         case let .noReturn(str, _):
             return "Function \"\(str)\" do not have return."
+        
         }
     }
     
