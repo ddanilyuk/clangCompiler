@@ -18,9 +18,7 @@ struct FunctionDefinitionNode: Node {
     
     // Funciton name
     let identifier: String
-    
-    // TODO:- add variables count
-    
+        
     var parametersBlock: Node
     
     // Block inside function
@@ -41,6 +39,8 @@ struct FunctionDefinitionNode: Node {
             }
         }
     }
+    
+    var isWasUsed = false
     
     func interpret() throws -> String {
         var result = String()

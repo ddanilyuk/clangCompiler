@@ -59,31 +59,19 @@ func compile(code: String) {
     do {
         print("File text:\n\(code)\n")
         
-//        code.enumerateLines { (some, _) in
-//            print("-")
-//            print(some)
-//        }
-        
         let lexer = try Lexer(code: code, tokens: &tokens)
-        
         print(lexer.tokensTable)
         
-//        let some = Lexer.getPositionOf(index: 20, tokens: tokens, code: code, isError: false)
-//        print(some)
-//
         let parser = Parser(tokens: tokens)
         
         let node = try parser.parseBlock(blockType: .startPoint)
         print("Tree:\n\(TreePrinter.printTree(root: node))")
         
-        
-        
         print("\nC++ code: ")
         let cppCode = try node.interpret()
         print(cppCode)
-//
-//        try cppCode.write(toFile: "5-07-Swift-IV-82-Danyliuk.cpp", atomically: false, encoding: String.Encoding.utf8)
-        
+
+        try cppCode.write(toFile: "5-07-Swift-IV-82-Danyliuk.cpp", atomically: false, encoding: String.Encoding.utf8)
     } catch let error {
         if let error = error as? CompilerError {
             error.fullErrorDescription(code: code, tokens: tokens)

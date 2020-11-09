@@ -106,16 +106,26 @@ extension Parser {
         
         if !canCheckToken || checkToken() == Token.parensOpen {
             // Function
-            print(Parser.functionsArray)
             if var functionNode = Parser.functionsArray.last(where: { function -> Bool in
                 return function.identifier == identifier
             }) {
+                // Set is was used to true
+                if let index = Parser.functionsArray.lastIndex(where: { (function) -> Bool in
+                    return function.identifier == identifier
+                }) {
+                    Parser.functionsArray.remove(at: index)
+                    var newFunction = functionNode
+                    newFunction.isWasUsed = true
+                    Parser.functionsArray.insert(newFunction, at: index)
+                }
+                
                 try popSyntaxToken(.parensOpen)
                 var nodes = [Node]()
                 while canCheckToken {
                     let value = try parseValue()
                     let variable = VariableNode(identifier: "", address: 0, depth: 0, value: value, valueType: .questionMark, variableNodeType: .parameterPushing)
                     nodes.append(variable)
+                    
                     if Token.parensClose == checkToken() {
                         try popSyntaxToken(.parensClose)
                         break
@@ -128,9 +138,9 @@ extension Parser {
                     throw CompilerError.invalidNumberOfArguments((identifier: identifier, expected: functionNode.parametersCount, given: nodes.count), Parser.globalTokenIndex)
                 }
                 
+                functionNode.isWasUsed = true
                 functionNode.parametersBlock = Block(nodes: nodes.reversed(), blockType: .parameters)
-                functionNode.functionType = .using
-                
+
                 return functionNode
             } else {
                 throw CompilerError.functionNotDefined(identifier, Parser.globalTokenIndex)
@@ -351,7 +361,6 @@ extension Parser {
                                                   functionType: .onlyDeclaration,
                                                   variablesCount: 0)
         Parser.functionsArray.append(functionNode)
-        print(Parser.functionsArray)
         
         if !canCheckToken || checkToken() == Token.semicolon {
             // If only declaration
@@ -503,8 +512,7 @@ extension Parser {
             switch token {
             case .intType, .floatType:
                 let beforeBlockFunctionsCount = Parser.functionsArray.count
-                
-                
+                                
                 let node = try parserVariableOrFunctionDeclaration()
                 
                 if let funcNode = node as? FunctionDefinitionNode {
@@ -544,6 +552,18 @@ extension Parser {
                 Parser.currentDepth -= 1
             default:
                 throw CompilerError.unexpectedError(Parser.globalTokenIndex)
+            }
+        }
+        if blockType == .startPoint {
+            let usedFuncs = Parser.functionsArray.filter { $0.isWasUsed && $0.functionType == .onlyDeclaration }
+            let haveDefinition = Parser.functionsArray.filter { $0.functionType == .declarationAndAssignment }
+            
+            try usedFuncs.forEach { functionNode in
+                if !haveDefinition.contains(where: { (functionDefinitionNode) -> Bool in
+                    functionDefinitionNode.identifier == functionNode.identifier
+                }) {
+                    throw CompilerError.functionUsedButNotHaveDefinition(functionNode.identifier, 0)
+                }
             }
         }
         return Block(nodes: nodes, blockType: blockType)
