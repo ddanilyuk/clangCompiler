@@ -344,4 +344,63 @@ int main() {
 }
 """
     
+    
+    let lab5test1 = """
+int multiply(int a, int b);
+
+int main() {
+    int valueA = -10;
+    {
+        int fooValue = 10;
+        fooValue /= 5;
+        int valueB = fooValue;
+        return multiply(valueA, valueB);
+    }
+}
+
+int multiply(int first, int second) {
+    return first * second;
+}
+"""
+    
+    let lab5test2 = """
+int main() {
+    {
+        int mainValue = 041;
+        {
+            float valueInBlock = 3.14;
+            mainValue /= valueInBlock;
+        }
+        int divide(int first, int second);
+        return divide(mainValue, 2);
+    }
+}
+
+int divide(int first, int second) {
+    int result = first;
+    result /= second;
+    return result;
+}
+"""
+    
+    let lab5test3 = """
+int minus(int valueFirst, int valueSecond) {
+    return valueFirst - valueSecond;
+}
+
+int getFalseValue() {
+    return 0;
+}
+
+int getSomeValue() {
+    return -7;
+}
+
+int main() {
+    int foo = getFalseValue() ? 033 : 108;
+    int result = minus(foo, getSomeValue());
+    return result * 2;
+}
+"""
+    
 }
