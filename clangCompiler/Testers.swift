@@ -356,6 +356,7 @@ int main() {
         int valueB = fooValue;
         return multiply(valueA, valueB);
     }
+    return valueA;
 }
 
 int multiply(int first, int second) {
@@ -364,12 +365,34 @@ int multiply(int first, int second) {
 """
     
     let lab5test2 = """
+int multiply(int valueFirst, int valueSecond) {
+    return valueFirst * valueSecond;
+}
+
+int getFalseValue() {
+    return 0;
+}
+
+int getSomeValue() {
+    return -7;
+}
+
+int main() {
+    int foo = getFalseValue() ? 033 : 108;
+    int result = multiply(foo, getSomeValue());
+    return result / 2;
+}
+"""
+    
+    let lab5test3 = """
 int main() {
     {
         int mainValue = 041;
         {
             float valueInBlock = 3.14;
-            mainValue /= valueInBlock;
+            {
+                mainValue /= valueInBlock;
+            }
         }
         int divide(int first, int second);
         return divide(mainValue, 2);
@@ -383,24 +406,82 @@ int divide(int first, int second) {
 }
 """
     
-    let lab5test3 = """
-int minus(int valueFirst, int valueSecond) {
-    return valueFirst - valueSecond;
+    let lab5error1 = """
+int main() {
+    int value1 = 228;
+    float value2 = 012;
+    return divide(value1, value2);
+}
+"""
+    
+    let lab5error2 = """
+int main() {
+    int foo = 0.314;
+    float bar = 123;
+    {
+        int divide(int a, int b);
+    }
+    return divide(value1, value2);
 }
 
-int getFalseValue() {
-    return 0;
+int divide(int a, int b) {
+    return a / b;
 }
+"""
+    
+    let lab5error3 = """
+int testFunction(int one);
 
-int getSomeValue() {
-    return -7;
+int testFunction(int one, int two) {
+    return one * two;
 }
 
 int main() {
-    int foo = getFalseValue() ? 033 : 108;
-    int result = minus(foo, getSomeValue());
-    return result * 2;
+    int foo = testFunction(22, 33);
+    foo /= 2;
+    return foo;
+}
+"""
+    
+    let lab5error4 = """
+int isBigger(int one, int two) {
+    return one > two;
+}
+
+int main() {
+    int bar = isBigger(10);
+    bar = 10 > bar;
+    return bar;
+}
+"""
+    
+    let lab5error5 = """
+int increaseByTen(int number);
+
+int increaseByTen(int number) {
+    return number * 10;
+}
+
+int increaseByTen(int number) {
+    return number * 100;
+}
+
+int main() {
+    return increaseByTen(55);
+}
+"""
+    
+    let lab5error6 = """
+int test(int) {
+    return 0;
+}
+
+int main() {
+    int zero = test();
+    return zero;
 }
 """
     
 }
+
+    

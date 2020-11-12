@@ -11,32 +11,28 @@ import Foundation
 let testers = Testers()
 
 let testCode = """
-int foo(int a, int b);
-
-int two() {
-    return 2;
-}
+int linearVelocity(float period, int radius);
+float getPi();
 
 int main() {
-    int sos() {
-        return 505;
-    }
-    float asfd = sos();
-    int bbbbbb = 20;
-    return foo(two(), 10);
+    int b = 900;
+    b /= getPi();
+    int result = linearVelocity(2.5, 2);
+    return result;
 }
 
+int linearVelocity(float T, int r) {
+    int n = 2 * getPi() * r / T;
+    return n;
+}
 
-
-int foo(int a, int b) {
-    int value = 8;
-    value /= 2;
-    return a * value;
+float getPi() {
+    return 3.14;
 }
 """
 
-compile(code: testCode)
-//compile(code: testers.lab4e)
+//compile(code: testCode)
+compile(code: testers.lab5test1)
 #endif
 
 

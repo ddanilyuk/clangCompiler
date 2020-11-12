@@ -12,11 +12,19 @@ class Parser {
         
     typealias IdentifiersArray = [(id: String, position: Int, depth: Int, valueType: Token)]
     
-    public static var identifiersArray: IdentifiersArray = []
+    public static var identifiersArray: IdentifiersArray = [] {
+        didSet {
+            let count = identifiersArray.filter({ $0.1 < 0 }).count
+            if count > maximumVariablesInFunction {
+                maximumVariablesInFunction = count
+            }
+        }
+    }
     public static var functionsArray: [FunctionDefinitionNode] = []
     
     public static var currentDepth: Int = 0
     public static var currentVariablePosition: Int = -4
+    public static var maximumVariablesInFunction: Int = 0
 
     public static var globalTokenIndex = -1
     
@@ -106,16 +114,9 @@ extension Parser {
         
         if !canCheckToken || checkToken() == Token.parensOpen {
             // Function
-            Parser.functionsArray.forEach { (node) in
-                print("--")
-                print(node)
-            }
-            print("****")
             if var functionNode = Parser.functionsArray.last(where: { function -> Bool in
                 return function.identifier == identifier
             }) {
-//                print(functionNode)
-//                 Set is was used to true
                 if let index = Parser.functionsArray.lastIndex(where: { (function) -> Bool in
                     return function.identifier == identifier
                 }) {
@@ -425,12 +426,7 @@ extension Parser {
                                                       functionBlock: functionNodeBlock,
                                                       returnType: valueType,
                                                       functionType: .declarationAndAssignment,
-                                                      variablesCount: Parser.identifiersArray.filter { $0.1 < 0 }.count)
-            Parser.currentDepth += 1
-
-            if identifier == "sos" {
-                print(identifier)
-            }
+                                                      variablesCount: Parser.maximumVariablesInFunction)
             
             try Parser.functionsArray.removeAll { functionDefinitionNode in
                 if functionDefinitionNode.identifier == identifier {
@@ -446,13 +442,8 @@ extension Parser {
                 }
             }
 
-            print(functionNode)
-            if Parser.currentDepth != 1 {
-                throw CompilerError.functionCantBeDefinedInBlock(identifier, functionStartIndex)
-            }
             Parser.functionsArray.append(functionNode)
-            Parser.currentDepth -= 1
-
+            
             return functionNode
         }
     }
@@ -545,23 +536,17 @@ extension Parser {
             let token = checkToken()
             switch token {
             case .intType, .floatType:
-                let beforeBlockFunctionsCount = Parser.functionsArray.count
+//                let beforeBlockFunctionsCount = Parser.functionsArray.count
                                 
                 let node = try parserVariableOrFunctionDeclaration()
                 
                 if let funcNode = node as? FunctionDefinitionNode {
-                    
-                    
                     if funcNode.functionType == .declarationAndAssignment {
-                        while Parser.functionsArray.count != beforeBlockFunctionsCount && Parser.currentDepth != 1 {
-                            Parser.functionsArray.removeLast()
-                        }
-                        
                         Parser.currentDepth = 1
                         Parser.currentVariablePosition = -4
                         Parser.identifiersArray = []
+                        Parser.maximumVariablesInFunction = 0
                     }
-                    
                 }
                 nodes.append(node)
                 
@@ -570,16 +555,17 @@ extension Parser {
             case .identifier:
                 nodes.append(try parseIdentifierChange())
             case .curlyOpen:
-                let beforeBlockIdentifiersCount = Parser.identifiersArray.count
+                let beforeBlockIdentifiersCount = Parser.identifiersArray.filter { $0.1 < 0 }.count
                 let beforeBlockFunctionsCount = Parser.functionsArray.count
 
                 Parser.currentDepth += 1
                 nodes.append(try parseCurlyCodeBlock(blockType: .codeBlock))
                 
-                while Parser.identifiersArray.count != beforeBlockIdentifiersCount {
+                while Parser.identifiersArray.filter({ $0.1 < 0 }).count != beforeBlockIdentifiersCount {
                     Parser.identifiersArray.removeLast()
                     Parser.currentVariablePosition += 4
                 }
+                
                 while Parser.functionsArray.count != beforeBlockFunctionsCount {
                     Parser.functionsArray.removeLast()
                 }
