@@ -12,7 +12,7 @@
 		5FBB142B254ACFA700C49A43 /* Lexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FBB1415254ACFA700C49A43 /* Lexer.swift */; };
 		5FBB142C254ACFA700C49A43 /* ReturnNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FBB1417254ACFA700C49A43 /* ReturnNode.swift */; };
 		5FBB142D254ACFA700C49A43 /* VariableNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FBB1418254ACFA700C49A43 /* VariableNode.swift */; };
-		5FBB142E254ACFA700C49A43 /* FunctionDefinitionNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FBB1419254ACFA700C49A43 /* FunctionDefinitionNode.swift */; };
+		5FBB142E254ACFA700C49A43 /* FunctionNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FBB1419254ACFA700C49A43 /* FunctionNode.swift */; };
 		5FBB142F254ACFA700C49A43 /* BinaryOperationNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FBB141A254ACFA700C49A43 /* BinaryOperationNode.swift */; };
 		5FBB1430254ACFA700C49A43 /* UnaryNegativeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FBB141B254ACFA700C49A43 /* UnaryNegativeNode.swift */; };
 		5FBB1431254ACFA700C49A43 /* NumberNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FBB141C254ACFA700C49A43 /* NumberNode.swift */; };
@@ -47,7 +47,7 @@
 		5FBB1415254ACFA700C49A43 /* Lexer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Lexer.swift; sourceTree = "<group>"; };
 		5FBB1417254ACFA700C49A43 /* ReturnNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReturnNode.swift; sourceTree = "<group>"; };
 		5FBB1418254ACFA700C49A43 /* VariableNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VariableNode.swift; sourceTree = "<group>"; };
-		5FBB1419254ACFA700C49A43 /* FunctionDefinitionNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FunctionDefinitionNode.swift; sourceTree = "<group>"; };
+		5FBB1419254ACFA700C49A43 /* FunctionNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FunctionNode.swift; sourceTree = "<group>"; };
 		5FBB141A254ACFA700C49A43 /* BinaryOperationNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BinaryOperationNode.swift; sourceTree = "<group>"; };
 		5FBB141B254ACFA700C49A43 /* UnaryNegativeNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnaryNegativeNode.swift; sourceTree = "<group>"; };
 		5FBB141C254ACFA700C49A43 /* NumberNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberNode.swift; sourceTree = "<group>"; };
@@ -123,7 +123,7 @@
 			children = (
 				5FBB1417254ACFA700C49A43 /* ReturnNode.swift */,
 				5FBB1418254ACFA700C49A43 /* VariableNode.swift */,
-				5FBB1419254ACFA700C49A43 /* FunctionDefinitionNode.swift */,
+				5FBB1419254ACFA700C49A43 /* FunctionNode.swift */,
 				5FBB141A254ACFA700C49A43 /* BinaryOperationNode.swift */,
 				5FBB141B254ACFA700C49A43 /* UnaryNegativeNode.swift */,
 				5FBB141C254ACFA700C49A43 /* NumberNode.swift */,
@@ -202,7 +202,7 @@
 				5FBB142F254ACFA700C49A43 /* BinaryOperationNode.swift in Sources */,
 				5FBB1436254ACFA700C49A43 /* Parser.swift in Sources */,
 				5FBB1434254ACFA700C49A43 /* Block.swift in Sources */,
-				5FBB142E254ACFA700C49A43 /* FunctionDefinitionNode.swift in Sources */,
+				5FBB142E254ACFA700C49A43 /* FunctionNode.swift in Sources */,
 				5FBB1430254ACFA700C49A43 /* UnaryNegativeNode.swift in Sources */,
 				5FBB143B254ACFA700C49A43 /* TreeRepresentable.swift in Sources */,
 				5FBB1431254ACFA700C49A43 /* NumberNode.swift in Sources */,
