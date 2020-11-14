@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5F87A03C2560528A005B738C /* DoWhileNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F87A03B2560528A005B738C /* DoWhileNode.swift */; };
 		5FBB140A254ACF5F00C49A43 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FBB1409254ACF5F00C49A43 /* main.swift */; };
 		5FBB142A254ACFA700C49A43 /* Testers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FBB1413254ACFA600C49A43 /* Testers.swift */; };
 		5FBB142B254ACFA700C49A43 /* Lexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FBB1415254ACFA700C49A43 /* Lexer.swift */; };
@@ -41,6 +42,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		5F87A03B2560528A005B738C /* DoWhileNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoWhileNode.swift; sourceTree = "<group>"; };
 		5FBB1406254ACF5F00C49A43 /* clangCompiler */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = clangCompiler; sourceTree = BUILT_PRODUCTS_DIR; };
 		5FBB1409254ACF5F00C49A43 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		5FBB1413254ACFA600C49A43 /* Testers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Testers.swift; sourceTree = "<group>"; };
@@ -127,6 +129,7 @@
 				5FBB141A254ACFA700C49A43 /* BinaryOperationNode.swift */,
 				5FBB141B254ACFA700C49A43 /* UnaryNegativeNode.swift */,
 				5FBB141C254ACFA700C49A43 /* NumberNode.swift */,
+				5F87A03B2560528A005B738C /* DoWhileNode.swift */,
 				5FBB141D254ACFA700C49A43 /* TernaryNode.swift */,
 				5FBB141E254ACFA700C49A43 /* CustomIntNode.swift */,
 			);
@@ -201,6 +204,7 @@
 			files = (
 				5FBB142F254ACFA700C49A43 /* BinaryOperationNode.swift in Sources */,
 				5FBB1436254ACFA700C49A43 /* Parser.swift in Sources */,
+				5F87A03C2560528A005B738C /* DoWhileNode.swift in Sources */,
 				5FBB1434254ACFA700C49A43 /* Block.swift in Sources */,
 				5FBB142E254ACFA700C49A43 /* FunctionNode.swift in Sources */,
 				5FBB1430254ACFA700C49A43 /* UnaryNegativeNode.swift in Sources */,

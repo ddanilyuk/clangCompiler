@@ -36,6 +36,8 @@ enum Token: Equatable {
     case `return`
     case semicolon
     case comma
+    case `do`
+    case `while`
     
     var lenght: Int {
         switch self {
@@ -70,6 +72,10 @@ enum Token: Equatable {
             return string.count
         case .return:
             return 6
+        case .do:
+            return 2
+        case .while:
+            return 5
         }
     }
     
@@ -99,6 +105,10 @@ enum Token: Equatable {
             return ":"
         case .comma:
             return ","
+        case .do:
+            return "do"
+        case .while:
+            return "while"
         default:
             return "\(self)"
         }
@@ -136,6 +146,10 @@ enum Token: Equatable {
                     return .intType
                 } else if $0 == "float" {
                     return .floatType
+                } else if $0 == "do" {
+                    return .do
+                } else if $0 == "while" {
+                    return .while
                 } else {
                     return .identifier($0)
                 }

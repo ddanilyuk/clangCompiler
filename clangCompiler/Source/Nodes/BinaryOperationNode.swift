@@ -8,7 +8,6 @@
 import Foundation
 
 
-// Operators
 struct BinaryOperationNode: Node {
 
     let op: Operator

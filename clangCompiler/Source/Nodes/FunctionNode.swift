@@ -15,7 +15,7 @@ struct FunctionNode: PositionNode {
         case declarationAndAssignment
         case using
     }
-    
+            
     // Funciton name
     let identifier: String
         
@@ -32,6 +32,8 @@ struct FunctionNode: PositionNode {
     
     var lrPosition: LRPosition = .lhs
     
+    var isUsed = false
+    
     var parametersCount: Int {
         get {
             if let block = parametersBlock as? Block {
@@ -41,8 +43,6 @@ struct FunctionNode: PositionNode {
             }
         }
     }
-    
-    var isUsed = false
     
     func interpret() throws -> String {
         var result = String()

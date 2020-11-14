@@ -10,24 +10,36 @@ import Foundation
 
 let testers = Testers()
 
+//let testCode = """
+//int linearVelocity(float period, int radius);
+//float getPi();
+//
+//int main() {
+//    int b = 900;
+//    b /= getPi();
+//    int result = linearVelocity(2.5, 2);
+//    return result;
+//}
+//
+//int linearVelocity(float T, int r) {
+//    int n = 2 * getPi() * r / T;
+//    return n;
+//}
+//
+//float getPi() {
+//    return 3.14;
+//}
+//"""
+
 let testCode = """
-int linearVelocity(float period, int radius);
-float getPi();
-
 int main() {
-    int b = 900;
-    b /= getPi();
-    int result = linearVelocity(2.5, 2);
-    return result;
-}
+    int value = 100;
 
-int linearVelocity(float T, int r) {
-    int n = 2 * getPi() * r / T;
-    return n;
-}
+    do {
+        value = value / 2;
+    } while (value > 10);
 
-float getPi() {
-    return 3.14;
+    return value;
 }
 """
 

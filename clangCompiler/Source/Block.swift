@@ -16,6 +16,7 @@ struct Block: Node {
         case startPoint = "start point"
         case codeBlock = "code block"
         case parameters = "parameters"
+        case doWhileBlock = "do block"
     }
     
     let nodes: [Node]
@@ -60,7 +61,11 @@ struct Block: Node {
             for node in nodes {
                 result += try node.interpret()
             }
-            return result
+//            return result
+        case .doWhileBlock:
+            for node in nodes {
+                result += try node.interpret()
+            }
         }
                 
         return result
