@@ -66,6 +66,8 @@ struct BinaryOperationNode: Node {
             result += "setg al\n"
             result += "movzx eax, al\n"
             
+        case .or:
+            result += "or eax, ebx\n"
         // Uncomment for course work
         // case .minus:
         // result += "sub eax, ebx\n"

@@ -497,13 +497,7 @@ int main() {
     
     let lab6test2 = """
 int main() {
-    int value = 1;
-
-    do {
-        value = value * 2;
-        break;
-    } while (255 > value);
-    return value;
+    return 4 | 2;
 }
 """
     

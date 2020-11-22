@@ -44,7 +44,7 @@ int main() {
 """
 
 //compile(code: testCode)
-compile(code: testers.lab6test3)
+compile(code: testers.lab6test2)
 #endif
 
 
