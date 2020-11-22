@@ -20,8 +20,6 @@ struct DoWhileNode: Node {
         
         var result = String()
         
-        
-        
         result += "_doWhile_\(DoWhileNode.doWhileNumber):\n"
         result += try block.interpret()
         
@@ -30,7 +28,6 @@ struct DoWhileNode: Node {
         result += "cmp eax, 0\n"
         
         result += "jne _doWhile_\(DoWhileNode.doWhileNumber)\n"
-        
         result += "_afterDoWhile_\(DoWhileNode.doWhileNumber):\n"
         return result
     }
@@ -45,5 +42,37 @@ extension DoWhileNode: TreeRepresentable {
     
     var subnodes: [Node] {
         return [block, conditionNode]
+    }
+}
+
+
+struct BreakNode: Node {
+    
+    var name: String {
+        return "break"
+    }
+    
+    var subnodes: [Node] {
+        return []
+    }
+    
+    func interpret() throws -> String {
+        return "jmp _afterDoWhile_\(DoWhileNode.doWhileNumber)\n"
+    }
+}
+
+
+struct ContinueNode: Node {
+    
+    var name: String {
+        return "continue"
+    }
+    
+    var subnodes: [Node] {
+        return []
+    }
+    
+    func interpret() throws -> String {
+        return "jmp _doWhile_\(DoWhileNode.doWhileNumber)\n"
     }
 }

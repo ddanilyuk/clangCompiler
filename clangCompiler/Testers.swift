@@ -482,6 +482,17 @@ int main() {
 }
 """
     
-}
-
     
+    let lab6test1 = """
+int main() {
+    int value = 1;
+
+    do {
+        value = value * 2;
+    } while (257 > value);
+
+    return value;
+}
+"""
+    
+}

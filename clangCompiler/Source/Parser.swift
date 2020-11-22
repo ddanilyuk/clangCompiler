@@ -553,7 +553,25 @@ extension Parser {
         return ReturnNode(node: value, functionIdenitifer: Parser.functionsArray.last?.identifier ?? "")
     }
     
-    // MARK:- Main parse function
+    func parseContinue(blockType: Block.BlockType) throws -> Node {
+        if blockType != .doWhileBlock {
+            throw CompilerError.continueOutsideLoop(Parser.globalTokenIndex)
+        }
+        try popSyntaxToken(Token.continue)
+        try popSyntaxToken(Token.semicolon)
+        return ContinueNode()
+    }
+    
+    func parseBreak(blockType: Block.BlockType) throws -> Node {
+        if blockType != .doWhileBlock {
+            throw CompilerError.breakOutsideLoop(Parser.globalTokenIndex)
+        }
+        try popSyntaxToken(Token.break)
+        try popSyntaxToken(Token.semicolon)
+        return BreakNode()
+    }
+    
+    // MARK: - Main parse function
     // This function parse blocks
     func parseBlock(blockType: Block.BlockType) throws -> Node {
         var blockNodes: [Node] = []
@@ -594,9 +612,19 @@ extension Parser {
                 }
                 
                 Parser.currentDepth -= 1
+                
             case .do:
                 let node = try parseDoWhileBlock()
                 blockNodes.append(node)
+                
+            case .continue:
+                let node = try parseContinue(blockType: blockType)
+                blockNodes.append(node)
+                
+            case .break:
+                let node = try parseBreak(blockType: blockType)
+                blockNodes.append(node)
+                
             default:
                 throw CompilerError.unexpectedError(Parser.globalTokenIndex)
             }

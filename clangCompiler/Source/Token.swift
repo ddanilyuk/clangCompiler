@@ -38,6 +38,8 @@ enum Token: Equatable {
     case comma
     case `do`
     case `while`
+    case `continue`
+    case `break`
     
     var lenght: Int {
         switch self {
@@ -76,6 +78,10 @@ enum Token: Equatable {
             return 2
         case .while:
             return 5
+        case .continue:
+            return 8
+        case .break:
+            return 5
         }
     }
     
@@ -109,6 +115,10 @@ enum Token: Equatable {
             return "do"
         case .while:
             return "while"
+        case .continue:
+            return "continue"
+        case .break:
+            return "break"
         default:
             return "\(self)"
         }
@@ -150,6 +160,10 @@ enum Token: Equatable {
                     return .do
                 } else if $0 == "while" {
                     return .while
+                } else if $0 == "continue" {
+                    return .continue
+                } else if $0 == "break" {
+                    return .break
                 } else {
                     return .identifier($0)
                 }
