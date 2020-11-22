@@ -40,6 +40,7 @@ enum Token: Equatable {
     case `while`
     case `continue`
     case `break`
+    case comment(String)
     
     var lenght: Int {
         switch self {
@@ -71,6 +72,8 @@ enum Token: Equatable {
         case .questionMark:
             return 1
         case let .identifier(string):
+            return string.count
+        case let .comment(string):
             return string.count
         case .return:
             return 6
@@ -119,6 +122,8 @@ enum Token: Equatable {
             return "continue"
         case .break:
             return "break"
+        case .comment:
+            return "comment"
         default:
             return "\(self)"
         }
@@ -128,8 +133,12 @@ enum Token: Equatable {
     
     static var generators: [String: Generator] {
         return [
+            
             /// Possible operators
-            "\\/=|\\*|\\/|\\+|\\-|\\>|\\<|\\=|\\|": {
+            "[\\/]{2}.*|\\/=|\\*|\\/|\\+|\\-|\\>|\\<|\\=|\\|": {
+                if $0.count > 2 && $0[0] == "/" && $0[1] == "/" {
+                    return .comment($0)
+                }
                 if $0 == "/" || $0 == "-" || $0 == "*" || $0 == ">" || $0 == "=" || $0 == "/=" || $0 == "|" {
                     return .op(Operator(rawValue: $0)!)
                 } else {
@@ -146,7 +155,6 @@ enum Token: Equatable {
             "\\?": { _ in .questionMark },
             "\\:": { _ in .colon },
             "\\,": { _ in .comma },
-
 
             /// For words and keywords
             "[a-zA-Z_$][a-zA-Z_$0-9]*": {

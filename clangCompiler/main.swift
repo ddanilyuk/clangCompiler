@@ -33,18 +33,14 @@ let testers = Testers()
 
 let testCode = """
 int main() {
-    int value = 100;
-
-    do {
-        value = value / 2;
-    } while (value > 10);
-
+    int value = 100 / 2; // Some comments here.
+    // And some comments here.
     return value;
 }
 """
 
-//compile(code: testCode)
-compile(code: testers.lab6test2)
+compile(code: testCode)
+//compile(code: testers.lab6test2)
 #endif
 
 

@@ -489,6 +489,8 @@ int main() {
 
     do {
         value = value * 2;
+        break;
+        value = value * 100;
     } while (255 > value);
 
     return value;
@@ -497,19 +499,37 @@ int main() {
     
     let lab6test2 = """
 int main() {
-    return 4 | 2;
+    int someValue = 22 | (2 * 4);
+    someValue /= 3;
+    
+    int result = someValue ? (2 | 10) : ((2.3 * 8) / 2);
+    {
+        result /= 5;
+        return result | 3;
+    }
+    return result * 8;
 }
 """
     
     let lab6test3 = """
-int main() {
-    int value = 1;
+int incrementing(int value, int numberOf);
 
+int main() {
+    int foo = 2;
     do {
-        value = value * 2;
-        break;
-    } while (255 > value);
-    return value;
+        foo = multiplyTwo(foo, 3);
+    } while (300 > foo);
+    return foo;
+}
+
+int multiplyTwo(int value, int numberOf) {
+    int result = valuel
+    int counter = 0;
+    do {
+        result = value * 2;
+        counter = counter + 1;
+    } while (numberOf > counter);
+    return result;
 }
 """
     
@@ -536,7 +556,6 @@ int main() {
     return some;
 }
 """
-    
     
     
     let courseWork = """

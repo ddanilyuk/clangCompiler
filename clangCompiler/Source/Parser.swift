@@ -624,7 +624,8 @@ extension Parser {
             case .break:
                 let node = try parseBreak(blockType: blockType)
                 blockNodes.append(node)
-                
+            case .comment:
+                popToken()
             default:
                 throw CompilerError.unexpectedError(Parser.globalTokenIndex)
             }
