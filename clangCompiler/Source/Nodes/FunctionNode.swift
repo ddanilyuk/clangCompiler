@@ -75,11 +75,13 @@ struct FunctionNode: PositionNode {
             result += ""
         case .using:
             
-            result += try parametersBlock.interpret()
             if lrPosition == .rhs {
                 result += "push eax\n"
             }
+            result += try parametersBlock.interpret()
+            
             result += "call _\(identifier)\n"
+            result += "add esp, \(parametersCount * 4)\n"
             if lrPosition == .rhs {
                 result += "mov ebx, eax\n"
                 result += "pop eax\n"
@@ -93,7 +95,7 @@ struct FunctionNode: PositionNode {
 extension FunctionNode: TreeRepresentable {
     
     var name: String {
-        return identifier
+        return identifier + " | " + lrPosition.rawValue
     }
     
     var subnodes: [Node] {

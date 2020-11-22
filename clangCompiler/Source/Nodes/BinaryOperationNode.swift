@@ -65,8 +65,13 @@ struct BinaryOperationNode: Node {
             result += "cmp eax, ebx\n"
             result += "setg al\n"
             result += "movzx eax, al\n"
+            
+        // Uncomment for course work
+        // case .minus:
+        // result += "sub eax, ebx\n"
+            
         default:
-            throw CompilerError.invalidOperator(op.rawValue, 1)
+            throw CompilerError.invalidOperator(op.rawValue, 0)
         }
         
         result += isNegative ? "neg eax\n" : ""

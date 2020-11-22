@@ -1,5 +1,5 @@
 //
-//  5-07-Swift-IV-82-Danyliuk.swift
+//  6-07-Swift-IV-82-Danyliuk.swift
 //  clangCompiler
 //
 //  Created by Денис Данилюк on 29.10.2020.
@@ -44,7 +44,7 @@ int main() {
 """
 
 //compile(code: testCode)
-compile(code: testers.lab6test1)
+compile(code: testers.lab6test3)
 #endif
 
 
@@ -58,7 +58,7 @@ final class AppDelegate: ApplicationDelegate {
     func application(_ application: Application, didFinishLaunchingWithOptions launchOptions: [Application.LaunchOptionsKey: Any]?) -> Bool {
         
         do {
-            let code = try String(contentsOfFile: "5-07-Swift-IV-82-Danyliuk.txt", encoding: String.Encoding.windowsCP1251)
+            let code = try String(contentsOfFile: "6-07-Swift-IV-82-Danyliuk.txt", encoding: String.Encoding.windowsCP1251)
             compile(code: code)
         } catch let error {
             print(error.localizedDescription)
@@ -88,7 +88,7 @@ func compile(code: String) {
         let cppCode = try node.interpret()
         print(cppCode)
 
-        try cppCode.write(toFile: "5-07-Swift-IV-82-Danyliuk.cpp", atomically: false, encoding: String.Encoding.utf8)
+        try cppCode.write(toFile: "6-07-Swift-IV-82-Danyliuk.cpp", atomically: false, encoding: String.Encoding.utf8)
     } catch let error {
         if let error = error as? CompilerError {
             error.fullErrorDescription(code: code, tokens: tokens)

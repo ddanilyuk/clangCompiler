@@ -489,10 +489,73 @@ int main() {
 
     do {
         value = value * 2;
-    } while (257 > value);
+    } while (255 > value);
 
     return value;
 }
 """
     
+    let lab6test2 = """
+int main() {
+    int value = 1;
+
+    do {
+        value = value * 2;
+        break;
+    } while (255 > value);
+    return value;
+}
+"""
+    
+    let lab6test3 = """
+int main() {
+    int value = 1;
+
+    do {
+        value = value * 2;
+        break;
+    } while (255 > value);
+    return value;
+}
+"""
+    
+    
+    
+    let lab6error1 = """
+int main() {
+    int foo = 1;
+    int bar = 3;
+    break;
+    do {
+        foo = foo * bar;
+    } while (255 > foo);
+    return foo;
+}
+"""
+    
+    let lab6error2 = """
+int main() {
+    int foo = 1;
+    int bar = 3;
+
+    int some = (foo > 2) ? bar : continue;
+    return some;
+}
+"""
+    
+    
+    
+    let courseWork = """
+int factorial(int n);
+
+int main() {
+    int number = 7;
+    int result = factorial(number);
+    return result;
+}
+
+int factorial(int n) {
+    return (2 > n) ? 1 : factorial((n - 1)) * n;
+}
+"""
 }

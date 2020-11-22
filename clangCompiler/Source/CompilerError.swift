@@ -100,7 +100,7 @@ enum CompilerError: Swift.Error, LocalizedError {
             return "Continue outside loop"
             
         case .breakOutsideLoop:
-            return "Continue outside loop"
+            return "Break outside loop"
         
         // Not used
         case let .invalidReturnType(str, _):
