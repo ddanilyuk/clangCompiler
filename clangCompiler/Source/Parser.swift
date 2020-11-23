@@ -555,7 +555,7 @@ extension Parser {
     
     func parseContinue(blockType: Block.BlockType) throws -> Node {
         if blockType != .doWhileBlock {
-            throw CompilerError.continueOutsideLoop(Parser.globalTokenIndex)
+            throw CompilerError.continueOutsideLoop(Parser.globalTokenIndex - Parser.currentDepth)
         }
         try popSyntaxToken(Token.continue)
         try popSyntaxToken(Token.semicolon)

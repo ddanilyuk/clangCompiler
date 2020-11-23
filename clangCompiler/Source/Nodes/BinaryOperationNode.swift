@@ -69,8 +69,8 @@ struct BinaryOperationNode: Node {
         case .or:
             result += "or eax, ebx\n"
         // Uncomment for course work
-        // case .minus:
-        // result += "sub eax, ebx\n"
+         case .minus:
+         result += "sub eax, ebx\n"
             
         default:
             throw CompilerError.invalidOperator(op.rawValue, 0)

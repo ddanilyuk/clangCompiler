@@ -20,15 +20,25 @@ struct DoWhileNode: Node {
         
         var result = String()
         
-        result += "_doWhile_\(DoWhileNode.doWhileNumber):\n"
-        result += try block.interpret()
+//        result += "_doWhile_\(DoWhileNode.doWhileNumber):\n"
+//        result += try block.interpret()
+//
+        // Make do
+        result += "jmp _doWhile_\(DoWhileNode.doWhileNumber)\n"
         
+        result += "_condition_\(DoWhileNode.doWhileNumber):\n"
         result += try conditionNode.interpret()
         result.deleteSufix("push eax\n")
         result += "cmp eax, 0\n"
+        result += "je _afterDoWhile_\(DoWhileNode.doWhileNumber)\n"
         
-        result += "jne _doWhile_\(DoWhileNode.doWhileNumber)\n"
+        result += "_doWhile_\(DoWhileNode.doWhileNumber):\n"
+        result += try block.interpret()
+        result += "jmp _condition_\(DoWhileNode.doWhileNumber)\n"
+        
         result += "_afterDoWhile_\(DoWhileNode.doWhileNumber):\n"
+        
+        DoWhileNode.doWhileNumber += 1
         return result
     }
 }
@@ -73,6 +83,6 @@ struct ContinueNode: Node {
     }
     
     func interpret() throws -> String {
-        return "jmp _doWhile_\(DoWhileNode.doWhileNumber)\n"
+        return "jmp _condition_\(DoWhileNode.doWhileNumber)\n"
     }
 }

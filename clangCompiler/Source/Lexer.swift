@@ -69,6 +69,9 @@ class Lexer {
             if !line.isEmpty {
                 while line[position - 1] == Character(" ") {
                     position += 1
+                    if position >= line.count {
+                        break
+                    }
                 }
                 
                 if tokenCounter == index {

@@ -39,8 +39,8 @@ int main() {
 }
 """
 
-compile(code: testCode)
-//compile(code: testers.lab6test2)
+//compile(code: testCode)
+compile(code: testers.lab6error6)
 #endif
 
 
