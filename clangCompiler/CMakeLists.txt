@@ -11,7 +11,7 @@ target_sources(6-07-Swift-IV-82-Danyliuk PRIVATE
   Source/Parser.swift
   Source/Token.swift
 
-  Source/Nodes/FunctionDefinitionNode.swift
+  Source/Nodes/FunctionNode.swift
   Source/Nodes/NumberNode.swift
   Source/Nodes/ReturnNode.swift
   Source/Nodes/TernaryNode.swift

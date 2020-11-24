@@ -524,7 +524,7 @@ int main() {
     int someValue = 22 | (2 * 4);
     someValue /= 3;
 
-    int result = someValue ? (2 | 10) : ((2.3 * 8) / 2);
+    int result = someValue ? (2 | (2 * (30 / 6))) : ((2.3 * 8) / 2);
     {
         result /= 5;
         return result | 4;
