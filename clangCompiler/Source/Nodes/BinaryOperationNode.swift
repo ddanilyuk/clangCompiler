@@ -59,8 +59,10 @@ struct BinaryOperationNode: Node {
         case .divide, .divideEqual:
             result += "cdq\n"
             result += "idiv ebx\n"
+            
         case .multiply:
             result += "imul eax, ebx\n"
+            
         case .greater:
             result += "cmp eax, ebx\n"
             result += "setg al\n"
@@ -68,9 +70,9 @@ struct BinaryOperationNode: Node {
             
         case .or:
             result += "or eax, ebx\n"
-        // Uncomment for course work
-         case .minus:
-         result += "sub eax, ebx\n"
+            
+        case .minus:
+            result += "sub eax, ebx\n"
             
         default:
             throw CompilerError.invalidOperator(op.rawValue, 0)

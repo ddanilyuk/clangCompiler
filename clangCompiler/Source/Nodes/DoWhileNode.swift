@@ -19,10 +19,6 @@ struct DoWhileNode: Node {
     func interpret() throws -> String {
         
         var result = String()
-        
-//        result += "_doWhile_\(DoWhileNode.doWhileNumber):\n"
-//        result += try block.interpret()
-//
         // Make do
         result += "jmp _doWhile_\(DoWhileNode.doWhileNumber)\n"
         
