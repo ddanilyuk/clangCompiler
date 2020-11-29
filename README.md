@@ -8,7 +8,7 @@
 
 ### You can:
 
-- Compile functions, blocs with local variables and ternary operators. 
+- Compile functions, do-while blocs, local variables and ternary operators. 
 
 ### Example:
 
