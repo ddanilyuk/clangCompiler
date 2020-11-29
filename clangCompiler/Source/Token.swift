@@ -36,6 +36,11 @@ enum Token: Equatable {
     case `return`
     case semicolon
     case comma
+    case `do`
+    case `while`
+    case `continue`
+    case `break`
+    case comment(String)
     
     var lenght: Int {
         switch self {
@@ -68,8 +73,18 @@ enum Token: Equatable {
             return 1
         case let .identifier(string):
             return string.count
+        case let .comment(string):
+            return string.count
         case .return:
             return 6
+        case .do:
+            return 2
+        case .while:
+            return 5
+        case .continue:
+            return 8
+        case .break:
+            return 5
         }
     }
     
@@ -99,6 +114,16 @@ enum Token: Equatable {
             return ":"
         case .comma:
             return ","
+        case .do:
+            return "do"
+        case .while:
+            return "while"
+        case .continue:
+            return "continue"
+        case .break:
+            return "break"
+        case .comment:
+            return "comment"
         default:
             return "\(self)"
         }
@@ -108,9 +133,13 @@ enum Token: Equatable {
     
     static var generators: [String: Generator] {
         return [
+            
             /// Possible operators
-            "\\/=|\\*|\\/|\\+|\\-|\\>|\\<|\\=": {
-                if $0 == "/" || $0 == "-" || $0 == "*" || $0 == ">" || $0 == "=" || $0 == "/=" {
+            "[\\/]{2}.*|\\/=|\\*|\\/|\\+|\\-|\\>|\\<|\\=|\\|": {
+                if $0.count > 2 && $0[0] == "/" && $0[1] == "/" {
+                    return .comment($0)
+                }
+                if $0 == "/" || $0 == "-" || $0 == "*" || $0 == ">" || $0 == "=" || $0 == "/=" || $0 == "|" {
                     return .op(Operator(rawValue: $0)!)
                 } else {
                     // Throw error if operator is not available for variant
@@ -127,7 +156,6 @@ enum Token: Equatable {
             "\\:": { _ in .colon },
             "\\,": { _ in .comma },
 
-
             /// For words and keywords
             "[a-zA-Z_$][a-zA-Z_$0-9]*": {
                 if $0 == "return" {
@@ -136,6 +164,14 @@ enum Token: Equatable {
                     return .intType
                 } else if $0 == "float" {
                     return .floatType
+                } else if $0 == "do" {
+                    return .do
+                } else if $0 == "while" {
+                    return .while
+                } else if $0 == "continue" {
+                    return .continue
+                } else if $0 == "break" {
+                    return .break
                 } else {
                     return .identifier($0)
                 }

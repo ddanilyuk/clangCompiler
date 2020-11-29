@@ -482,6 +482,317 @@ int main() {
 }
 """
     
+    // R = 38
+    let lab6test1 = """
+int main() {
+    int true = 1;
+    int value = 023;
+    do {
+        value = value * 2;
+        break;
+        value = value * 100;
+    } while (true);
+
+    return value;
+}
+"""
+
+    // R = 2420
+    let lab6test2 = """
+int main() {
+    int fict = -1;
+    fict = fict * -10;
+    fict /= 2.4;
+    do {
+        int multiplyer = 22;
+        fict = fict * multiplyer;
+        continue;
+        fict /= multiplyer;
+    } while (1000 > fict);
+
+    return fict;
+}
+"""
+    
+    // 30
+    // 10
+    // 10
+    // 2
+    // R = 6
+    let lab6test3 = """
+int main() {
+    int someValue = 22 | (2 * 4);
+    someValue /= 3;
+
+    int result = someValue ? (2 | (2 * (30 / 6))) : ((2.3 * 8) / 2);
+    {
+        result /= 5;
+        return result | 4;
+    }
+    return result * 8;
+}
+"""
+    
+    // 16 -> 17
+    // R = 1097
+    let lab6test4 = """
+int multiplyTwo(int value, int numberOf);
+
+int main() {
+    int foo = 2;
+    do {
+        foo = multiplyTwo(foo, 3) | 1;
+    } while (300 > foo);
+    return foo;
 }
 
+int multiplyTwo(int value, int numberOf) {
+    int result = value;
+    int counter = numberOf;
+    do {
+        result = result * 2;
+        counter = counter - 1;
+    } while (counter > 0);
+    return result;
+}
+"""
     
+
+    let lab6error1 = """
+int main() {
+    int foo = 1;
+    int bar = 3;
+    break;
+    do {
+        foo = foo * bar;
+    } while (255 > foo);
+    return foo;
+}
+"""
+    
+    let lab6error2 = """
+int main() {
+    int foo = 1;
+    int bar = 3;
+
+    int some = (foo > 2) ? bar : continue;
+    return some;
+}
+"""
+    
+    let lab6error3 = """
+int main() {
+    int foo = 1;
+    int bar = 3;
+    {
+        float valueInBlock = 3.14;
+        {
+            int valueInAnotherBlock = valueInBlock;
+            continue;
+        }
+    }
+    return foo * bar;
+}
+"""
+    
+    let lab6error4 = """
+int main() {
+    int alalal = 033;
+    do {
+        alalal /= 2;
+    } while ;
+
+    return foo * bar;
+}
+"""
+    
+    let lab6error5 = """
+int main() {
+    float someValue = 1.234;
+    do {
+        someValue = someValue * (2 * 2);
+    }
+    return someValue;
+}
+"""
+    
+    let lab6error6 = """
+int main() {
+    int false = 0;
+    false | 2;
+    return false;
+}
+"""
+    
+    
+    
+    let courseWork = """
+// Declaration factorial function.
+int factorial(int n);
+
+// Define main function.
+int main() {
+    int number = 7; // Choose number for factorial.
+    int result = factorial(number); // Call factorial function.
+    return result; // Return result.
+}
+
+// Define factorial function.
+int factorial(int n) {
+    // Recursive factorial using ternary operator.
+    return (2 > n) ? 1 : factorial((n - 1)) * n;
+}
+"""
+    
+    
+    let courseWorktest1 = """
+// Declaration factorial function.
+int factorial(int n);
+
+// Define main function.
+int main() {
+    int number = 8; // Choose number for factorial.
+    int result = factorial(number); // Call factorial function.
+    return result; // Return result.
+}
+
+// Define factorial function.
+int factorial(int n) {
+    // Recursive factorial using ternary operator.
+    return (2 > n) ? 1 : factorial((n - 1)) * n;
+}
+"""
+    
+    let courseWorktest2 = """
+// Declaration factorial function.
+int factorial(int n);
+
+// Define main function.
+int main() {
+    int number = 3; // Choose number for factorial.
+    int result = factorial(number); // Call factorial function.
+    return result; // Return result.
+}
+
+// Define factorial function.
+int factorial(int n) {
+    // Recursive factorial using ternary operator.
+    return (2 > n) ? 1 : factorial((n - 1)) * n;
+}
+"""
+    
+    let courseWorktest3 = """
+// Declaration factorial function.
+int factorial(int n);
+
+// Define main function.
+int main() {
+    int number = 5; // Choose number for factorial.
+    int result = factorial(number); // Call factorial function.
+    return result; // Return result.
+}
+
+// Define factorial function.
+int factorial(int n) {
+    // Recursive factorial using ternary operator.
+    return (2 > n) ? 1 : factorial((n - 1)) * n;
+}
+"""
+    
+    let courseWorkerror1 = """
+// Declaration factorial function.
+int factorial(int n);
+
+// Define main function.
+int main() {
+    int number = 5 // Choose number for factorial.
+    int result = factorial(number); // Call factorial function.
+    return result; // Return result.
+}
+
+// Define factorial function.
+int factorial(int n) {
+    // Recursive factorial using ternary operator.
+    return (2 > n) ? 1 : factorial((n - 1)) * n;
+}
+"""
+    
+    let courseWorkerror2 = """
+// Define main function.
+int main() {
+    int number = 5; // Choose number for factorial.
+    int result = factorial(number); // Call factorial function.
+    return result; // Return result.
+}
+
+// Define factorial function.
+int factorial(int n) {
+    // Recursive factorial using ternary operator.
+    return (2 > n) ? 1 : factorial((n - 1)) * n;
+}
+"""
+    
+    let courseWorkerror3 = """
+// Declaration factorial function.
+int factorial(int n);
+
+// Define main function.
+int main() {
+    int number = 5; // Choose number for factorial.
+    int result = factorial(number); // Call factorial function.
+    return result; // Return result.
+}
+"""
+    
+    let courseWorkerror4 = """
+// Declaration factorial function.
+int factorial(int n);
+
+// Define main function.
+int main() {
+    int result = factorial(number); // Call factorial function.
+    return result; // Return result.
+}
+
+// Define factorial function.
+int factorial(int n) {
+    // Recursive factorial using ternary operator.
+    return (2 > n) ? 1 : factorial((n - 1)) * n;
+}
+"""
+    
+    let courseWorkerror5 = """
+// Declaration factorial function.
+int factorial();
+
+// Define main function.
+int main() {
+    int number = 5; // Choose number for factorial.
+    int result = factorial(number); // Call factorial function.
+    return result; // Return result.
+}
+
+// Define factorial function.
+int factorial(int n) {
+    // Recursive factorial using ternary operator.
+    return (2 > n) ? 1 : factorial((n - 1)) * n;
+}
+"""
+    
+    let courseWorkerror6 = """
+// Declaration factorial function.
+int factorial(int n);
+
+// Define main function.
+int main() {
+    int number = 5; // Choose number for factorial.
+    int result = factorial(number); // Call factorial function.
+    return result;
+}
+
+// Define factorial function.
+int factorial(int n) {
+    // Recursive factorial using ternary operator.
+}
+"""
+}

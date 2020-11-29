@@ -1,5 +1,5 @@
 //
-//  5-07-Swift-IV-82-Danyliuk.swift
+//  6-07-Swift-IV-82-Danyliuk.swift
 //  clangCompiler
 //
 //  Created by Денис Данилюк on 29.10.2020.
@@ -10,29 +10,37 @@ import Foundation
 
 let testers = Testers()
 
+//let testCode = """
+//int linearVelocity(float period, int radius);
+//float getPi();
+//
+//int main() {
+//    int b = 900;
+//    b /= getPi();
+//    int result = linearVelocity(2.5, 2);
+//    return result;
+//}
+//
+//int linearVelocity(float T, int r) {
+//    int n = 2 * getPi() * r / T;
+//    return n;
+//}
+//
+//float getPi() {
+//    return 3.14;
+//}
+//"""
+
 let testCode = """
-int linearVelocity(float period, int radius);
-float getPi();
-
 int main() {
-    int b = 900;
-    b /= getPi();
-    int result = linearVelocity(2.5, 2);
-    return result;
-}
-
-int linearVelocity(float T, int r) {
-    int n = 2 * getPi() * r / T;
-    return n;
-}
-
-float getPi() {
-    return 3.14;
+    int value = 100 / 2; // Some comments here.
+    // And some comments here.
+    return value;
 }
 """
 
 //compile(code: testCode)
-compile(code: testers.lab5test1)
+compile(code: testers.courseWorkerror6)
 #endif
 
 
@@ -46,7 +54,7 @@ final class AppDelegate: ApplicationDelegate {
     func application(_ application: Application, didFinishLaunchingWithOptions launchOptions: [Application.LaunchOptionsKey: Any]?) -> Bool {
         
         do {
-            let code = try String(contentsOfFile: "5-07-Swift-IV-82-Danyliuk.txt", encoding: String.Encoding.windowsCP1251)
+            let code = try String(contentsOfFile: "6-07-Swift-IV-82-Danyliuk.txt", encoding: String.Encoding.windowsCP1251)
             compile(code: code)
         } catch let error {
             print(error.localizedDescription)
@@ -76,7 +84,7 @@ func compile(code: String) {
         let cppCode = try node.interpret()
         print(cppCode)
 
-        try cppCode.write(toFile: "5-07-Swift-IV-82-Danyliuk.cpp", atomically: false, encoding: String.Encoding.utf8)
+        try cppCode.write(toFile: "6-07-Swift-IV-82-Danyliuk.cpp", atomically: false, encoding: String.Encoding.utf8)
     } catch let error {
         if let error = error as? CompilerError {
             error.fullErrorDescription(code: code, tokens: tokens)

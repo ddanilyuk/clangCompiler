@@ -42,6 +42,10 @@ enum CompilerError: Swift.Error, LocalizedError {
     // Something expected
     case expected(String, Int)
     
+    case continueOutsideLoop(Int)
+    
+    case breakOutsideLoop(Int)
+    
     // For functions
     case variableNotDefined(String, Int)
     case variableAlreadyDefined(String, Int)
@@ -59,9 +63,10 @@ enum CompilerError: Swift.Error, LocalizedError {
     
     case noReturn(String, Int)
     
+    
     var index: Int {
         switch self {
-        case let .expectedFloat(index), let .expectedInt(index), let .expectedOperator(index), let .expectedExpression(index), let .invalidValue(index), let .invalidIdentifier(index), let .invalidNumber(index), let .invalidGenerator(index), let .unexpectedError(index):
+        case let .expectedFloat(index), let .expectedInt(index), let .expectedOperator(index), let .expectedExpression(index), let .invalidValue(index), let .invalidIdentifier(index), let .invalidNumber(index), let .invalidGenerator(index), let .unexpectedError(index), let .continueOutsideLoop(index), let .breakOutsideLoop(index):
             return index
         case let .invalidReturnType(_, index), let .expected(_, index), let .variableNotDefined(_, index), let .variableAlreadyDefined(_, index), let .invalidOperator(_, index), let .functionNotDefined(_, index), let .functionAlreadyDefined(_, index), let .invalidNumberOfArguments(_, index), let .invalidfunctionAssignment(_, index), let .functionUsedButNotHaveDefinition(_, index), let .functionCantBeDefinedInBlock(_, index), let .noReturn(_, index):
             return index
@@ -90,6 +95,12 @@ enum CompilerError: Swift.Error, LocalizedError {
             
         case .unexpectedError:
             return "Unexpected error."
+            
+        case .continueOutsideLoop:
+            return "Continue outside loop"
+            
+        case .breakOutsideLoop:
+            return "Break outside loop"
         
         // Not used
         case let .invalidReturnType(str, _):

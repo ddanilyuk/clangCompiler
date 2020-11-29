@@ -1,5 +1,5 @@
 //
-//  FunctionDefinitionNode.swift
+//  FunctionNode.swift
 //  clangCompiler
 //
 //  Created by Денис Данилюк on 24.09.2020.
@@ -8,14 +8,14 @@
 import Foundation
 
 
-struct FunctionDefinitionNode: Node {
+struct FunctionNode: PositionNode {
     
     enum FunctionType {
         case onlyDeclaration
         case declarationAndAssignment
         case using
     }
-    
+            
     // Funciton name
     let identifier: String
         
@@ -30,6 +30,10 @@ struct FunctionDefinitionNode: Node {
     
     var variablesCount: Int
     
+    var lrPosition: LRPosition = .lhs
+    
+    var isUsed = false
+    
     var parametersCount: Int {
         get {
             if let block = parametersBlock as? Block {
@@ -39,8 +43,6 @@ struct FunctionDefinitionNode: Node {
             }
         }
     }
-    
-    var isWasUsed = false
     
     func interpret() throws -> String {
         var result = String()
@@ -69,21 +71,31 @@ struct FunctionDefinitionNode: Node {
             ; End \(identifier) footer
             """
         case .onlyDeclaration:
+            
             result += ""
         case .using:
+            
+            if lrPosition == .rhs {
+                result += "push eax\n"
+            }
             result += try parametersBlock.interpret()
+            
             result += "call _\(identifier)\n"
+            result += "add esp, \(parametersCount * 4)\n"
+            if lrPosition == .rhs {
+                result += "mov ebx, eax\n"
+                result += "pop eax\n"
+            }
         }
-        // TODO:- move block interpreting to here
         return result
     }
 }
 
 
-extension FunctionDefinitionNode: TreeRepresentable {
+extension FunctionNode: TreeRepresentable {
     
     var name: String {
-        return identifier
+        return identifier + " | " + lrPosition.rawValue
     }
     
     var subnodes: [Node] {

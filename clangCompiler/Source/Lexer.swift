@@ -15,14 +15,16 @@ class Lexer {
     var lexerCode: String
     
     var lexerTokens: [Token] = []
-    
+        
     init(code: String, tokens: inout [Token]) throws {
         // Saving code to class.
         self.lexerCode = code
         
         // Deleting left-side whitespaces.
         lexerCode.deleteLeftWhitespaces()
+        
         var parts = [String]()
+        
         // Iterating to find tokens.
         while let next = try Lexer.getNextPart(with: lexerCode, tokens: tokens) {
             let (regular, part) = next
@@ -39,19 +41,18 @@ class Lexer {
             Token.currentTokenIndex += 1
         }
         
+        // Genarating tokens table
         for i in 0..<tokens.count {
             let part = parts[i]
             let token = tokens[i]
             let currentPostiton = Lexer.getPositionOf(inputIndex: i, tokens: tokens, code: code, isError: false)
             tokensTable.append("\(part) - \(token) | line: \(currentPostiton.line), position: [\(currentPostiton.position)-\(currentPostiton.position + token.lenght))\n")
         }
-        
-        
     }
     
     public static func getPositionOf(inputIndex: Int, tokens: [Token], code: String, isError: Bool) -> (line: Int, position: Int) {
         var position = 0
-        var line = 0
+        var lineNumber = 0
         var tokenCounter = 0
 
         var index = inputIndex
@@ -61,13 +62,16 @@ class Lexer {
             index = tokens.count
         }
 
-        code.enumerateLines { (oneLine, stop) in
+        code.enumerateLines { (line, stop) in
             position = 1
-            line += 1
+            lineNumber += 1
             
-            if !oneLine.isEmpty {
-                while oneLine[position - 1] == Character(" ") {
+            if !line.isEmpty {
+                while line[position - 1] == Character(" ") {
                     position += 1
+                    if position >= line.count {
+                        break
+                    }
                 }
                 
                 if tokenCounter == index {
@@ -78,21 +82,22 @@ class Lexer {
                     position += token.lenght
                     tokenCounter += 1
 
-                    if position > oneLine.count {
+                    if position > line.count {
                         break
                     }
                     
-                    while oneLine[position - 1] == Character(" ") {
+                    while line[position - 1] == Character(" ") {
                         position += 1
                         
-                        if position > oneLine.count {
+                        if position > line.count {
                             break
                         }
                     }
                     
-                    if position > oneLine.count {
+                    if position > line.count {
                         break
                     }
+                    
                     if tokenCounter == index {
                         stop = true
                         return 
@@ -101,7 +106,7 @@ class Lexer {
             }
         }
                 
-        return (line: line, position: position)
+        return (line: lineNumber, position: position)
     }
     
     private static func getNextPart(with code: String, tokens: [Token]) throws -> (regex: String, prefix: String)? {

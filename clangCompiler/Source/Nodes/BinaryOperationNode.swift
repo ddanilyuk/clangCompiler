@@ -8,7 +8,6 @@
 import Foundation
 
 
-// Operators
 struct BinaryOperationNode: Node {
 
     let op: Operator
@@ -60,14 +59,23 @@ struct BinaryOperationNode: Node {
         case .divide, .divideEqual:
             result += "cdq\n"
             result += "idiv ebx\n"
+            
         case .multiply:
             result += "imul eax, ebx\n"
+            
         case .greater:
             result += "cmp eax, ebx\n"
             result += "setg al\n"
             result += "movzx eax, al\n"
+            
+        case .or:
+            result += "or eax, ebx\n"
+            
+        case .minus:
+            result += "sub eax, ebx\n"
+            
         default:
-            throw CompilerError.invalidOperator(op.rawValue, 1)
+            throw CompilerError.invalidOperator(op.rawValue, 0)
         }
         
         result += isNegative ? "neg eax\n" : ""
