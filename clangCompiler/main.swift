@@ -40,7 +40,7 @@ int main() {
 """
 
 //compile(code: testCode)
-compile(code: testers.lab6error6)
+compile(code: testers.courseWorkerror6)
 #endif
 
 

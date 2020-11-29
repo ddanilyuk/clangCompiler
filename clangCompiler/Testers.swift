@@ -627,16 +627,172 @@ int main() {
     
     
     let courseWork = """
+// Declaration factorial function.
 int factorial(int n);
 
+// Define main function.
 int main() {
-    int number = 7;
-    int result = factorial(number);
+    int number = 7; // Choose number for factorial.
+    int result = factorial(number); // Call factorial function.
+    return result; // Return result.
+}
+
+// Define factorial function.
+int factorial(int n) {
+    // Recursive factorial using ternary operator.
+    return (2 > n) ? 1 : factorial((n - 1)) * n;
+}
+"""
+    
+    
+    let courseWorktest1 = """
+// Declaration factorial function.
+int factorial(int n);
+
+// Define main function.
+int main() {
+    int number = 8; // Choose number for factorial.
+    int result = factorial(number); // Call factorial function.
+    return result; // Return result.
+}
+
+// Define factorial function.
+int factorial(int n) {
+    // Recursive factorial using ternary operator.
+    return (2 > n) ? 1 : factorial((n - 1)) * n;
+}
+"""
+    
+    let courseWorktest2 = """
+// Declaration factorial function.
+int factorial(int n);
+
+// Define main function.
+int main() {
+    int number = 3; // Choose number for factorial.
+    int result = factorial(number); // Call factorial function.
+    return result; // Return result.
+}
+
+// Define factorial function.
+int factorial(int n) {
+    // Recursive factorial using ternary operator.
+    return (2 > n) ? 1 : factorial((n - 1)) * n;
+}
+"""
+    
+    let courseWorktest3 = """
+// Declaration factorial function.
+int factorial(int n);
+
+// Define main function.
+int main() {
+    int number = 5; // Choose number for factorial.
+    int result = factorial(number); // Call factorial function.
+    return result; // Return result.
+}
+
+// Define factorial function.
+int factorial(int n) {
+    // Recursive factorial using ternary operator.
+    return (2 > n) ? 1 : factorial((n - 1)) * n;
+}
+"""
+    
+    let courseWorkerror1 = """
+// Declaration factorial function.
+int factorial(int n);
+
+// Define main function.
+int main() {
+    int number = 5 // Choose number for factorial.
+    int result = factorial(number); // Call factorial function.
+    return result; // Return result.
+}
+
+// Define factorial function.
+int factorial(int n) {
+    // Recursive factorial using ternary operator.
+    return (2 > n) ? 1 : factorial((n - 1)) * n;
+}
+"""
+    
+    let courseWorkerror2 = """
+// Define main function.
+int main() {
+    int number = 5; // Choose number for factorial.
+    int result = factorial(number); // Call factorial function.
+    return result; // Return result.
+}
+
+// Define factorial function.
+int factorial(int n) {
+    // Recursive factorial using ternary operator.
+    return (2 > n) ? 1 : factorial((n - 1)) * n;
+}
+"""
+    
+    let courseWorkerror3 = """
+// Declaration factorial function.
+int factorial(int n);
+
+// Define main function.
+int main() {
+    int number = 5; // Choose number for factorial.
+    int result = factorial(number); // Call factorial function.
+    return result; // Return result.
+}
+"""
+    
+    let courseWorkerror4 = """
+// Declaration factorial function.
+int factorial(int n);
+
+// Define main function.
+int main() {
+    int result = factorial(number); // Call factorial function.
+    return result; // Return result.
+}
+
+// Define factorial function.
+int factorial(int n) {
+    // Recursive factorial using ternary operator.
+    return (2 > n) ? 1 : factorial((n - 1)) * n;
+}
+"""
+    
+    let courseWorkerror5 = """
+// Declaration factorial function.
+int factorial();
+
+// Define main function.
+int main() {
+    int number = 5; // Choose number for factorial.
+    int result = factorial(number); // Call factorial function.
+    return result; // Return result.
+}
+
+// Define factorial function.
+int factorial(int n) {
+    // Recursive factorial using ternary operator.
+    return (2 > n) ? 1 : factorial((n - 1)) * n;
+}
+"""
+    
+    let courseWorkerror6 = """
+// Declaration factorial function.
+int factorial(int n);
+
+// Define main function.
+int main() {
+    int number = 5; // Choose number for factorial.
+    int result = factorial(number); // Call factorial function.
     return result;
 }
 
+// Define factorial function.
 int factorial(int n) {
-    return (2 > n) ? 1 : factorial((n - 1)) * n;
+    // Recursive factorial using ternary operator.
 }
 """
 }
